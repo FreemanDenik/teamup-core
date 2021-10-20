@@ -14,6 +14,7 @@
         <maven.compiler.target>14</maven.compiler.target>
         <lombok.version>1.18.22</lombok.version>
         <spring.boot.version>2.5.5</spring.boot.version>
+        <project.version>1.0.0-SNAPSHOT</project.version>
     </properties>
 
     <modules>
