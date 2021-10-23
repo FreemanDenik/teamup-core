@@ -60,5 +60,12 @@ class TeamupInputApplicationTests {
             assertFalse(emailValidation.validateEmail(temp));
         }
     }
+    @Test
+    void formatNumbers(@Autowired Validator emailValidation) {
+        for (String temp: validNumbers) {
+            System.out.println(emailValidation.uniformFormat(temp));
+        }
+
+    }
 
 }

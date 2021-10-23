@@ -5,8 +5,11 @@ import ru.team.up.input.service.Validator;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.ParseException;
+import javax.swing.text.MaskFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 @Service
 public class ValidatorImpl implements Validator {
 
@@ -35,4 +38,30 @@ public class ValidatorImpl implements Validator {
         Matcher matcher = pattern.matcher(hex);
         return matcher.matches();
     }
+
+    @Override
+    public String uniformFormat(String number) {
+        String codeMoscow ="495";
+        number = number.replaceAll("[^0-9]", "");
+        Character firstChar = number.charAt(0);
+        if (number.length()<8){
+            number=codeMoscow+number;
+        }
+        if (firstChar.equals('8')) {
+            number = number.replaceFirst("[8]", "7");
+        }
+        if (!firstChar.equals('8') && !firstChar.equals('7')) {
+            number = "7"+number;
+        }
+        try {
+            MaskFormatter format = new MaskFormatter("+#(###)###-##-##");
+            format.setValueContainsLiteralCharacters(false);
+            number = format.valueToString(number);
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+        return number;
+    }
+
+
 }
