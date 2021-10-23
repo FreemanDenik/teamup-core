@@ -41,6 +41,9 @@ public class ValidatorImpl implements Validator {
 
     @Override
     public String uniformFormat(String number) {
+        if (!validateEmail(number)){
+            throw new IllegalArgumentException("Number is not valid");
+        }
         String codeMoscow ="495";
         number = number.replaceAll("[^0-9]", "");
         Character firstChar = number.charAt(0);
