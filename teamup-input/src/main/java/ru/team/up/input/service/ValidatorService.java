@@ -9,7 +9,7 @@ import ru.team.up.input.service.impl.PhoneNumberValidatorService;
 public class ValidatorService {
 
     private final Validator emailValidator;
-    private final PhoneNumberValidatorService phoneNumberValidator;
+    private final Validator phoneNumberValidator;
 
     @Autowired
     public ValidatorService(EmailValidatorService emailValidator, PhoneNumberValidatorService phoneNumberValidator) {
@@ -20,10 +20,12 @@ public class ValidatorService {
     public boolean validateEmail(String email) {
         return emailValidator.validate(email);
     }
+
     public boolean validateNumber(String email) {
         return phoneNumberValidator.validate(email);
     }
+
     public String uniformFormatNumber(String email) {
-        return phoneNumberValidator.uniformFormatNumber(email);
+        return phoneNumberValidator.uniformFormat(email);
     }
 }

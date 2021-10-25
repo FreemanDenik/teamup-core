@@ -19,4 +19,12 @@ public class EmailValidatorService implements Validator {
         }
         return result;
     }
+
+    @Override
+    public String uniformFormat(String value) {
+        if (!validate(value)){
+            throw new IllegalArgumentException("Email is not valid");
+        }
+        return value.toLowerCase();
+    }
 }

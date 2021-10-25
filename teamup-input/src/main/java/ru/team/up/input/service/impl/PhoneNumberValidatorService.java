@@ -22,7 +22,8 @@ public class PhoneNumberValidatorService implements Validator {
         return matcher.matches();
     }
 
-    public String uniformFormatNumber(String number) {
+    @Override
+    public String uniformFormat(String number) {
         if (!validate(number)) {
             throw new IllegalArgumentException("Number is not valid");
         }
