@@ -41,10 +41,10 @@ public class WordMatcher {
             ")\\b", Pattern.CASE_INSENSITIVE);
 
     public boolean detectBadWords(String text) {
-        return text.matches(String.valueOf(badWords));
+        return badWords.matcher(text).find();
     }
 
     public boolean detectUnnecessaryWords(String text) {
-        return text.matches(String.valueOf(unnecessaryWords));
+        return unnecessaryWords.matcher(text).find();
     }
 }

@@ -2,9 +2,7 @@ package ru.team.up.input.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,11 +14,9 @@ import java.time.LocalDate;
  * @author Pavel Kondrashov on 23.10.2021
  */
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 public class Event {
     @Id

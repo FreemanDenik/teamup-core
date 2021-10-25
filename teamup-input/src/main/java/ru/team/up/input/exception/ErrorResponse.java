@@ -1,13 +1,13 @@
 package ru.team.up.input.exception;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 /**
  * @author Pavel Kondrashov on 23.10.2021
  */
 
-@AllArgsConstructor
+@Builder
 @Getter
 public class ErrorResponse {
     private final String message;

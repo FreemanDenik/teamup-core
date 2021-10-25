@@ -11,15 +11,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {ApiCreateRequestException.class})
-    public ResponseEntity<Object> handleApiCreateRequestException(ApiCreateRequestException e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), "ERROR");
+    @ExceptionHandler(value = {EventCreateRequestException.class})
+    public ResponseEntity<Object> handleApiCreateRequestException(EventCreateRequestException e) {
+        ErrorResponse errorResponse = ErrorResponse
+                .builder()
+                .message(e.getMessage())
+                .status("ERROR")
+                .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ApiCheckRequest.class)
-    public ResponseEntity<Object> handleApiCheckRequest(ApiCheckRequest e) {
-        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), "CHECK");
+    @ExceptionHandler(EventCheckException.class)
+    public ResponseEntity<Object> handleApiCheckRequest(EventCheckException e) {
+        ErrorResponse errorResponse = ErrorResponse
+                .builder()
+                .message(e.getMessage())
+                .status("CHECK")
+                .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.OK);
     }
 }
