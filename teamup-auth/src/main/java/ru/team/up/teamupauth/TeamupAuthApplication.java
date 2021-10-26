@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import ru.team.up.teamupauth.entity.Role;
 import ru.team.up.teamupauth.entity.User;
 
-import java.util.Collections;
-import java.util.HashSet;
 
 @SpringBootApplication
 public class TeamupAuthApplication {

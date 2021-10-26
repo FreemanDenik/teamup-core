@@ -12,10 +12,12 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @Column(name = "user_id")
-    private int id;
+    private Long id;
+    @Column(name="username")
     private String username;
+    @Column
     private String password;
-    @ManyToMany(cascade = CascadeType.MERGE)
+    @ManyToMany(fetch=FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinTable(name = "role_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 

@@ -1,5 +1,6 @@
 package ru.team.up.teamupauth.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -15,54 +18,52 @@ import ru.team.up.teamupauth.repository.UserRepository;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    private SuccessHandler successHandler;
+    private UserDetailsService userDetailsService;
 
-    private UserRepository userRepository;
-
-    public SecurityConfig(UserRepository userRepository){
-        this.userRepository = userRepository;
+    public SecurityConfig(SuccessHandler successHandler,UserDetailsService userDetailsService){
+        this.successHandler = successHandler;
+        this.userDetailsService= userDetailsService;
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(login -> (UserDetails) userRepository.findUserByUsername(login));
+        //auth.userDetailsService (userDetailsService);
+        auth.inMemoryAuthentication()
+                .withUser("User")
+                .password("$2y$10$kaxW9eXnDAyJXdGPcItzz.Max7/9BKdwSe/rqdJJNQG1dtoFop6xS")
+                .authorities("ROLE_USER")
+                .and()
+                .withUser("Admin")
+                .password("San")
+                .authorities("ROLE_ADMIN")
+                .and ()
+                .withUser ("Moderator")
+                .password ("San")
+                .authorities ("ROLE_MODERATOR");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-                // указываем страницу с формой логина
-                .loginPage("/login")
-                //указываем логику обработки при логине
-                .successHandler(new SuccessHandler())
-                // указываем action с формы логина
-                .loginProcessingUrl("/login")
-                // Указываем параметры логина и пароля с формы логина
-                .usernameParameter("j_username")
-                .passwordParameter("j_password")
-                // даем доступ к форме логина всем
-                .permitAll();
-
-        http.logout()
-                // разрешаем делать логаут всем
-                .permitAll()
-                // указываем URL логаута
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                // указываем URL при удачном логауте
-                .logoutSuccessUrl("/login?logout")
-                //выключаем кроссдоменную секьюрность (на этапе обучения неважна)
-                .and().csrf().disable();
-
         http
-                // делаем страницу регистрации недоступной для авторизированных пользователей
                 .authorizeRequests()
-                //страницы аутентификации доступна всем
-                .antMatchers("/login").anonymous()
-                // защищенные URL
-                .antMatchers("/admin/**").access("hasAnyRole('ADMIN')").anyRequest().authenticated();
-    }
+                .antMatchers("/login","/oauth2/authorization/google").permitAll ()
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user").hasRole("USER")
+                .antMatchers("/moderator").hasRole("MODERATOR")
+                .anyRequest().authenticated()
+                .and().formLogin()
+                .successHandler(successHandler)
+                .and ().oauth2Login()
+                .successHandler (new SuccessHandler());
 
+        http.logout ()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
+                .logoutRequestMatcher (new AntPathRequestMatcher ("/logout"))//выход из системы гет запрос на /logout
+                .logoutSuccessUrl ("/login")//успешный выход из системы
+                .and().csrf().disable();
+    }
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
