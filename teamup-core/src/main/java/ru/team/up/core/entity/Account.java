@@ -1,14 +1,15 @@
 package ru.team.up.core.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
+
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @MappedSuperclass
 public class Account {
 
@@ -16,27 +17,27 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "lastName", nullable = false)
+    @Column(name = "LAST_NAME", nullable = false)
     private String lastName;
 
-    @Column(name = "middleName")
+    @Column(name = "MIDDLE_NAME")
     private String middleName;
 
-    @Column(name = "login", nullable = false)
+    @Column(name = "LOGIN", nullable = false)
     private String login;
 
-    @Column(name = "eMail", nullable = false)
-    private String eMail;
+    @Column(name = "EMAIL", nullable = false)
+    private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(name = "accountCreatedTime", nullable = false)
+    @Column(name = "ACCOUNT_CREATED_TIME", nullable = false)
     private String accountCreatedTime;
 
-    @Column(name = "lastAccountActivity", nullable = false)
+    @Column(name = "LAST_ACCOUNT_ACTIVITY", nullable = false)
     private String lastAccountActivity;
 }

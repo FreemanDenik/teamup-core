@@ -1,32 +1,32 @@
 package ru.team.up.core.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "interests")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "INTERESTS")
 public class Interests {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "TITLE", nullable = false)
     private String title;
 
-    @Column(name = "shortDescription", nullable = false)
+    @Column(name = "SHORT_DESCRIPTION", nullable = false)
     private String shortDescription;
 
     @ManyToMany
-    @JoinTable(name="user_interests",
-            joinColumns=@JoinColumn(name="interests_id"),
-            inverseJoinColumns=@JoinColumn(name="user_id"))
+    @JoinTable(name="USER_ACCOUNT_INTERESTS",
+            joinColumns=@JoinColumn(name="INTERESTS_ID"),
+            inverseJoinColumns=@JoinColumn(name="USER_ID"))
     private Set<User> users;
 }

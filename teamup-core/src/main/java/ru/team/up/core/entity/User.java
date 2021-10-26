@@ -1,35 +1,35 @@
 package ru.team.up.core.entity;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "users")
+@Builder(builderMethodName = "userBuilder")
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "USER_ACCOUNT")
 public class User extends Account{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "city")
+    @Column(name = "CITY")
     private String city;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "AGE", nullable = false)
     private Integer age;
 
-    @Column(name = "aboutUser")
+    @Column(name = "ABOUT_USER")
     private String aboutUser;
 
-    @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.EAGER)
-    @JoinTable (name="user_interests", joinColumns=@JoinColumn (name="user_id"),
-            inverseJoinColumns=@JoinColumn(name="interests_id"))
-    @Column(name = "userInterests")
+    @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable (name="USER_ACCOUNT_INTERESTS", joinColumns=@JoinColumn (name="USER_ID"),
+            inverseJoinColumns=@JoinColumn(name="INTERESTS_ID"))
+    @Column(name = "USER_INTERESTS")
     private Set<Interests> userInterests;
 }
