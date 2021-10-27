@@ -27,7 +27,6 @@ public class PhoneNumberValidatorService implements Validator {
         }
         log.error("Number:{} is not valid", hex);
         return false;
-
     }
 
     @Override
