@@ -7,9 +7,7 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
 public class Account {
 
