@@ -1,5 +1,6 @@
 package ru.team.up.input.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.team.up.input.service.Validator;
 
@@ -8,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 public class PhoneNumberValidatorService implements Validator {
     private final Pattern pattern;
     private static final String RU_NUMBER_PATTERN = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$";
@@ -19,14 +21,18 @@ public class PhoneNumberValidatorService implements Validator {
     @Override
     public boolean validate(String hex) {
         Matcher matcher = pattern.matcher(hex);
-        return matcher.matches();
+        log.debug("Validate:{}", hex);
+        if (matcher.matches()) {
+            return true;
+        }
+        log.error("Number:{} is not valid", hex);
+        return false;
+
     }
 
     @Override
     public String uniformFormat(String number) {
-        if (!validate(number)) {
-            throw new IllegalArgumentException("Number is not valid");
-        }
+        validate(number);
         String codeMoscow = "495";
         number = number.replaceAll("[^0-9]", "");
         Character firstChar = number.charAt(0);

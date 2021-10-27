@@ -82,8 +82,7 @@ public class ValidatorsTest {
 
     @Test
     void formatNumbers() {
-        IntStream
-                .range(0, validNumbers.length)
+        IntStream.range(0, validNumbers.length)
                 .forEach(i -> assertEquals(validFormatNumbers[i], validator.uniformFormatNumber(validNumbers[i])));
 
     }

@@ -21,11 +21,15 @@ public class ValidatorService {
         return emailValidator.validate(email);
     }
 
-    public boolean validateNumber(String email) {
-        return phoneNumberValidator.validate(email);
+    public boolean validateNumber(String number) {
+        return phoneNumberValidator.validate(number);
     }
 
     public String uniformFormatNumber(String email) {
         return phoneNumberValidator.uniformFormat(email);
+    }
+
+    public String uniformFormatEmail(String number) {
+        return phoneNumberValidator.uniformFormat(number);
     }
 }
