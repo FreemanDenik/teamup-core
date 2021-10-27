@@ -1,21 +1,16 @@
 package ru.team.up.input.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.team.up.input.service.impl.EmailValidatorService;
-import ru.team.up.input.service.impl.PhoneNumberValidatorService;
+
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired()))
 public class ValidatorService {
 
     private final Validator emailValidator;
     private final Validator phoneNumberValidator;
-
-    @Autowired
-    public ValidatorService(EmailValidatorService emailValidator, PhoneNumberValidatorService phoneNumberValidator) {
-        this.emailValidator = emailValidator;
-        this.phoneNumberValidator = phoneNumberValidator;
-    }
 
     public boolean validateEmail(String email) {
         return emailValidator.validate(email);

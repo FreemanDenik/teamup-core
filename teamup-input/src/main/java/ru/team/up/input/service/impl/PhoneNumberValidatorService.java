@@ -8,7 +8,7 @@ import javax.swing.text.MaskFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Service
+@Service("phoneNumberValidator")
 @Slf4j
 public class PhoneNumberValidatorService implements Validator {
     private final Pattern pattern;

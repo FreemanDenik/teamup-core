@@ -7,7 +7,7 @@ import ru.team.up.input.service.Validator;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-@Service
+@Service("emailValidator")
 @Slf4j
 public class EmailValidatorService implements Validator {
     @Override
