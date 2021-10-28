@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,8 +16,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Path("/api")
+@Slf4j
 public class GoogleMapApi {
-	private final Logger log = LoggerFactory.getLogger(GoogleMapApi.class);
 
 	@GET
 	@Path("/{geo}")
