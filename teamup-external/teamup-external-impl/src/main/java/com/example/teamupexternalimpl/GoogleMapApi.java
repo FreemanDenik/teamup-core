@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -16,36 +18,38 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 @Path("/api")
-public class GoogleMapApi
-{
+public class GoogleMapApi {
+	private final Logger log = LoggerFactory.getLogger(GoogleMapApi.class);
 
 	@GET
 	@Path("/{geo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public MapEntity getAllEmployees(@PathParam("geo") String geo)
-	{
+	public MapEntity getAddress(@PathParam("geo") String geo) {
+
+		log.debug("Старт метода getAddress с параметром {}.", geo);
+
 		MapEntity mapEntity = null;
 
-		final String baseUrl1 = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
-		final String baseUrl2 = "&location_type=ROOFTOP&result_type=street_address&key=AIzaSyDlL0gkesL_aAoflRtsO_Y-XIJJgBFiZuw";
-		final String baseUrl = baseUrl1 + geo + baseUrl2;
+		final String baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + geo + "&location_type=ROOFTOP&result_type=street_address&key=AIzaSyDlL0gkesL_aAoflRtsO_Y-XIJJgBFiZuw";
 		Client client = Client.create();
 
 		WebResource webResource = client.resource(baseUrl);
 		ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON_TYPE).get(ClientResponse.class);
 
-		if (response.getStatus() != 200){
+		if (response.getStatus() != 200) {
+			log.error("Ошибка в получении адреса в методе getAddress с параметром {}.", geo);
 			throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
 		}
 
 		ObjectMapper mapper = new ObjectMapper();
-		try{
+		try {
 			mapEntity = mapper.readValue(responseString(response), MapEntity.class);
-		}catch (Exception e){
+		} catch (Exception e) {
+			log.error("Ошибка в обработке адреса в методе getAddress с параметром {}.", geo);
 			e.printStackTrace();
 		}
 
-		return  mapEntity;
+		return mapEntity;
 	}
 
 	private String responseString(ClientResponse response) {
