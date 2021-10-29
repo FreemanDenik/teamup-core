@@ -31,15 +31,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //auth.userDetailsService (userDetailsService);
         auth.inMemoryAuthentication()
                 .withUser("User")
-                .password("$2y$10$kaxW9eXnDAyJXdGPcItzz.Max7/9BKdwSe/rqdJJNQG1dtoFop6xS")
+                .password("$2a$12$YiROvFRAbeIWWz5XHJAfAedV5hVfb4NFKZs5Atw0yrB3yldjRTVmK")
                 .authorities("ROLE_USER")
                 .and()
                 .withUser("Admin")
-                .password("San")
+                .password("$2a$12$KwmQ4mBkrb70yebG.yjvKu2Cj5nf6iemWOvo6vOtNExZgMGgpdJte")
                 .authorities("ROLE_ADMIN")
                 .and ()
                 .withUser ("Moderator")
-                .password ("San")
+                .password ("$2a$12$VeRlXvgPPjIzNayOwopCmOu01sjPQWCidCRa5wGEDiQWmUuElQDYG")
                 .authorities ("ROLE_MODERATOR");
     }
 
@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/login","/oauth2/authorization/google").permitAll ()
+                .antMatchers("/login", "/oauth2/authorization/google").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/moderator").hasRole("MODERATOR")
