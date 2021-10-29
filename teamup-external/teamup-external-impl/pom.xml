@@ -49,6 +49,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
             <groupId>ru.team.up</groupId>
             <artifactId>teamup-external-api</artifactId>
             <version>${project.version}</version>
