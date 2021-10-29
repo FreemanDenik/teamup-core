@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Builder(builderMethodName = "moderatorBuilder")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MODERATOR_ACCOUNT")

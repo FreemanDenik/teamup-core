@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@Builder(builderMethodName = "adminBuilder")
+@Builder
 @NoArgsConstructor
 @Table(name = "ADMIN_ACCOUNT")
 public class Admin extends Account{
