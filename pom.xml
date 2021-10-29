@@ -10,8 +10,8 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <lombok.version>1.18.22</lombok.version>
         <spring.boot.version>2.5.5</spring.boot.version>
         <project.version>1.0.0-SNAPSHOT</project.version>
@@ -21,6 +21,7 @@
         <module>teamup-core</module>
         <module>teamup-external</module>
         <module>teamup-input</module>
+        <module>teamup-auth</module>
 
     </modules>
 
