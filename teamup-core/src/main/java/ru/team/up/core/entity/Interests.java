@@ -29,4 +29,8 @@ public class Interests {
             joinColumns=@JoinColumn(name="INTERESTS_ID"),
             inverseJoinColumns=@JoinColumn(name="USER_ID"))
     private Set<User> users;
+
+    @ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinColumn(name="EVENT_ID")
+    private Event event;
 }
