@@ -13,3 +13,13 @@ INSERT INTO USER_ACCOUNT VALUES
 
 INSERT INTO USER_ACCOUNT_INTERESTS VALUES
 (1, 1);
+
+INSERT INTO STATUS VALUES
+    (1, 'open');
+
+INSERT INTO Event_Type (id, type) VALUES
+    ( 1,'Game'), (2, 'meeting'), (3, 'communication');
+
+INSERT INTO Event VALUES
+    ( 1,'Wold Game','Petrov1, Ivanov, Sidorov', 'london', '22.10.2021 18:00' , 1, 1, 1);
+
