@@ -1,5 +1,6 @@
 package com.example.teamupexternalimpl.model.map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +12,9 @@ public class Geometry {
 
     private Bounds bounds;
     private Location location;
-    public String location_type;
     public Viewport viewport;
+
+    @JsonProperty("location_type")
+    public String locationType;
 
 }

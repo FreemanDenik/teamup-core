@@ -60,11 +60,8 @@ public class GoogleMapApi {
 			}
 			return textBuilder.toString();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Ошибка в приведении ClientResponse к типу String в методе responseString.");
 			return null;
 		}
 	}
-
 }
-
-
