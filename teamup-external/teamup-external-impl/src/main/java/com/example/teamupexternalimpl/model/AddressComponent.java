@@ -1,4 +1,4 @@
-package com.example.teamupexternalimpl.model.map;
+package com.example.teamupexternalimpl.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
