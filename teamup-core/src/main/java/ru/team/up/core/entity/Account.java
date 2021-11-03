@@ -5,9 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 
 
-@Getter
-@Setter
-@NoArgsConstructor
 @MappedSuperclass
 public class Account {
 
