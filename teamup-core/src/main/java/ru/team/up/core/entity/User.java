@@ -14,9 +14,9 @@ import java.util.Set;
 @Table(name = "USER_ACCOUNT")
 public class User extends Account{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name = "CITY")
     private String city;

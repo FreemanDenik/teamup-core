@@ -2,8 +2,7 @@ package ru.team.up.core.entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -12,5 +11,4 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "ADMIN_ACCOUNT")
 public class Admin extends Account{
-
 }

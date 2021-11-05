@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 
 @MappedSuperclass
+@Getter
+@Setter
 public class Account {
 
     @Id

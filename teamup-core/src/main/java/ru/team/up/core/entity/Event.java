@@ -1,6 +1,7 @@
 package ru.team.up.core.entity;
 
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Set;

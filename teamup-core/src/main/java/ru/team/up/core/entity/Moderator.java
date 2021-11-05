@@ -12,10 +12,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "MODERATOR_ACCOUNT")
 public class Moderator extends Account{
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name = "AMOUNT_OF_CLOSED_REQUESTS")
     private Long amountOfClosedRequests;
