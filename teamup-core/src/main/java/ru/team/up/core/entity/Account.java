@@ -1,13 +1,19 @@
 package ru.team.up.core.entity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 /**
  * Родительская сущность для пользователя, админа, модератора
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder
+@Getter
+@Setter
 public class Account {
 
     /**
