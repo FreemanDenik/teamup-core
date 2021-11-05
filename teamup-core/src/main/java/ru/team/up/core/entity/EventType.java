@@ -1,10 +1,9 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Getter
@@ -13,7 +12,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "EVENT_TYPE")
-public class EventType implements Serializable {
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+public class EventType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
