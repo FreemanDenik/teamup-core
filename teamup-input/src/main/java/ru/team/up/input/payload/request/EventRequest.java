@@ -2,14 +2,14 @@ package ru.team.up.input.payload.request;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.team.up.input.entity.Event;
+import ru.team.up.core.entity.Event;
 
 /**
- * @author Pavel Kondrashov on 27.10.2021
+ * @author Pavel Kondrashov
  */
 
 @Data
 @Builder
-public class CreateEventRequest {
+public class EventRequest {
     private Event event;
 }
