@@ -1,10 +1,10 @@
 package ru.team.up.external.impl.controller;
 
-import ru.team.up.external.impl.model.MapEntity;
-import ru.team.up.external.impl.service.GeoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.team.up.external.impl.model.MapEntity;
+import ru.team.up.external.impl.service.GeoService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

@@ -1,9 +1,8 @@
 package ru.team.up.external.impl.service;
-
-import ru.team.up.external.impl.model.MapEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.team.up.external.impl.model.MapEntity;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;

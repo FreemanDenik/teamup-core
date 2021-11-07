@@ -1,7 +1,8 @@
 package ru.team.up.core.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.team.up.core.entity.User;
+import org.springframework.stereotype.Repository;
+import ru.team.up.core.entity.UserAccount;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserAccount, Long> {
 }

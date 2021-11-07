@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_ACCOUNT")
-public class User extends Account{
+public class UserAccount extends Account{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
