@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "EVENT")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,21 +31,21 @@ public class Event {
     @Column(name = "PARTICIPANTS_EVENT")
     private String participantsEvent;
 
-    @OneToOne(optional=false, cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "EVENT_TYPE_ID")
     private EventType eventType;
 
-    @OneToOne(optional=false,cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User authorId;
 
-    @OneToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY
             , mappedBy = "event")
     @Column(name = "INTERESTS_EVENT", nullable = false)
     private Set<Interests> eventInterests;
 
-   @OneToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
-   @JoinColumn(name = "STATUS_ID")
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "STATUS_ID")
     private Status status;
 
 }

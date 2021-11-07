@@ -10,5 +10,5 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @Table(name = "ADMIN_ACCOUNT")
-public class Admin extends Account{
+public class Admin extends Account {
 }

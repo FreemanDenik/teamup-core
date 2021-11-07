@@ -1,76 +1,72 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
-import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.service.EventService;
 
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Alexey Tkachenko
  */
+
 @RestController
 @RequestMapping("private/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventController {
-    private EventRepository eventRepository;
+    private EventService eventService;
 
+    /**
+     * @return Результат работы метода eventService.getAllEvents()) в виде коллекции мероприятий
+     * в теле ResponseEntity
+     */
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
-        try {
-            List<Event> events = new ArrayList<>(eventRepository.findAll());
-
-            if (events.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(events, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.ok(eventService.getAllEvents());
     }
 
+    /**
+     * @param id Значение ID мероприятия
+     * @return Результат работы метода eventService.getOneEvent(id) в виде объекта Event
+     * в теле ResponseEntity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
-        Optional<Event> event = eventRepository.findById(id);
-        return event.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(eventService.getOneEvent(id));
     }
 
+    /**
+     * @param event Создаваемый объект класса Event
+     * @return Результат работы метода eventService.saveEvent(event) в виде объекта Event
+     * в теле ResponseEntity
+     */
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        try {
-            Event newEvent = eventRepository.save(event);
-            return new ResponseEntity<>(newEvent, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) {
+        return new ResponseEntity<>(eventService.saveEvent(event), HttpStatus.CREATED);
     }
 
-    @PutMapping
+    /**
+     * @param event Обновляемый объект класса Event
+     * @return Результат работы метода eventService.saveEvent(event)) в виде объекта Event
+     * в теле ResponseEntity
+     */
+    @PatchMapping
     public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
-        Optional<Event> eventOptional = eventRepository.findById(event.getId());
-        if (eventOptional.isPresent()) {
-            Event updateEvent = eventRepository.save(event);
-            return new ResponseEntity<>(updateEvent, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(eventService.saveEvent(event));
     }
 
+    /**
+     * @param event Удаляемый объект класса Event
+     * @return Объект ResponseEntity со статусом OK
+     */
     @DeleteMapping
-    public ResponseEntity<Event> deleteAdmin(@RequestBody Event event) {
-        try {
-            eventRepository.delete(event);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Event> deleteAdmin(@RequestBody @NotNull Event event) {
+        eventService.deleteEvent(event);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

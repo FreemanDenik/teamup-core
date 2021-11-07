@@ -11,11 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MODERATOR_ACCOUNT")
-public class Moderator extends Account{
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
+public class Moderator extends Account {
 
     @Column(name = "AMOUNT_OF_CLOSED_REQUESTS")
     private Long amountOfClosedRequests;

@@ -1,17 +1,15 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.service.UserService;
 
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Alexey Tkachenko
@@ -21,57 +19,54 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/private/account/users")
 public class UserController {
-    private UserRepository userRepository;
+    private UserService userService;
 
+    /**
+     * @return Результат работы метода userService.getAllUsers() в виде коллекции юзеров
+     * в теле ResponseEntity
+     */
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        try {
-            List<User> allUsers = new ArrayList<>(userRepository.findAll());
-
-            if (allUsers.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(allUsers, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    /**
+     * @param id Значение ID юзера
+     * @return Результат работы метода userService.getOneUser(id) в виде объекта User
+     * в теле ResponseEntity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<User> getOneUser(@PathVariable Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(userService.getOneUser(id));
     }
 
+    /**
+     * @param user Создаваемый объект класса User
+     * @return Результат работы метода userService.saveUser(user) в виде объекта User
+     * в теле ResponseEntity
+     */
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        try {
-            User newUser = userRepository.save(user);
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<User> createUser(@RequestBody @NotNull User user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
-    @PutMapping
+    /**
+     * @param user Обновляемый объект класса User
+     * @return Результат работы метода userService.saveUser(user) в виде объекта User
+     * в теле ResponseEntity
+     */
+    @PatchMapping
     public ResponseEntity<User> updateUser(@RequestBody @NotNull User user) {
-        Optional<User> userData = userRepository.findById(user.getId());
-        if (userData.isPresent()) {
-            User updatedUser = userRepository.save(user);
-            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
+    /**
+     * @param user Удаляемый объект класса User
+     * @return Объект ResponseEntity со статусом OK
+     */
     @DeleteMapping
-    public ResponseEntity<User> deleteUser(@RequestBody User user) {
-        try {
-            userRepository.delete(user);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<User> deleteUser(@RequestBody @NotNull User user) {
+        userService.deleteUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

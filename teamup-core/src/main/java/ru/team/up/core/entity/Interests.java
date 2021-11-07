@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "INTERESTS")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "users"})
 public class Interests {
 
     @Id
@@ -26,12 +28,12 @@ public class Interests {
     private String shortDescription;
 
     @ManyToMany
-    @JoinTable(name="USER_ACCOUNT_INTERESTS",
-            joinColumns=@JoinColumn(name="INTERESTS_ID"),
-            inverseJoinColumns=@JoinColumn(name="USER_ID"))
+    @JoinTable(name = "USER_ACCOUNT_INTERESTS",
+            joinColumns = @JoinColumn(name = "INTERESTS_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     private Set<User> users;
 
-    @ManyToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
-    @JoinColumn(name="EVENT_ID")
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "EVENT_ID")
     private Event event;
 }
