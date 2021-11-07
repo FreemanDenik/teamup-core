@@ -3,6 +3,7 @@ package ru.team.up.input.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.core.entity.Event;
@@ -17,6 +19,7 @@ import ru.team.up.core.entity.EventType;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
+import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.EventService;
 import ru.team.up.input.wordmatcher.WordMatcher;
@@ -45,14 +48,14 @@ public class EventRestController {
      *
      * @return Список мероприятий и статус ответа
      */
-    @GetMapping(value = "/events", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Получен запрос на список мероприятий");
         List<Event> events = eventService.getAllEvents();
 
         if (events.isEmpty()) {
             log.error("Список мероприятий пуст");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity("Список мероприятий пуст", HttpStatus.NO_CONTENT);
         }
 
         log.debug("Список мероприятий получен");
@@ -161,7 +164,7 @@ public class EventRestController {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Event> updateEvent(@RequestBody EventRequest event, @PathVariable("id") Long eventId) {
         log.debug("Получен запрос на обновление мероприятия {}", event);
 
@@ -198,14 +201,13 @@ public class EventRestController {
     /**
      * Метод добавления участника мероприятия
      *
-     * @param eventId Идентификатор мероприятия
-     * @param userId Идентификатор участника
+     * @param joinRequest Данные запроса для добавление участника
      * @return Ответ запроса и статус проверки
      */
-    @PostMapping(value = "join/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Event> addEventParticipant(@PathVariable("id") Long eventId, Long userId) {
+    @PostMapping(value = "/join", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Event> addEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на добавление участника мероприятия");
-        Event event = eventService.addParticipant(eventId, userId);
+        Event event = eventService.addParticipant(joinRequest.getEventId(), joinRequest.getUserId());
 
         log.debug("Участник успешно добавлен");
         return new ResponseEntity<>(event, HttpStatus.OK);
@@ -214,14 +216,13 @@ public class EventRestController {
     /**
      * Метод удаления участника мероприятия
      *
-     * @param eventId Идентификатор мероприятия
-     * @param userId Идентификатор участника
+     * @param joinRequest Данные запроса для удаления участника
      * @return Ответ запроса и статус проверки
      */
-    @PostMapping("unjoin/{id}")
-    public ResponseEntity<Event> deleteEventParticipant(@PathVariable("id") Long eventId, Long userId) {
+    @PostMapping("/unjoin")
+    public ResponseEntity<Event> deleteEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на удаление участника мероприятия");
-        Event event = eventService.deleteParticipant(eventId, userId);
+        Event event = eventService.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId());
 
         log.debug("Участник успешно удален");
         return new ResponseEntity<>(event, HttpStatus.OK);

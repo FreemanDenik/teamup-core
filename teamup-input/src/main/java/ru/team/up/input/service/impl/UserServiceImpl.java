@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User updateUser(Long id, UserRequest user) {
-        return userRepository.save(user.getUser());
+        return userRepository.saveAndFlush(user.getUser());
     }
 
     @Override

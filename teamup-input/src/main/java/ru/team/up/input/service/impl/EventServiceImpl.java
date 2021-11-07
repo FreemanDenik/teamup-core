@@ -56,7 +56,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event updateEvent(Long id, Event event) {
-        return eventRepository.save(event);
+        return eventRepository.saveAndFlush(event);
     }
 
     @Override
