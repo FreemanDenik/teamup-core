@@ -13,6 +13,9 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
+ *
+ * @link localhost:8080/swagger-ui.html
+ * Документация API
  */
 
 @RestController
@@ -61,12 +64,12 @@ public class ModeratorController {
     }
 
     /**
-     * @param moderator Удаляемый объект класса Moderator
+     * @param id Удаляемого объекта класса Moderator
      * @return Объект ResponseEntity со статусом OK
      */
-    @DeleteMapping
-    public ResponseEntity<Moderator> deleteModerator(@RequestBody @NotNull Moderator moderator) {
-        moderatorService.deleteModerator(moderator);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) {
+        moderatorService.deleteModerator(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

@@ -73,15 +73,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * @param admin Объект класса ru.team.up.core.entity.Admin
-     *              Метод удаляет админа из БД
+     * @param id Объект класса ru.team.up.core.entity.Admin
+     *           Метод удаляет админа из БД
      */
     @Override
     @Transactional
-    public void deleteAdmin(Admin admin) {
-        log.debug("Старт метода void deleteAdmin(Admin admin) с параметром {}", admin);
+    public void deleteAdmin(Long id) {
+        log.debug("Старт метода void deleteAdmin(Admin admin) с параметром {}", id);
 
-        adminRepository.delete(admin);
-        log.debug("Удалили админа из БД {}", admin);
+        adminRepository.deleteById(id);
+        log.debug("Удалили админа из БД {}", id);
     }
 }

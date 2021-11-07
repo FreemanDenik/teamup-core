@@ -1,16 +1,19 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MODERATOR_ACCOUNT")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Moderator extends Account {
 
     @Column(name = "AMOUNT_OF_CLOSED_REQUESTS")

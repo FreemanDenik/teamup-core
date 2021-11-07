@@ -14,5 +14,5 @@ public interface ModeratorService {
 
     Moderator saveModerator(Moderator user);
 
-    void deleteModerator(Moderator user);
+    void deleteModerator(Long id);
 }

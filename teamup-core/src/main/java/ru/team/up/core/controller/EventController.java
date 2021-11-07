@@ -13,6 +13,9 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
+ *
+ * @link localhost:8080/swagger-ui.html
+ * Документация API
  */
 
 @RestController
@@ -61,12 +64,12 @@ public class EventController {
     }
 
     /**
-     * @param event Удаляемый объект класса Event
+     * @param id объект класса Event
      * @return Объект ResponseEntity со статусом OK
      */
-    @DeleteMapping
-    public ResponseEntity<Event> deleteAdmin(@RequestBody @NotNull Event event) {
-        eventService.deleteEvent(event);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Event> deleteAdmin(@PathVariable Long id) {
+        eventService.deleteEvent(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

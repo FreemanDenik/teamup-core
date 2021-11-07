@@ -13,6 +13,9 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
+ *
+ * @link localhost:8080/swagger-ui.html
+ * Документация API
  */
 
 @RestController
@@ -61,12 +64,12 @@ public class AdminController {
     }
 
     /**
-     * @param admin Удаляемый объект класса Admin
+     * @param id Удаляемый объект класса Admin
      * @return Объект ResponseEntity со статусом OK
      */
-    @DeleteMapping
-    public ResponseEntity<Admin> deleteAdmin(@RequestBody @NotNull Admin admin) {
-        adminService.deleteAdmin(admin);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Admin> deleteAdmin(@PathVariable Long id) {
+        adminService.deleteAdmin(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

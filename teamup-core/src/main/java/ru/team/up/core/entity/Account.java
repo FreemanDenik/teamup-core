@@ -1,6 +1,7 @@
 package ru.team.up.core.entity;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
@@ -8,6 +9,9 @@ import javax.persistence.*;
 @MappedSuperclass
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SuperBuilder
 public class Account {
 
     @Id

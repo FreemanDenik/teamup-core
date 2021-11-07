@@ -74,15 +74,15 @@ public class ModeratorServiceImpl implements ModeratorService {
     }
 
     /**
-     * @param moderator Объект класса ru.team.up.core.entity.Moderator
-     *                  Метод удаляет пользователя из БД
+     * @param id Объект класса ru.team.up.core.entity.Moderator
+     *           Метод удаляет пользователя из БД
      */
     @Override
     @Transactional
-    public void deleteModerator(Moderator moderator) {
-        log.debug("Старт метода void deleteModerator(Moderator moderator) с параметром {}", moderator);
+    public void deleteModerator(Long id) {
+        log.debug("Старт метода void deleteModerator(Long id) с параметром {}", id);
 
-        moderatorRepository.delete(moderator);
-        log.debug("Удалили модератор из БД {}", moderator);
+        moderatorRepository.deleteById(id);
+        log.debug("Удалили модератор из БД {}", id);
     }
 }

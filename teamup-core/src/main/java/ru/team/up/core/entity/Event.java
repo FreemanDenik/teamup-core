@@ -47,5 +47,4 @@ public class Event {
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
-
 }

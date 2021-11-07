@@ -74,15 +74,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @param user Объект класса ru.team.up.core.entity.User
-     *             Метод удаляет пользователя из БД
+     * @param id Объекта класса ru.team.up.core.entity.User
+     *           Метод удаляет пользователя из БД
      */
     @Override
     @Transactional
-    public void deleteUser(User user) {
-        log.debug("Старт метода void deleteUser(User user) с параметром {}", user);
+    public void deleteUser(Long id) {
+        log.debug("Старт метода void deleteUser(User user) с параметром {}", id);
 
-        userRepository.delete(user);
-        log.debug("Удалили юзера из БД {}", user);
+        userRepository.deleteById(id);
+        log.debug("Удалили юзера из БД с ID {}", id);
     }
 }

@@ -1,6 +1,7 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,13 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
+ *
+ * @link localhost:8080/swagger-ui.html
+ * Документация API
  */
 
 @RestController
+@NoArgsConstructor
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/private/account/users")
 public class UserController {
@@ -61,12 +66,12 @@ public class UserController {
     }
 
     /**
-     * @param user Удаляемый объект класса User
+     * @param id Удаляемого объекта класса User
      * @return Объект ResponseEntity со статусом OK
      */
-    @DeleteMapping
-    public ResponseEntity<User> deleteUser(@RequestBody @NotNull User user) {
-        userService.deleteUser(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

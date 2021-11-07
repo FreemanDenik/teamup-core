@@ -74,15 +74,15 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     * @param event Объект класса ru.team.up.core.entity.Event
-     *              Метод удаляет мероприятие из БД
+     * @param id Объект класса ru.team.up.core.entity.Event
+     *           Метод удаляет мероприятие из БД
      */
     @Override
     @Transactional
-    public void deleteEvent(Event event) {
-        log.debug("Старт метода void deleteEvent(Event event) с параметром {}", event);
+    public void deleteEvent(Long id) {
+        log.debug("Старт метода void deleteEvent(Event event) с параметром {}", id);
 
-        eventRepository.delete(event);
-        log.debug("Удалили мероприятие из БД {}", event);
+        eventRepository.deleteById(id);
+        log.debug("Удалили мероприятие из БД {}", id);
     }
 }

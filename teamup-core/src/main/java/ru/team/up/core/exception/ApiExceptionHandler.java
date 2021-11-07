@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * @author Alexey Tkachenko
+ */
+
 @RestControllerAdvice
 public class ApiExceptionHandler {
 

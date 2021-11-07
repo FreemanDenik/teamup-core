@@ -14,5 +14,5 @@ public interface AdminService {
 
     Admin saveAdmin(Admin admin);
 
-    void deleteAdmin(Admin admin);
+    void deleteAdmin(Long id);
 }
