@@ -3,6 +3,7 @@ package ru.team.up.core.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -25,6 +26,9 @@ public class Event {
 
     @Column(name = "TIME_EVENT", nullable = false)
     private String timeEvent;
+
+    @Column(name = "EVENT_UPDATE_DATE")
+    private LocalDate eventUpdateDate;
 
     @Column(name = "PARTICIPANTS_EVENT")
     private String participantsEvent;
