@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication(scanBasePackages = "ru.team.up.auth")
-@EnableJpaRepositories("ru.team.up*")
+@EnableJpaRepositories
 @EntityScan("ru.team.up*")
 @PropertySource({
         "classpath:db.properties",

@@ -42,6 +42,11 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>ru.team.up</groupId>
+            <artifactId>teamup-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>

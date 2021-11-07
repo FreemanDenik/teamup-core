@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import ru.team.up.core.entity.Event;
 
+import java.time.LocalDate;
+
 /**
  * @author Pavel Kondrashov
  */
@@ -12,4 +14,12 @@ import ru.team.up.core.entity.Event;
 @Builder
 public class EventRequest {
     private Event event;
+
+    public String getEventName() {
+        return null;
+    }
+
+    public LocalDate getDate() {
+        return null;
+    }
 }

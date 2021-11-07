@@ -15,7 +15,6 @@ import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 @SpringBootTest
 class TeamupAppApplicationTests {
 
-
     @Test
     void contextLoads() {
     }

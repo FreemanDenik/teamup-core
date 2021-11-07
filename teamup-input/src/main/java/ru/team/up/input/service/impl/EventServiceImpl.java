@@ -68,9 +68,9 @@ public class EventServiceImpl implements EventService {
     public Event addParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
         User participant = userRepository.getById(userId);
-        List<User> participants = event.getParticipantsEvent();
-        participants.add(participant);
-        event.setParticipantsEvent(participants);
+//        List<User> participants = event.getParticipantsEvent();
+//        participants.add(participant);
+//        event.setParticipantsEvent(participants);
         return updateEvent(eventId, event);
     }
 
@@ -78,9 +78,9 @@ public class EventServiceImpl implements EventService {
     public Event deleteParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
         User participant = userRepository.getById(userId);
-        List<User> participants = event.getParticipantsEvent();
-        participants.remove(participant);
-        event.setParticipantsEvent(participants);
+//        List<User> participants = event.getParticipantsEvent();
+//        participants.remove(participant);
+//        event.setParticipantsEvent(participants);
         return updateEvent(eventId, event);
     }
 }

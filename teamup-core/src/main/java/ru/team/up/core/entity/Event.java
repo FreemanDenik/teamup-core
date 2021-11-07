@@ -35,7 +35,7 @@ public class Event {
 
     @OneToOne(optional=false,cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private UserAccount authorId;
+    private User authorId;
 
     @OneToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY
             , mappedBy = "event")
@@ -46,4 +46,7 @@ public class Event {
    @JoinColumn(name = "STATUS_ID")
     private Status status;
 
+    public String getEventName() {
+        return null;
+    }
 }

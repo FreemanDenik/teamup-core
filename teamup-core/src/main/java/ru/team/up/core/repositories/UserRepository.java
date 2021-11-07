@@ -10,4 +10,7 @@ import ru.team.up.core.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.email =: email")
     User getUserByEmail(@Param("email") String email);
+    User findUserByUsername(String userName);
+
+    Object findUserAndRolesByName(String s);
 }

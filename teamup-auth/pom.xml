@@ -86,5 +86,10 @@
             <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>ru.team.up</groupId>
+            <artifactId>teamup-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
