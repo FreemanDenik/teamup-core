@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
+ * Класс
  * @author Pavel Kondrashov on 27.10.2021
  */
 
