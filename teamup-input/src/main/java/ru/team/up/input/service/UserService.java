@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Интерфейс для поиска, обновления и удаления пользователей
+ *
  * @author Pavel Kondrashov
  */
 
@@ -14,6 +15,7 @@ public interface UserService {
 
     /**
      * Метод поиска пользователя по id
+     *
      * @param id идентификатор поиска
      * @return Пользователь с указанным иднтификатором
      */
@@ -21,6 +23,7 @@ public interface UserService {
 
     /**
      * Метод поиска пользователя по почте
+     *
      * @param email почта для поиска
      * @return Пользователь с указанной почтой
      */
@@ -28,13 +31,15 @@ public interface UserService {
 
     /**
      * Метод получения всех пользователей
+     *
      * @return Список пользователей
      */
     List<User> getAllUsers();
 
     /**
      * Метод обновления пользователя
-     * @param id идентификатор поиска
+     *
+     * @param id   идентификатор поиска
      * @param user Пользователь для обновления
      * @return Обновленный пользователь
      */
@@ -42,6 +47,7 @@ public interface UserService {
 
     /**
      * Метод для удаления пользователя
+     *
      * @param id идентификатор поиска
      */
     void deleteUserById(Long id);

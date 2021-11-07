@@ -3,7 +3,9 @@ package ru.team.up.input.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.entity.EventType;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.UserRepository;
@@ -16,6 +18,7 @@ import java.util.List;
  */
 
 @Service
+@Transactional
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
@@ -37,12 +40,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getAllEventsByAuthor(Event author) {
+    public List<Event> getAllEventsByAuthor(User author) {
         return eventRepository.findAllByAuthorId(author);
     }
 
     @Override
-    public List<Event> getAllEventsByEventType(Event eventType) {
+    public List<Event> getAllEventsByEventType(EventType eventType) {
         return eventRepository.findAllByEventType(eventType);
     }
 
@@ -73,6 +76,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event deleteParticipant(Long eventId, Long userId) {
-        return null;
+        Event event = getEventById(eventId);
+        User participant = userRepository.getById(userId);
+        List<User> participants = event.getParticipantsEvent();
+        participants.remove(participant);
+        event.setParticipantsEvent(participants);
+        return updateEvent(eventId, event);
     }
 }
