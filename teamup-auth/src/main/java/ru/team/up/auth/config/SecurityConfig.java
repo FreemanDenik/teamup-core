@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/","/registration","/login", "/oauth2/authorization/google").permitAll()
+                .antMatchers("/","/registration","/login", "/oauth2/authorization/google").anonymous ()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/moderator").hasRole("MODERATOR")
@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout ()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
                 .logoutRequestMatcher (new AntPathRequestMatcher ("/logout"))//выход из системы гет запрос на /logout
-                .logoutSuccessUrl ("/login")//успешный выход из системы
+                .logoutSuccessUrl ("/")//успешный выход из системы
                 .and().csrf().disable();
     }
     @Bean
