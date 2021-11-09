@@ -4,4 +4,4 @@ pipelines:
   default:
     - step:
         script:
-          - mvn -version
+          - mvn deploye
