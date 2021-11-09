@@ -4,4 +4,4 @@ pipelines:
   default:
     - step:
         script:
-          - mvn clear install
+          - mvn clean install
