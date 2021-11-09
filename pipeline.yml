@@ -1,0 +1,7 @@
+image: maven:3.8.3-jdk-11-slim
+
+pipelines:
+  default:
+    - step:
+        script:
+          - mvn -version
