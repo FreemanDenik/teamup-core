@@ -1,6 +1,7 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
  * Документация API
  */
 
+@Slf4j
 @RestController
 @RequestMapping("private/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -30,7 +32,12 @@ public class EventController {
      */
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+        log.debug("Старт метода ResponseEntity<List<Event>> getAllEvents()");
+
+        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(eventService.getAllEvents());
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -40,7 +47,12 @@ public class EventController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
-        return ResponseEntity.ok(eventService.getOneEvent(id));
+        log.debug("Старт метода ResponseEntity<Event> getOneEvent(@PathVariable Long id) с параметром {}", id);
+
+        ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.getOneEvent(id));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -49,8 +61,13 @@ public class EventController {
      * в теле ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) {
-        return new ResponseEntity<>(eventService.saveEvent(event), HttpStatus.CREATED);
+    public ResponseEntity<Event> createEvent(@RequestParam String event, @RequestBody @NotNull Event eventCreate) {
+        log.debug("Старт метода ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) с параметром {}", eventCreate);
+
+        ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -60,7 +77,12 @@ public class EventController {
      */
     @PatchMapping
     public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
-        return ResponseEntity.ok(eventService.saveEvent(event));
+        log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
+
+        ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.saveEvent(event));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -69,7 +91,13 @@ public class EventController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteAdmin(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<Event> deleteAdmin(@PathVariable Long id) с параметром {}", id);
+
         eventService.deleteEvent(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+        ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 }

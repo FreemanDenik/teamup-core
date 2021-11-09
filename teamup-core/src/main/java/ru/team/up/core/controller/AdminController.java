@@ -1,6 +1,7 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,10 @@ import java.util.List;
  * Документация API
  */
 
+@Slf4j
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping("/private/account/admins")
+@RequestMapping("/private/account/admin")
 public class AdminController {
     private AdminService adminService;
 
@@ -30,7 +32,12 @@ public class AdminController {
      */
     @GetMapping
     public ResponseEntity<List<Admin>> getAllAdmins() {
-        return ResponseEntity.ok(adminService.getAllAdmins());
+        log.debug("Старт метода ResponseEntity<List<Admin>> getAllAdmins()");
+
+        ResponseEntity<List<Admin>> responseEntity = ResponseEntity.ok(adminService.getAllAdmins());
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -40,7 +47,12 @@ public class AdminController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Admin> getOneAdmin(@PathVariable Long id) {
-        return ResponseEntity.ok(adminService.getOneAdmin(id));
+        log.debug("Старт метода ResponseEntity<Admin> getOneAdmin(@PathVariable Long id) с параметром {}", id);
+
+        ResponseEntity<Admin> responseEntity = ResponseEntity.ok(adminService.getOneAdmin(id));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -49,8 +61,13 @@ public class AdminController {
      * в теле ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) {
-        return new ResponseEntity<>(adminService.saveAdmin(admin), HttpStatus.CREATED);
+    public ResponseEntity<Admin> createAdmin(@RequestParam String admin, @RequestBody @NotNull Admin adminCreate) {
+        log.debug("Старт метода ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) с параметром {}", adminCreate);
+
+        ResponseEntity<Admin> responseEntity = new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -60,7 +77,12 @@ public class AdminController {
      */
     @PatchMapping
     public ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) {
-        return ResponseEntity.ok(adminService.saveAdmin(admin));
+        log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", admin);
+
+        ResponseEntity<Admin> responseEntity = ResponseEntity.ok(adminService.saveAdmin(admin));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -69,7 +91,13 @@ public class AdminController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Admin> deleteAdmin(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", id);
+
         adminService.deleteAdmin(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+        ResponseEntity<Admin> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 }

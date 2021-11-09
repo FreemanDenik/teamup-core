@@ -2,6 +2,7 @@ package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,11 @@ import java.util.List;
  * Документация API
  */
 
+@Slf4j
 @RestController
 @NoArgsConstructor
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping("/private/account/users")
+@RequestMapping("/private/account/user")
 public class UserController {
     private UserService userService;
 
@@ -32,7 +34,12 @@ public class UserController {
      */
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
+
+        ResponseEntity<List<User>> responseEntity = ResponseEntity.ok(userService.getAllUsers());
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -42,7 +49,12 @@ public class UserController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<User> getOneUser(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getOneUser(id));
+        log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
+
+        ResponseEntity<User> responseEntity = ResponseEntity.ok(userService.getOneUser(id));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -51,8 +63,13 @@ public class UserController {
      * в теле ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @NotNull User user) {
-        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
+    public ResponseEntity<User> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
+        log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
+
+        ResponseEntity<User> responseEntity = new ResponseEntity<>(userService.saveUser(userCreate), HttpStatus.CREATED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -62,7 +79,12 @@ public class UserController {
      */
     @PatchMapping
     public ResponseEntity<User> updateUser(@RequestBody @NotNull User user) {
-        return ResponseEntity.ok(userService.saveUser(user));
+        log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
+
+        ResponseEntity<User> responseEntity = ResponseEntity.ok(userService.saveUser(user));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -71,7 +93,13 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<User> deleteUser(@PathVariable Long id) с параметром {}", id);
+
         userService.deleteUser(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+        ResponseEntity<User> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 }

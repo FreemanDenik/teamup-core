@@ -1,6 +1,7 @@
 package ru.team.up.core.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +19,10 @@ import java.util.List;
  * Документация API
  */
 
+@Slf4j
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping("/private/account/moderators")
+@RequestMapping("/private/account/moderator")
 public class ModeratorController {
     private ModeratorService moderatorService;
 
@@ -30,7 +32,12 @@ public class ModeratorController {
      */
     @GetMapping
     public ResponseEntity<List<Moderator>> getAllModerators() {
-        return ResponseEntity.ok(moderatorService.getAllModerators());
+        log.debug("Старт метода ResponseEntity<List<Moderator>> getAllModerators()");
+
+        ResponseEntity<List<Moderator>> responseEntity = ResponseEntity.ok(moderatorService.getAllModerators());
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -40,7 +47,12 @@ public class ModeratorController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) {
-        return ResponseEntity.ok(moderatorService.getOneModerator(id));
+        log.debug("Старт метода ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) с параметром {}", id);
+
+        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.getOneModerator(id));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -49,8 +61,14 @@ public class ModeratorController {
      * в теле ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) {
-        return new ResponseEntity<>(moderatorService.saveModerator(moderator), HttpStatus.CREATED);
+    public ResponseEntity<Moderator> createModerator(@RequestParam String moderator, @RequestBody @NotNull Moderator moderatorCreate) {
+        log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
+
+        ResponseEntity<Moderator> responseEntity
+                = new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -60,7 +78,12 @@ public class ModeratorController {
      */
     @PatchMapping
     public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) {
-        return ResponseEntity.ok(moderatorService.saveModerator(moderator));
+        log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
+
+        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.saveModerator(moderator));
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 
     /**
@@ -69,7 +92,13 @@ public class ModeratorController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) с параметром {}", id);
+
         moderatorService.deleteModerator(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+        ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
     }
 }
