@@ -46,7 +46,7 @@ public class TeamupCoreModeratorControllerTests {
     public void testCreateUser() throws Exception {
         moderator.setId(2L);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/moderators")
+                        .post("/private/account/moderator?moderator=")
                         .content(objectToJsonString(moderator))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -61,7 +61,7 @@ public class TeamupCoreModeratorControllerTests {
     public void testGetOneUserById() throws Exception {
         moderatorRepository.save(moderator);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/moderators/{id}", 1)
+                        .get("/private/account/moderator/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -73,7 +73,7 @@ public class TeamupCoreModeratorControllerTests {
     @Test
     public void testGetAllUsers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/moderators")
+                        .get("/private/account/moderator")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -91,7 +91,7 @@ public class TeamupCoreModeratorControllerTests {
         moderator.setName("Mila");
         moderator.setLogin("mila");
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/moderators")
+                        .patch("/private/account/moderator")
                         .content(objectToJsonString(moderator))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -114,7 +114,7 @@ public class TeamupCoreModeratorControllerTests {
     @Test
     public void testDeleteUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/moderators/{id}", moderator.getId())
+                        .delete("/private/account/moderator/{id}", moderator.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());

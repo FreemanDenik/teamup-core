@@ -57,7 +57,7 @@ class TeamupCoreUserControllerTest {
     public void testCreateUser() throws Exception {
         testUser.setId(2L);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/users")
+                        .post("/private/account/user?user=")
                         .content(objectToJsonString(testUser))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -73,7 +73,7 @@ class TeamupCoreUserControllerTest {
         interestsRepository.save(programming);
         userRepository.save(testUser);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/users/{id}", 1)
+                        .get("/private/account/user/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,7 +85,7 @@ class TeamupCoreUserControllerTest {
     @Test
     public void testGetAllUsers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/users")
+                        .get("/private/account/user")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -103,7 +103,7 @@ class TeamupCoreUserControllerTest {
         testUser.setName("Ruslan");
         testUser.setCity("Lyubertsy");
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/users")
+                        .patch("/private/account/user")
                         .content(objectToJsonString(testUser))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -126,7 +126,7 @@ class TeamupCoreUserControllerTest {
     @Test
     public void testDeleteUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/users/{id}", testUser.getId())
+                        .delete("/private/account/user/{id}", testUser.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());

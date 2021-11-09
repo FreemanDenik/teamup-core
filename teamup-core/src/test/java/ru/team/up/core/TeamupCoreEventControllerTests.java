@@ -94,7 +94,7 @@ public class TeamupCoreEventControllerTests {
         eventType.setId(2L);
         event.setEventType(eventType);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/event")
+                        .post("/private/event?event=")
                         .content(objectToJsonString(event))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

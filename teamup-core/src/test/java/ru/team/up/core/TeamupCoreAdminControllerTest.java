@@ -43,7 +43,7 @@ public class TeamupCoreAdminControllerTest {
     public void testCreateUser() throws Exception {
         admin.setId(2L);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/admins")
+                        .post("/private/account/admin?admin=")
                         .content(objectToJsonString(admin))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -58,7 +58,7 @@ public class TeamupCoreAdminControllerTest {
     public void testGetOneUserById() throws Exception {
         adminRepository.save(admin);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/admins/{id}", 1)
+                        .get("/private/account/admin/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -70,7 +70,7 @@ public class TeamupCoreAdminControllerTest {
     @Test
     public void testGetAllUsers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/admins")
+                        .get("/private/account/admin")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ public class TeamupCoreAdminControllerTest {
         admin.setName("Mila");
         admin.setLogin("mila");
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/admins")
+                        .patch("/private/account/admin")
                         .content(objectToJsonString(admin))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -111,7 +111,7 @@ public class TeamupCoreAdminControllerTest {
     @Test
     public void testDeleteUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/admins/{id}", admin.getId())
+                        .delete("/private/account/admin/{id}", admin.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());
