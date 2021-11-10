@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,6 +22,9 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "EVENT_NAME", nullable = false)
+    private String eventName;
+
     @Column(name = "DESCRIPTION_EVENT", nullable = false)
     private String descriptionEvent;
 
@@ -26,10 +32,14 @@ public class Event {
     private String placeEvent;
 
     @Column(name = "TIME_EVENT", nullable = false)
-    private String timeEvent;
+    private LocalDateTime timeEvent;
 
+    @Column(name = "EVENT_UPDATE_DATE")
+    private LocalDate eventUpdateDate;
+
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @Column(name = "PARTICIPANTS_EVENT")
-    private String participantsEvent;
+    private List<User> participantsEvent;
 
     @OneToOne(optional = false, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "EVENT_TYPE_ID")

@@ -70,6 +70,23 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>2.5.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.team.up</groupId>
+            <artifactId>teamup-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.team.up</groupId>
+            <artifactId>teamup-core</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

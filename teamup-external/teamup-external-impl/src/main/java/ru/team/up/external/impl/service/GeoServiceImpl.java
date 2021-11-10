@@ -1,11 +1,12 @@
 package ru.team.up.external.impl.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.team.up.external.impl.model.MapEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +23,13 @@ public class GeoServiceImpl implements GeoService {
 
     @Value("${google_map_api_key}")
     private String apiKey;
+
+    private Client client;
+
+    @Autowired
+    public GeoServiceImpl(Client client) {
+        this.client = client;
+    }
 
     @Override
     public MapEntity getGeocode (String address) {
@@ -44,9 +52,6 @@ public class GeoServiceImpl implements GeoService {
 
         MapEntity mapEntity = null;
 
-        var client = ClientBuilder.newClient();
-        log.debug("Создаем объект Client");
-
         Response response = client.target(urlResult).request().get();
         log.debug("Получаем ответ от сервера Гугла {}", response);
 
@@ -57,6 +62,7 @@ public class GeoServiceImpl implements GeoService {
 
         try {
             mapEntity = response.readEntity(MapEntity.class);
+
             log.debug("Получаем объект MapEntity из Response");
         } catch (Exception e) {
             log.error("Ошибка получения entity из response: {}", Arrays.toString(e.getStackTrace()));

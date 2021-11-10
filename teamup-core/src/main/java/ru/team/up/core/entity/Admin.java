@@ -6,6 +6,9 @@ import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+/**
+ * Сущность администратор
+ */
 @Entity
 @Getter
 @Setter

@@ -5,10 +5,15 @@ import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
 
 /**
- * @author Pavel Kondrashov on 23.10.2021
+ * Класс для фильтрации запрещенных/нежелательных слов
+ * @author Pavel Kondrashov
  */
 @Component
 public class WordMatcher {
+
+    /**
+     * Паттерн для запрещенных слов
+     */
     private final Pattern badWords = Pattern.compile("(?iu)\b(\n" +
             "(у|[нз]а|(хитро|не)?вз?[ыьъ]|с[ьъ]|(и|ра)[зс]ъ?|(о[тб]|под)[ьъ]?|(.\\B)+?[оаеи])?-?" +
             "([её]б(?!о[рй])|и[пб][ае][тц]).*?|\n" +
@@ -22,6 +27,10 @@ public class WordMatcher {
             "м[ао]л[ао]фь([яию]|[еёо]й)\n" +
             ")\b", Pattern.CASE_INSENSITIVE);
 
+
+    /**
+     * Паттерн для нежелательных слов
+     */
     private final Pattern unnecessaryWords = Pattern.compile("(?iu)\\b(\n" +
             "([уyu]|[нзnz3][аa]|(хитро|не)?[вvwb][зz3]?[ыьъi]|[сsc][ьъ']|(и|[рpr][аa4])[зсzs]ъ?|" +
             "([оo0][тбtb6]|[пp][оo0][дd9])[ьъ']?|(.\\B)+?[оаеиeo])?-?([еёe][бb6](?!о[рй])|и[пб][ае][тц]).*?|\n" +
@@ -40,10 +49,20 @@ public class WordMatcher {
             "м[ао]л[ао]фь([яию]|[её]й)\n" +
             ")\\b", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * Метод проверки запрещенных слов
+     * @param text текст для проверки
+     * @return результат проверки текста на запрещенные слова (true/false)
+     */
     public boolean detectBadWords(String text) {
         return badWords.matcher(text).find();
     }
 
+    /**
+     * Метод проверки запрещенных слов
+     * @param text текст для проверки
+     * @return результат проверки текста на нежелательные слова слова (true/false)
+     */
     public boolean detectUnnecessaryWords(String text) {
         return unnecessaryWords.matcher(text).find();
     }

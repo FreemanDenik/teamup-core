@@ -12,11 +12,6 @@
     <artifactId>teamup-external</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
-    </properties>
-
     <modules>
         <module>teamup-external-api</module>
         <module>teamup-external-impl</module>
