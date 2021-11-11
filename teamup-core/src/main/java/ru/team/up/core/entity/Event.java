@@ -53,7 +53,7 @@ public class Event {
     private LocalDateTime timeEvent;
 
     /**
-     *
+     * Время обновления мероприятия
      */
     @Column(name = "EVENT_UPDATE_DATE")
     private LocalDate eventUpdateDate;

@@ -30,4 +30,12 @@ public class Status {
      */
     @Column(name = "STATUS")
     public String status;
+
+    @Override
+    public String toString() {
+        return "Status{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }
