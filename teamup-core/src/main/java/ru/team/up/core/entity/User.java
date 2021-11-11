@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -16,14 +17,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_ACCOUNT")
-public class User extends Account{
-
-    /**
-     * Уникальный идентификатор
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userInterests"})
+public class User extends Account {
 
     /**
      * Город

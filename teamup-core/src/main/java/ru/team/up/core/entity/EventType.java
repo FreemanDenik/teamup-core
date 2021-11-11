@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "EVENT_TYPE")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class EventType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

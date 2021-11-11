@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -15,14 +16,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "MODERATOR_ACCOUNT")
-public class Moderator extends Account{
-
-    /**
-     * Уникальный идентификатор
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+public class Moderator extends Account {
 
     /**
      * количество закрытых обращений

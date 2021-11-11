@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "INTERESTS")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "users"})
 public class Interests {
 
     /**
@@ -40,9 +42,9 @@ public class Interests {
      * Пользователи
      */
     @ManyToMany
-    @JoinTable(name="USER_ACCOUNT_INTERESTS",
-            joinColumns=@JoinColumn(name="INTERESTS_ID"),
-            inverseJoinColumns=@JoinColumn(name="USER_ID"))
+    @JoinTable(name = "USER_ACCOUNT_INTERESTS",
+            joinColumns = @JoinColumn(name = "INTERESTS_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     private Set<User> users;
 
     /**
