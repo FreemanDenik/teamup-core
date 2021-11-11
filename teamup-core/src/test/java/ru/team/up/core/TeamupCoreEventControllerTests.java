@@ -110,7 +110,7 @@ public class TeamupCoreEventControllerTests {
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
-            .statusEvent(status)
+            .status(status)
             .build();
 
     @Test
