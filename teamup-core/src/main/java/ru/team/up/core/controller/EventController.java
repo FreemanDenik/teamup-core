@@ -12,6 +12,7 @@ import ru.team.up.core.service.EventService;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+
 /**
  * @author Alexey Tkachenko
  *

@@ -97,7 +97,7 @@ public class TeamupCoreEventControllerTests {
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
-            .status(status)
+            .statusEvent(status)
             .build();
 
     Event event2 = Event.builder()
@@ -110,7 +110,7 @@ public class TeamupCoreEventControllerTests {
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
-            .status(status)
+            .statusEvent(status)
             .build();
 
     @Test
