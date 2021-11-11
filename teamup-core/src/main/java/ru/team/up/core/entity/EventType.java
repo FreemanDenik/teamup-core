@@ -9,6 +9,7 @@ import javax.persistence.*;
  * Таблица типов мероприятия
  */
 @Entity
+@ToString
 @Getter
 @Setter
 @Builder
@@ -30,12 +31,4 @@ public class EventType {
      */
     @Column(name = "TYPE", nullable = false)
     private String type;
-
-    @Override
-    public String toString() {
-        return "EventType{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                '}';
-    }
 }

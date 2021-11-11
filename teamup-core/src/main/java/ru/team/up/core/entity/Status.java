@@ -9,6 +9,7 @@ import javax.persistence.*;
  * Таблица статуса мероприятия
  */
 @Entity
+@ToString
 @Getter
 @Setter
 @Builder
@@ -30,12 +31,4 @@ public class Status {
      */
     @Column(name = "STATUS")
     public String status;
-
-    @Override
-    public String toString() {
-        return "Status{" +
-                "id=" + id +
-                ", status='" + status + '\'' +
-                '}';
-    }
 }
