@@ -8,7 +8,6 @@ import javax.persistence.*;
 /**
  * Родительская сущность для пользователя, админа, модератора
  */
-@AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
 @SuperBuilder

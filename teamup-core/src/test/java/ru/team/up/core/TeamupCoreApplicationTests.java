@@ -1,6 +1,9 @@
 package ru.team.up.core;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import ru.team.up.core.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @SpringBootTest
@@ -37,15 +41,46 @@ class TeamupCoreApplicationTests {
     @Autowired
     private ModeratorRepository moderatorRepository;
 
+    private Admin adminTest;
+
+    private Moderator moderatorTest;
+
+    private Interests interestsTest, interestsTest1;
+
+    private Set<Interests> interestsSet = new HashSet<>();
+
+    private User userTest;
+
+    @BeforeEach
+    public void setUpEntity() {
+        adminTest = Admin.builder().name("testAdmin").lastName("testAdminLastName").middleName("testAdminMiddleName")
+                .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime("04.11.2021 18:00")
+                .lastAccountActivity("04.11.2021 18:00").build();
+
+        moderatorTest = Moderator.builder().name("testModerator").lastName("testModeratorLastName").middleName("testModeratorMiddleName")
+                .login("testModeratorLogin").email("moderator@mail.ru").password("1").accountCreatedTime("04.11.2021 19:00")
+                .lastAccountActivity("04.11.2021 19:00").amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
+                .build();
+
+        interestsTest = Interests.builder().title("Football")
+                .shortDescription("Like to play football").build();
+
+        interestsTest1 = Interests.builder().title("Fishing")
+                .shortDescription("Like to going fishing").build();
+
+        interestsSet.add(interestsTest);
+        interestsSet.add(interestsTest1);
+
+        userTest = User.builder().name("testUser").lastName("testUserLastName").middleName("testUserMiddleName")
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime("05.11.2021 18:00")
+                .lastAccountActivity("05.11.2021 18:00").city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+
+    }
 
     @Test
     void adminTest(){
 
-        Admin adminTest = Admin.builder().name("testAdmin").lastName("testAdminLastName").middleName("testAdminMiddleName")
-                .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime("04.11.2021 18:00")
-                .lastAccountActivity("04.11.2021 18:00").build();
-
-       adminRepository.save(adminTest);
+        adminRepository.save(adminTest);
 
         Assert.assertNotNull(adminRepository.findById(1L));
 
@@ -60,14 +95,11 @@ class TeamupCoreApplicationTests {
         Assert.assertNotNull(adminBD.getLastAccountActivity());
 
         adminRepository.deleteById(1L);
+        Assert.assertEquals(adminRepository.findById(1L), Optional.empty());
     }
 
     @Test
     void moderatorTest(){
-        Moderator moderatorTest = Moderator.builder().name("testModerator").lastName("testModeratorLastName").middleName("testModeratorMiddleName")
-                .login("testModeratorLogin").email("moderator@mail.ru").password("1").accountCreatedTime("04.11.2021 19:00")
-                .lastAccountActivity("04.11.2021 19:00").amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
-                .build();
 
         moderatorRepository.save(moderatorTest);
 
@@ -84,28 +116,28 @@ class TeamupCoreApplicationTests {
         Assert.assertNotNull(moderatorBD.getLastAccountActivity());
 
         moderatorRepository.deleteById(1L);
+        Assert.assertEquals(moderatorRepository.findById(1L), Optional.empty());
     }
 
     @Test
     void userTest(){
-        Interests interestsTest = Interests.builder().title("Football")
-                .shortDescription("Like to play football").build();
 
         interestsRepository.save(interestsTest);
+        interestsRepository.save(interestsTest1);
 
         Assert.assertNotNull(interestsRepository.findById(1L));
+        Assert.assertNotNull(interestsRepository.findById(2L));
 
         Interests interestsBD = interestsRepository.findById(1L).get();
 
         Assert.assertNotNull(interestsBD.getTitle());
         Assert.assertNotNull(interestsBD.getShortDescription());
 
-        Set<Interests> interestsSet = new HashSet<>();
-        interestsSet.add(interestsTest);
+        Interests interestsBD1 = interestsRepository.findById(2L).get();
 
-        User userTest = User.builder().name("testUser").lastName("testUserLastName").middleName("testUserMiddleName")
-                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime("05.11.2021 18:00")
-                .lastAccountActivity("05.11.2021 18:00").city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+        Assert.assertNotNull(interestsBD1.getTitle());
+        Assert.assertNotNull(interestsBD1.getShortDescription());
+
 
         userRepository.save(userTest);
 
@@ -124,6 +156,12 @@ class TeamupCoreApplicationTests {
         Assert.assertNotNull(userBD.getUserInterests());
 
         interestsRepository.deleteById(1L);
+        Assert.assertEquals(interestsRepository.findById(1L), Optional.empty());
+
+        interestsRepository.deleteById(2L);
+        Assert.assertEquals(interestsRepository.findById(2L), Optional.empty());
+
         userRepository.deleteById(1L);
+        Assert.assertEquals(userRepository.findById(1L), Optional.empty());
     }
 }
