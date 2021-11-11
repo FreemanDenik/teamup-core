@@ -95,5 +95,5 @@ public class Event {
      */
     @OneToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
-    private Status statusEvent;
+    private Status status;
 }

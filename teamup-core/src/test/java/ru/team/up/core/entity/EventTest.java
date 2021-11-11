@@ -65,7 +65,7 @@ class EventTest{
                 .placeEvent("где-то на просторах Jira")
                 .timeEvent(LocalDateTime.of(2021, 11, 10, 21, 00))
                 .eventUpdateDate(LocalDate.now()).participantsEvent(testListUser).eventType(typeTest)
-                .authorId(userTest).eventInterests(interestsSet).statusEvent(statusTest).build();
+                .authorId(userTest).eventInterests(interestsSet).status(statusTest).build();
         eventRepository.save(eventTest);
 
         Assert.assertTrue(eventRepository.findById(1L).isPresent());
@@ -81,7 +81,7 @@ class EventTest{
         Assert.assertFalse(userTestBD.getEventType().getType().isEmpty());
         Assert.assertNotNull(userTestBD.getAuthorId());
         Assert.assertFalse(userTestBD.getEventInterests().isEmpty());
-        Assert.assertFalse(userTestBD.getStatusEvent().getStatus().isEmpty());
+        Assert.assertFalse(userTestBD.getStatus().getStatus().isEmpty());
 
         eventRepository.deleteById(1L);
         Assert.assertFalse(eventRepository.findById(1L).isPresent());
