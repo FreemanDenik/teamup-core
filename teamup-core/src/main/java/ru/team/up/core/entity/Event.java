@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "EVENT")
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Event {
     /**
      * Первичный ключ
@@ -61,7 +63,7 @@ public class Event {
     /**
      * Участники мероприятия
      */
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.MERGE, fetch =FetchType.LAZY)
     @Column(name = "PARTICIPANTS_EVENT")
     private List<User> participantsEvent;
 
