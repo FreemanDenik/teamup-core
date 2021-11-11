@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -43,18 +45,15 @@ public class TeamupCoreEventControllerTests {
     private StatusRepository statusRepository;
 
     EventType eventType = EventType.builder()
-            .id(1L)
             .type("type")
             .build();
 
     Interests programming = Interests.builder()
-            .id(1L)
             .title("Programming")
             .shortDescription("Like to write programs in java")
             .build();
 
     User testUser = User.builder()
-            .id(1L)
             .name("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
@@ -69,17 +68,45 @@ public class TeamupCoreEventControllerTests {
             .userInterests(Collections.singleton(programming))
             .build();
 
+    User testUser2 = User.builder()
+            .name("Aleksey2")
+            .lastName("Tkachenko2")
+            .middleName("Petrovich2")
+            .login("alextk2")
+            .email("alextk2@bk.ru")
+            .password("1234")
+            .accountCreatedTime("07.11.2021 16:55")
+            .lastAccountActivity("07.11.2021 18:32")
+            .city("Moscow")
+            .age(43)
+            .aboutUser("Studying to be a programmer.")
+            .userInterests(Collections.singleton(programming))
+            .build();
+
     Status status = Status.builder()
-            .id(1L)
             .status("status")
             .build();
 
     Event event = Event.builder()
-            .id(1L)
+            .eventName("eventName")
             .descriptionEvent("descriptionEvent")
             .placeEvent("placeEvent")
-            .timeEvent("timeEvent")
-            .participantsEvent("participantsEvent")
+            .timeEvent(LocalDateTime.now())
+            .eventUpdateDate(LocalDate.now())
+            .participantsEvent(Collections.singletonList(testUser2))
+            .eventType(eventType)
+            .authorId(testUser)
+            .eventInterests(Collections.singleton(programming))
+            .status(status)
+            .build();
+
+    Event event2 = Event.builder()
+            .eventName("eventName2")
+            .descriptionEvent("descriptionEvent2")
+            .placeEvent("placeEvent2")
+            .timeEvent(LocalDateTime.now())
+            .eventUpdateDate(LocalDate.now())
+            .participantsEvent(Collections.singletonList(testUser2))
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
@@ -87,43 +114,41 @@ public class TeamupCoreEventControllerTests {
             .build();
 
     @Test
-    public void testCreateUser() throws Exception {
-        event.setId(2L);
-        testUser.setId(2L);
-        event.setAuthorId(testUser);
-        eventType.setId(2L);
-        event.setEventType(eventType);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/event?event=")
-                        .content(objectToJsonString(event))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(2L));
-    }
-
-    @Test
-    public void testGetOneUserById() throws Exception {
+    public void testCreate() throws Exception {
         eventTypeRepository.save(eventType);
         interestsRepository.save(programming);
         userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/private/event?event=")
+                        .content(objectToJsonString(event2))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testGetOneById() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
         statusRepository.save(status);
         eventRepository.save(event);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/event/{id}", 1)
+                        .get("/private/event/{id}", event.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.id")
-                        .value(1));
+                        .value(event.getId()));
     }
 
     @Test
-    public void testGetAllUsers() throws Exception {
+    public void testGetAll() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/private/event")
                         .accept(MediaType.APPLICATION_JSON))
@@ -138,10 +163,15 @@ public class TeamupCoreEventControllerTests {
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
+    public void testUpdate() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
         event.setDescriptionEvent("qwerty");
-        event.setTimeEvent("123456");
-        event.setParticipantsEvent("asdfgh");
+        event.setEventName("newname");
         mockMvc.perform(MockMvcRequestBuilders
                         .patch("/private/event")
                         .content(objectToJsonString(event))
@@ -153,20 +183,17 @@ public class TeamupCoreEventControllerTests {
                         .jsonPath("$.descriptionEvent")
                         .value("qwerty"))
                 .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.timeEvent")
-                        .value("123456"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.participantsEvent")
-                        .value("asdfgh"))
+                        .jsonPath("$.eventName")
+                        .value("newname"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.id")
                         .value(event.getId()));
     }
 
     @Test
-    public void testDeleteUser() throws Exception {
+    public void testDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/event/{id}", event.getId())
+                        .delete("/private/event/{id}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());
@@ -174,7 +201,7 @@ public class TeamupCoreEventControllerTests {
 
     public static String objectToJsonString(final Object obj) {
         try {
-            return new ObjectMapper().writeValueAsString(obj);
+            return new ObjectMapper().findAndRegisterModules().writeValueAsString(obj);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
