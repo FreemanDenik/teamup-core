@@ -5,6 +5,9 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * Таблица статуса мероприятия
+ */
 @Entity
 @Getter
 @Setter
@@ -14,10 +17,17 @@ import javax.persistence.*;
 @Table(name = "STATUS")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Status {
+
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Статус мероприятия: проверенно, закончено, на проверки и т.д.
+     */
     @Column(name = "STATUS")
     public String status;
 }
