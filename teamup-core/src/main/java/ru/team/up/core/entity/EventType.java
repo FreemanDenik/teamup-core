@@ -5,7 +5,11 @@ import lombok.*;
 
 import javax.persistence.*;
 
+/**
+ * Таблица типов мероприятия
+ */
 @Entity
+@ToString
 @Getter
 @Setter
 @Builder
@@ -14,10 +18,17 @@ import javax.persistence.*;
 @Table(name = "EVENT_TYPE")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class EventType {
+
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Тип мероприятия: игра, встреча и т.д.
+     */
     @Column(name = "TYPE", nullable = false)
     private String type;
 }
