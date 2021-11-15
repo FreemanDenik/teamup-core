@@ -1,4 +1,4 @@
-package ru.team.up.core;
+package ru.team.up.input.controllerPrivateTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TeamupCoreUserControllerTest {
+class TeamupInputUserPrivateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

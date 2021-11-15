@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.UserRepository;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.UserService;
+import ru.team.up.input.service.UserServicePublic;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UserServiceImpl implements UserService {
+public class UserServicePublicImpl implements UserServicePublic {
     private final UserRepository userRepository;
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
  * @author Pavel Kondrashov
  */
 
-public interface UserService {
+public interface UserServicePublic {
 
     /**
      * Метод поиска пользователя по id
