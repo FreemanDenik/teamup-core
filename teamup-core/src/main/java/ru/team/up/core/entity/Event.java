@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@SuperBuilder
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -63,21 +62,21 @@ public class Event {
     /**
      * Участники мероприятия
      */
-    @OneToMany(cascade = CascadeType.MERGE, fetch =FetchType.LAZY)
-    @Column(name = "PARTICIPANTS_EVENT")
+    @ManyToMany(mappedBy = "userEvent",
+            cascade = CascadeType.MERGE, fetch =FetchType.LAZY)
     private List<User> participantsEvent;
 
     /**
      * Тип мероприятия
      */
-    @OneToOne(optional=false, cascade=CascadeType.MERGE)
+    @ManyToOne(optional=false, cascade=CascadeType.MERGE)
     @JoinColumn(name = "EVENT_TYPE_ID")
     private EventType eventType;
 
     /**
      * Создатель мероприятия
      */
-    @OneToOne(optional=false,cascade=CascadeType.MERGE)
+    @ManyToOne(optional=false,cascade=CascadeType.MERGE)
     @JoinColumn(name = "USER_ID")
     private User authorId;
 
@@ -93,7 +92,7 @@ public class Event {
     /**
      * Статус мероприятия (модерация, доступно и т.д.)
      */
-    @OneToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 }

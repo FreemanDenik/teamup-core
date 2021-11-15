@@ -14,6 +14,8 @@ import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.InterestsRepository;
 import ru.team.up.core.repositories.UserRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,8 +47,8 @@ class TeamupCoreUserControllerTest {
             .login("alextk")
             .email("alextk@bk.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
+            .accountCreatedTime(LocalDate.of(2021, 10, 15))
+            .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)
             .aboutUser("Studying to be a programmer.")

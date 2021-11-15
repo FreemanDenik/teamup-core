@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.repositories.ModeratorRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,8 +38,8 @@ public class TeamupCoreModeratorControllerTests {
             .login("ModeratorLogin")
             .email("moderator@mail.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 19:00")
-            .lastAccountActivity("07.11.2021 20:00")
+            .accountCreatedTime(LocalDate.of(2021, 10, 15))
+            .lastAccountActivity(LocalDateTime.now())
             .amountOfCheckedEvents(10L)
             .amountOfDeletedEvents(11L)
             .amountOfClosedRequests(12L)

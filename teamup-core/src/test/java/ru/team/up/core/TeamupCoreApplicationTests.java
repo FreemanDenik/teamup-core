@@ -21,6 +21,8 @@ import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.core.repositories.UserRepository;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -54,12 +56,13 @@ class TeamupCoreApplicationTests {
     @BeforeEach
     public void setUpEntity() {
         adminTest = Admin.builder().name("testAdmin").lastName("testAdminLastName").middleName("testAdminMiddleName")
-                .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime("04.11.2021 18:00")
-                .lastAccountActivity("04.11.2021 18:00").build();
+                .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5)).build();
 
         moderatorTest = Moderator.builder().name("testModerator").lastName("testModeratorLastName").middleName("testModeratorMiddleName")
-                .login("testModeratorLogin").email("moderator@mail.ru").password("1").accountCreatedTime("04.11.2021 19:00")
-                .lastAccountActivity("04.11.2021 19:00").amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
+                .login("testModeratorLogin").email("moderator@mail.ru").password("1")
+                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
+                .amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
                 .build();
 
         interestsTest = Interests.builder().title("Football")
@@ -72,8 +75,9 @@ class TeamupCoreApplicationTests {
         interestsSet.add(interestsTest1);
 
         userTest = User.builder().name("testUser").lastName("testUserLastName").middleName("testUserMiddleName")
-                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime("05.11.2021 18:00")
-                .lastAccountActivity("05.11.2021 18:00").city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+                .login("testUserLogin").email("testUser@mail.ru").password("3")
+                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
+                .city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
 
     }
 

@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.repositories.AdminRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,8 +38,8 @@ public class TeamupCoreAdminControllerTest {
             .login("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
-            .accountCreatedTime("07.11.2021 18:00")
-            .lastAccountActivity("07.11.2021 19:45")
+            .accountCreatedTime(LocalDate.of(2021, 10, 15))
+            .lastAccountActivity(LocalDateTime.now())
             .build();
 
     @Test

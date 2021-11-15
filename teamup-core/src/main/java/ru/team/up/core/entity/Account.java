@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Родительская сущность для пользователя, админа, модератора
@@ -62,11 +64,11 @@ public class Account {
      * Время создания аккаунта
      */
     @Column(name = "ACCOUNT_CREATED_TIME", nullable = false)
-    private String accountCreatedTime;
+    private LocalDate accountCreatedTime;
 
     /**
      * Время последней активности
      */
     @Column(name = "LAST_ACCOUNT_ACTIVITY", nullable = false)
-    private String lastAccountActivity;
+    private LocalDateTime lastAccountActivity;
 }

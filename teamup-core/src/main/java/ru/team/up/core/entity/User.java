@@ -44,6 +44,13 @@ public class User extends Account {
     @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     @JoinTable (name="USER_ACCOUNT_INTERESTS", joinColumns=@JoinColumn (name="USER_ID"),
             inverseJoinColumns=@JoinColumn(name="INTERESTS_ID"))
-    @Column(name = "USER_INTERESTS")
     private Set<Interests> userInterests;
+
+    /**
+     *  Мероприятия в которых участвует пользователь
+     */
+    @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable (name="USER_ACCOUNT_EVENT", joinColumns=@JoinColumn (name="USER_ID"),
+            inverseJoinColumns=@JoinColumn(name="EVENT_ID"))
+    private Set<Event> userEvent;
 }

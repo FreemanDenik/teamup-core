@@ -9,10 +9,8 @@ import javax.persistence.*;
  * Таблица типов мероприятия
  */
 @Entity
-@ToString
-@Getter
-@Setter
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "EVENT_TYPE")
