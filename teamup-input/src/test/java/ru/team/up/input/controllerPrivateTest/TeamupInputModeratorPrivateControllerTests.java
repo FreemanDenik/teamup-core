@@ -1,4 +1,4 @@
-package ru.team.up.core;
+package ru.team.up.input.controllerPrivateTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -9,56 +9,45 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.team.up.core.entity.Interests;
-import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.InterestsRepository;
-import ru.team.up.core.repositories.UserRepository;
-
-import java.util.Collections;
+import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.repositories.ModeratorRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * @author Alexey Tkachenko
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
-class TeamupCoreUserControllerTest {
-
+public class TeamupInputModeratorPrivateControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
+    private ModeratorRepository moderatorRepository;
 
-    @Autowired
-    private InterestsRepository interestsRepository;
-
-    Interests programming = Interests.builder()
-            .title("Programming")
-            .shortDescription("Like to write programs in java")
-            .build();
-
-    User testUser = User.builder()
+    Moderator moderator = Moderator.builder()
             .id(1L)
-            .name("Aleksey")
-            .lastName("Tkachenko")
-            .middleName("Petrovich")
-            .login("alextk")
-            .email("alextk@bk.ru")
+            .name("Moderator")
+            .lastName("ModeratorLastName")
+            .middleName("ModeratorMiddleName")
+            .login("ModeratorLogin")
+            .email("moderator@mail.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
-            .city("Moscow")
-            .age(43)
-            .aboutUser("Studying to be a programmer.")
-            .userInterests(Collections.singleton(programming))
+            .accountCreatedTime("07.11.2021 19:00")
+            .lastAccountActivity("07.11.2021 20:00")
+            .amountOfCheckedEvents(10L)
+            .amountOfDeletedEvents(11L)
+            .amountOfClosedRequests(12L)
             .build();
 
     @Test
     public void testCreateUser() throws Exception {
-        testUser.setId(2L);
+        moderator.setId(2L);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/user?user=")
-                        .content(objectToJsonString(testUser))
+                        .post("/private/account/moderator?moderator=")
+                        .content(objectToJsonString(moderator))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -70,10 +59,9 @@ class TeamupCoreUserControllerTest {
 
     @Test
     public void testGetOneUserById() throws Exception {
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
+        moderatorRepository.save(moderator);
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/user/{id}", 1)
+                        .get("/private/account/moderator/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -85,7 +73,7 @@ class TeamupCoreUserControllerTest {
     @Test
     public void testGetAllUsers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/user")
+                        .get("/private/account/moderator")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -99,34 +87,34 @@ class TeamupCoreUserControllerTest {
 
     @Test
     public void testUpdateUser() throws Exception {
-        testUser.setAge(24);
-        testUser.setName("Ruslan");
-        testUser.setCity("Lyubertsy");
+        moderator.setEmail("mila@gmail.com");
+        moderator.setName("Mila");
+        moderator.setLogin("mila");
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/user")
-                        .content(objectToJsonString(testUser))
+                        .patch("/private/account/moderator")
+                        .content(objectToJsonString(moderator))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.name")
-                        .value("Ruslan"))
+                        .value("Mila"))
                 .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.city")
-                        .value("Lyubertsy"))
+                        .jsonPath("$.email")
+                        .value("mila@gmail.com"))
                 .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.age")
-                        .value("24"))
+                        .jsonPath("$.login")
+                        .value("mila"))
                 .andExpect(MockMvcResultMatchers
                         .jsonPath("$.id")
-                        .value(testUser.getId()));
+                        .value(moderator.getId()));
     }
 
     @Test
     public void testDeleteUser() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/user/{id}", testUser.getId())
+                        .delete("/private/account/moderator/{id}", moderator.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isAccepted());

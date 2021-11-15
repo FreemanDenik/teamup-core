@@ -1,4 +1,4 @@
-package ru.team.up.input.ServiceTest;
+package ru.team.up.input.serviceTest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

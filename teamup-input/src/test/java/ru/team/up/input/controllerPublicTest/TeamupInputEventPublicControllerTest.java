@@ -1,6 +1,8 @@
-package ru.team.up.core;
+package ru.team.up.input.controllerPublicTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +13,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.*;
+import ru.team.up.input.payload.request.EventRequest;
+import ru.team.up.input.payload.request.JoinRequest;
+import ru.team.up.input.payload.request.UserRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,13 +24,9 @@ import java.util.Collections;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * @author Alexey Tkachenko
- */
-
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TeamupCoreEventControllerTests {
+public class TeamupInputEventPublicControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -104,13 +105,22 @@ public class TeamupCoreEventControllerTests {
             .eventName("eventName2")
             .descriptionEvent("descriptionEvent2")
             .placeEvent("placeEvent2")
-            .timeEvent(LocalDateTime.now())
+            .timeEvent(LocalDateTime.now().plusDays(10))
             .eventUpdateDate(LocalDate.now())
             .participantsEvent(Collections.singletonList(testUser2))
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
             .status(status)
+            .build();
+
+    EventRequest eventRequest2 = EventRequest.builder()
+            .event(event2)
+            .build();
+
+    JoinRequest joinRequest = JoinRequest.builder()
+            .eventId(1L)
+            .userId(1L)
             .build();
 
     @Test
@@ -121,8 +131,8 @@ public class TeamupCoreEventControllerTests {
         userRepository.save(testUser2);
         statusRepository.save(status);
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/event?event=")
-                        .content(objectToJsonString(event2))
+                        .post("/api/public/event?event=")
+                        .content(objectToJsonString(eventRequest2))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -130,27 +140,9 @@ public class TeamupCoreEventControllerTests {
     }
 
     @Test
-    public void testGetOneById() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/event/{id}", event.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(event.getId()));
-    }
-
-    @Test
     public void testGetAll() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/event")
+                        .get("/api/public/event/")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -163,6 +155,79 @@ public class TeamupCoreEventControllerTests {
     }
 
     @Test
+    public void testGetById() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/public/event/{id}", event.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("$.id")
+                        .value(event.getId()));
+    }
+
+    @Test
+    public void testGetByName() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/public/event/eventName/{eventName}", event.getEventName())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers
+                        .jsonPath("[0].eventName")
+                        .value(event.getEventName()));
+    }
+
+    @Test
+    public void testFindEventsByAuthor() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
+        UserRequest userRequest = UserRequest.builder()
+                        .user(testUser)
+                        .build();
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/public/event")
+                        .content(objectToJsonString(userRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testFindEventsByType() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/public/event/type")
+                        .content(objectToJsonString(event.getEventType()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void testUpdate() throws Exception {
         eventTypeRepository.save(eventType);
         interestsRepository.save(programming);
@@ -172,9 +237,12 @@ public class TeamupCoreEventControllerTests {
         eventRepository.save(event);
         event.setDescriptionEvent("qwerty");
         event.setEventName("newname");
+        EventRequest eventRequest = EventRequest.builder()
+                .event(event)
+                .build();
         mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/event")
-                        .content(objectToJsonString(event))
+                        .put("/api/public/event/1")
+                        .content(objectToJsonString(eventRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -193,15 +261,49 @@ public class TeamupCoreEventControllerTests {
     @Test
     public void testDelete() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/event/{id}", 1L)
+                        .delete("/api/public/event/{id}", 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isAccepted());
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testAddEventParticipant() throws Exception {
+        eventTypeRepository.save(eventType);
+        interestsRepository.save(programming);
+        userRepository.save(testUser);
+        userRepository.save(testUser2);
+        statusRepository.save(status);
+        eventRepository.save(event);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/public/event/join")
+                        .content(objectToJsonString(joinRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeleteEventParticipant() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/public/event/unjoin")
+                        .content(objectToJsonString(joinRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     public static String objectToJsonString(final Object obj) {
         try {
-            return new ObjectMapper().findAndRegisterModules().writeValueAsString(obj);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            String now = mapper.writeValueAsString(obj);
+
+//            return new ObjectMapper().writeValueAsString(obj);
+            return now;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

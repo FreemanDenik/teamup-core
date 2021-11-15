@@ -9,7 +9,7 @@ import ru.team.up.core.entity.EventType;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.UserRepository;
-import ru.team.up.input.service.EventService;
+import ru.team.up.input.service.EventServicePublic;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @Transactional
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class EventServiceImpl implements EventService {
+public class EventServicePublicImpl implements EventServicePublic {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
