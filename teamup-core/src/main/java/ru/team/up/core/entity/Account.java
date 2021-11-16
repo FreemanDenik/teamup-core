@@ -2,6 +2,7 @@ package ru.team.up.core.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import java.time.*;
 
 import javax.persistence.*;
 
@@ -62,11 +63,11 @@ public class Account {
      * Время создания аккаунта
      */
     @Column(name = "ACCOUNT_CREATED_TIME", nullable = false)
-    private String accountCreatedTime;
+    private LocalDate accountCreatedTime;
 
     /**
      * Время последней активности
      */
     @Column(name = "LAST_ACCOUNT_ACTIVITY", nullable = false)
-    private String lastAccountActivity;
+    private LocalDateTime  lastAccountActivity;
 }

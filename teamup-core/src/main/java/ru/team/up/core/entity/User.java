@@ -46,4 +46,13 @@ public class User extends Account {
             inverseJoinColumns=@JoinColumn(name="INTERESTS_ID"))
     @Column(name = "USER_INTERESTS")
     private Set<Interests> userInterests;
+
+    /**
+     * Подписчики пользователя
+     */
+    @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable (name="USER_ACCOUNT_SUBSCRIBERS", joinColumns=@JoinColumn (name="USER_ID"),
+            inverseJoinColumns=@JoinColumn(name="SUBSCRIBER_ID"))
+    @Column(name = "USER_SUBSCRIBERS")
+    private Set<Subscriber> subscribers;
 }
