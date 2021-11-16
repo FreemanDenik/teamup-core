@@ -9,9 +9,7 @@ import javax.persistence.*;
  * Таблица статуса мероприятия
  */
 @Entity
-@ToString
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
