@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.team.up.core.repositories.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -40,7 +41,7 @@ public class UserMessageTest {
             .login("alextk")
             .email("alextk@bk.ru")
             .password("1234")
-            .accountCreatedTime(LocalDateTime.now())
+            .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)
