@@ -11,14 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
-import ru.team.up.core.entity.Admin;
-import ru.team.up.core.entity.Interests;
-import ru.team.up.core.entity.Moderator;
-import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.AdminRepository;
-import ru.team.up.core.repositories.InterestsRepository;
-import ru.team.up.core.repositories.ModeratorRepository;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.entity.*;
+import ru.team.up.core.repositories.*;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -43,6 +37,9 @@ class TeamupCoreApplicationTests {
     @Autowired
     private ModeratorRepository moderatorRepository;
 
+    @Autowired
+    private SubscriberRepository subscriberRepository;
+
     private Admin adminTest;
 
     private Moderator moderatorTest;
@@ -51,18 +48,19 @@ class TeamupCoreApplicationTests {
 
     private Set<Interests> interestsSet = new HashSet<>();
 
+    private Set<Subscriber> subscriberSet = new HashSet<>();
+
     private User userTest;
 
     @BeforeEach
     public void setUpEntity() {
         adminTest = Admin.builder().name("testAdmin").lastName("testAdminLastName").middleName("testAdminMiddleName")
                 .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime(LocalDate.now())
-                .lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5)).build();
+                .lastAccountActivity(LocalDateTime.now()).build();
 
         moderatorTest = Moderator.builder().name("testModerator").lastName("testModeratorLastName").middleName("testModeratorMiddleName")
-                .login("testModeratorLogin").email("moderator@mail.ru").password("1")
-                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
-                .amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
+                .login("testModeratorLogin").email("moderator@mail.ru").password("1").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
                 .build();
 
         interestsTest = Interests.builder().title("Football")
@@ -75,9 +73,8 @@ class TeamupCoreApplicationTests {
         interestsSet.add(interestsTest1);
 
         userTest = User.builder().name("testUser").lastName("testUserLastName").middleName("testUserMiddleName")
-                .login("testUserLogin").email("testUser@mail.ru").password("3")
-                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
-                .city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
 
     }
 
@@ -167,5 +164,36 @@ class TeamupCoreApplicationTests {
 
         userRepository.deleteById(1L);
         Assert.assertEquals(userRepository.findById(1L), Optional.empty());
+    }
+
+    @Test
+    void subscriberTest(){
+
+        Subscriber subscriber1 = Subscriber.builder().name("testSubscriber1").lastName("testSubscriber1LastName")
+                .middleName("testSubscriber1sMiddleName")
+                .login("testSubscriber1Login").email("testSubscriber1@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Rostov-on-Don").age(35).aboutUser("testSubscriber1").build();
+
+        Subscriber subscriber2 = Subscriber.builder().name("testSubscriber2").lastName("testSubscriber2LastName")
+                .middleName("testSubscriber2sMiddleName")
+                .login("testSubscriber2Login").email("testSubscriber2@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Minsk").age(40).aboutUser("testSubscriber2").build();
+
+        subscriberSet.add(subscriber1);
+        subscriberSet.add(subscriber2);
+
+        userRepository.save(subscriber1);
+        userRepository.save(subscriber2);
+
+        userTest = User.builder().name("testUserWithSubscribers").lastName("testUserWithSubscribersLastName")
+                .middleName("testUserWithSubscribersMiddleName")
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").subscribers(subscriberSet).build();
+
+        userRepository.save(userTest);
+
+
+
+
     }
 }
