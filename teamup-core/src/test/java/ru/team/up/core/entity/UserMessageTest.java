@@ -20,9 +20,6 @@ public class UserMessageTest {
     private UserMessageRepository userMessageRepository;
 
     @Autowired
-    private EventTypeRepository eventTypeRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -30,10 +27,6 @@ public class UserMessageTest {
 
     @Autowired
     private StatusRepository statusRepository;
-
-    EventType eventType = EventType.builder()
-            .type("type")
-            .build();
 
     Interests programming = Interests.builder()
             .title("Programming")
@@ -47,8 +40,8 @@ public class UserMessageTest {
             .login("alextk")
             .email("alextk@bk.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
+            .accountCreatedTime(LocalDateTime.now())
+            .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)
             .aboutUser("Studying to be a programmer.")
@@ -69,7 +62,6 @@ public class UserMessageTest {
 
     @Test
     void testUserMessage() {
-        eventTypeRepository.save(eventType);
         interestsRepository.save(programming);
         userRepository.save(testUser);
         statusRepository.save(status);
