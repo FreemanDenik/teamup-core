@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Getter
 @Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Account {
 
     /**
      * Уникальный идентификатор
      */
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
