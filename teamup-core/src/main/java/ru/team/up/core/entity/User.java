@@ -54,5 +54,5 @@ public class User extends Account {
     @JoinTable (name="USER_ACCOUNT_SUBSCRIBERS", joinColumns=@JoinColumn (name="USER_ID"),
             inverseJoinColumns=@JoinColumn(name="SUBSCRIBER_ID"))
     @Column(name = "USER_SUBSCRIBERS")
-    private Set<Subscriber> subscribers;
+    private Set<User> subscribers;
 }
