@@ -38,7 +38,7 @@ public class TeamupCoreAdminControllerTest {
             .login("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
-            .accountCreatedTime(LocalDate.now())
+            .accountCreatedTime(LocalDate.of(2021, 10, 15))
             .lastAccountActivity(LocalDateTime.now())
             .build();
 
