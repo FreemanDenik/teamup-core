@@ -67,7 +67,7 @@ class TeamupInputUserPrivateControllerTest {
     }
 
     @Test
-    public void testGetAllUser() throws Exception {
+    public void testGetAllUser() {
         listUser.add(testUser);
         when(userService.getAllUsers()).thenReturn(listUser);
         Assert.assertEquals(200, userController.getAllUsers().getStatusCodeValue());
@@ -80,7 +80,7 @@ class TeamupInputUserPrivateControllerTest {
     }
 
     @Test
-    public void testDeleteUser(){
+    public void testDeleteUser() {
         Assert.assertEquals(202, userController.deleteUser(testUser.getId()).getStatusCodeValue());
     }
 }

@@ -76,7 +76,7 @@ public class TeamupInputAdminPrivateControllerTest {
     }
 
     @Test
-    public void testDeleteAdmin(){
+    public void testDeleteAdmin() {
         Assert.assertEquals(202, adminController.deleteAdmin(admin.getId()).getStatusCodeValue());
     }
 

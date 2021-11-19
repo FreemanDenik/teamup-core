@@ -106,7 +106,7 @@ public class TeamupInputEventPrivateControllerTests {
     }
 
     @Test
-    public void testDeleteEvents(){
+    public void testDeleteEvents() {
         Assert.assertEquals(202, eventController.deleteAdmin(event.getId()).getStatusCodeValue());
     }
 }

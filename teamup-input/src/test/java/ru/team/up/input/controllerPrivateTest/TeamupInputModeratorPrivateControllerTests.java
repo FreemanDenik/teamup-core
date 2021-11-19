@@ -60,7 +60,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     }
 
     @Test
-    public void testGetAllModerator() throws Exception {
+    public void testGetAllModerator() {
         listModerator.add(moderator);
         when(moderatorService.getAllModerators()).thenReturn(listModerator);
         Assert.assertEquals(200, moderatorController.getAllModerators().getStatusCodeValue());
@@ -73,7 +73,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     }
 
     @Test
-    public void testDeleteModerator(){
+    public void testDeleteModerator() {
         Assert.assertEquals(202, moderatorController.deleteModerator(moderator.getId()).getStatusCodeValue());
     }
 }

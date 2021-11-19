@@ -127,7 +127,7 @@ public class TeamupInputEventPublicControllerTest {
     ArrayList<Event> events = new ArrayList<Event>();
 
     @Test
-    public void testCreate(){
+    public void testCreate() {
         when(wordMatcher.detectBadWords(eventRequest2.getEvent().getEventName())).thenReturn(false);
         when(wordMatcher.detectBadWords(eventRequest2.getEvent().getDescriptionEvent())).thenReturn(false);
         when(eventService.saveEvent(eventRequest2.getEvent())).thenReturn(event2);
@@ -135,14 +135,14 @@ public class TeamupInputEventPublicControllerTest {
     }
 
     @Test
-    public void testGetAll(){
+    public void testGetAll() {
         events.add(event);
         when(eventService.getAllEvents()).thenReturn(events);
         Assert.assertEquals(200, eventRestControllerPublic.getAllEvents().getStatusCodeValue());
     }
 
     @Test
-    public void testGetById(){
+    public void testGetById() {
         when(eventService.getEventById(1L)).thenReturn(event2);
         Assert.assertEquals(200, eventRestControllerPublic.findEventById(1L).getStatusCodeValue());
     }
@@ -155,21 +155,21 @@ public class TeamupInputEventPublicControllerTest {
     }
 
     @Test
-    public void testFindEventsByAuthor(){
+    public void testFindEventsByAuthor() {
         events.add(event2);
         when(eventService.getAllEventsByAuthor(testUser)).thenReturn(events);
         Assert.assertEquals(200, eventRestControllerPublic.findEventsByAuthor(userRequest).getStatusCodeValue());
     }
 
     @Test
-    public void testFindEventsByType(){
+    public void testFindEventsByType() {
         events.add(event2);
         when(eventService.getAllEventsByEventType(eventType)).thenReturn(events);
         Assert.assertEquals(200, eventRestControllerPublic.findEventsByType(eventType).getStatusCodeValue());
     }
 
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         when(eventService.updateEvent(event2.getId(), eventRequest2.getEvent())).thenReturn(event2);
         Assert.assertEquals(200, eventRestControllerPublic.updateEvent(eventRequest2, 1L).getStatusCodeValue());
     }
@@ -181,13 +181,13 @@ public class TeamupInputEventPublicControllerTest {
     }
 
     @Test
-    public void testAddEventParticipant() throws Exception {
+    public void testAddEventParticipant() {
         when(eventService.addParticipant(joinRequest.getEventId(), joinRequest.getUserId())).thenReturn(event2);
         Assert.assertEquals(200, eventRestControllerPublic.addEventParticipant(joinRequest).getStatusCodeValue());
     }
 
     @Test
-    public void testDeleteEventParticipant() throws Exception {
+    public void testDeleteEventParticipant() {
         when(eventService.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId())).thenReturn(event2);
         Assert.assertEquals(200, eventRestControllerPublic.deleteEventParticipant(joinRequest).getStatusCodeValue());
     }
