@@ -18,6 +18,7 @@ import ru.team.up.input.wordmatcher.WordMatcher;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -227,19 +228,19 @@ public class EventRestController {
      * @param event Данные мероприятия
      */
     private void checkEvent(EventRequest event) {
-        if (wordMatcher.detectBadWords(event.getEventName()) ||
-                wordMatcher.detectBadWords(event.getEvent().getDescription())) {
+        if (wordMatcher.detectBadWords(event.getEvent().getEventName()) ||
+                wordMatcher.detectBadWords(event.getEvent().getDescriptionEvent())) {
             log.error("Имя или описание мероприятия содержит запрещенные слова:\n {}", event);
             throw new EventCreateRequestException("Имя или описание мероприятия содержит запрещенные слова");
         }
 
-        if (Period.between(event.getDate(), LocalDate.now()).getYears() >= 1) {
+        if (ChronoUnit.YEARS.between(event.getEvent().getTimeEvent(), LocalDate.now()) >= 1) {
             log.error("Дата создания мероприятия более 1 года:\n {}", event);
             throw new EventCreateRequestException("Дата создания мероприятия более 1 года");
         }
 
-        if (wordMatcher.detectUnnecessaryWords(event.getEvent().getName()) ||
-                wordMatcher.detectUnnecessaryWords(event.getEvent().getDescription())) {
+        if (wordMatcher.detectUnnecessaryWords(event.getEvent().getEventName()) ||
+                wordMatcher.detectUnnecessaryWords(event.getEvent().getDescriptionEvent())) {
             log.debug("Мероприятие отправленно на проверку:\n {}", event);
             throw new EventCheckException("Мероприятие отправленно на проверку");
         }

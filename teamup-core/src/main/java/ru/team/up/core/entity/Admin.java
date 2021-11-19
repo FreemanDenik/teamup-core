@@ -1,16 +1,23 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+/**
+ * Сущность администратор
+ */
 @Entity
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
+@SuperBuilder
 @Table(name = "ADMIN_ACCOUNT")
-public class Admin extends Account{
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+public class Admin extends Account {
 
+    public Admin() {
+        super();
+    }
 }
