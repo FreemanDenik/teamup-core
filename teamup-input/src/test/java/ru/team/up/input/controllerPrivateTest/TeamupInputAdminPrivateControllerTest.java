@@ -38,8 +38,8 @@ public class TeamupInputAdminPrivateControllerTest {
             .login("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
-            .accountCreatedTime(LocalDate.of(2021, 10, 15))
-            .lastAccountActivity(LocalDateTime.now())
+            .accountCreatedTime("07.11.2021 18:00")
+            .lastAccountActivity("07.11.2021 19:45")
             .build();
 
     @Test
