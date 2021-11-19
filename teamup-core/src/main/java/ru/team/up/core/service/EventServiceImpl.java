@@ -88,7 +88,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Отправка сообщения подписчикам");
         if (userSubscribers != null) {
             for (User user : userSubscribers) {
-                Set<UserMessage> savedMessage = new HashSet<>();
+                Set<UserMessage> savedMessage = user.getUserMessages();
                 savedMessage.add(message);
                 user.setUserMessages(savedMessage);
                 userRepository.save(user);
