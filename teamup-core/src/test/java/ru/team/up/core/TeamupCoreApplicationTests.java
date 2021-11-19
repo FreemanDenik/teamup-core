@@ -11,21 +11,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
-import ru.team.up.core.entity.Admin;
-import ru.team.up.core.entity.Interests;
-import ru.team.up.core.entity.Moderator;
-import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.AdminRepository;
-import ru.team.up.core.repositories.InterestsRepository;
-import ru.team.up.core.repositories.ModeratorRepository;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.entity.*;
+import ru.team.up.core.repositories.*;
+import ru.team.up.core.service.EventService;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @SpringBootTest
 
@@ -43,6 +37,15 @@ class TeamupCoreApplicationTests {
     @Autowired
     private ModeratorRepository moderatorRepository;
 
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private EventTypeRepository eventTypeRepository;
+
+    @Autowired
+    private UserMessageRepository userMessageRepository;
+
     private Admin adminTest;
 
     private Moderator moderatorTest;
@@ -51,18 +54,25 @@ class TeamupCoreApplicationTests {
 
     private Set<Interests> interestsSet = new HashSet<>();
 
+    private Set<User> subscriberSetWithTwoUsers = new HashSet<>();
+
+    private Set<User> subscriberSetWithOneUser = new HashSet<>();
+
+    private Set<User> subscriberSetWithoutUsers = new HashSet<>();
+
+    private Set<User> subscriberSetWithTwoUsersForMessage = new HashSet<>();
+
     private User userTest;
 
     @BeforeEach
     public void setUpEntity() {
         adminTest = Admin.builder().name("testAdmin").lastName("testAdminLastName").middleName("testAdminMiddleName")
                 .login("testAdminLogin").email("test@mail.ru").password("0").accountCreatedTime(LocalDate.now())
-                .lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5)).build();
+                .lastAccountActivity(LocalDateTime.now()).build();
 
         moderatorTest = Moderator.builder().name("testModerator").lastName("testModeratorLastName").middleName("testModeratorMiddleName")
-                .login("testModeratorLogin").email("moderator@mail.ru").password("1")
-                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
-                .amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
+                .login("testModeratorLogin").email("moderator@mail.ru").password("1").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).amountOfCheckedEvents(10L).amountOfDeletedEvents(11L).amountOfClosedRequests(12L)
                 .build();
 
         interestsTest = Interests.builder().title("Football")
@@ -75,9 +85,8 @@ class TeamupCoreApplicationTests {
         interestsSet.add(interestsTest1);
 
         userTest = User.builder().name("testUser").lastName("testUserLastName").middleName("testUserMiddleName")
-                .login("testUserLogin").email("testUser@mail.ru").password("3")
-                .accountCreatedTime(LocalDate.now()).lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
-                .city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
 
     }
 
@@ -167,5 +176,92 @@ class TeamupCoreApplicationTests {
 
         userRepository.deleteById(1L);
         Assert.assertEquals(userRepository.findById(1L), Optional.empty());
+    }
+
+    @Test
+    @Transactional
+    void subscriberTest(){
+
+        User subscriber1 = User.builder().name("testSubscriber1").lastName("testSubscriber1LastName")
+                .middleName("testSubscriber1sMiddleName")
+                .login("testSubscriber1Login").email("testSubscriber1@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Rostov-on-Don").age(35).aboutUser("testSubscriber1").build();
+
+        User subscriber2 = User.builder().name("testSubscriber2").lastName("testSubscriber2LastName")
+                .middleName("testSubscriber2sMiddleName")
+                .login("testSubscriber2Login").email("testSubscriber2@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Minsk").age(40).aboutUser("testSubscriber2").build();
+
+        subscriberSetWithTwoUsers.add(subscriber1);
+        subscriberSetWithTwoUsers.add(subscriber2);
+
+        userRepository.save(subscriber1);
+        userRepository.save(subscriber2);
+
+        userTest = User.builder().name("testUserWithSubscribers").lastName("testUserWithSubscribersLastName")
+                .middleName("testUserWithSubscribersMiddleName")
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").subscribers(subscriberSetWithTwoUsers).build();
+
+        userRepository.save(userTest);
+
+        Assert.assertNotNull(userRepository.findById(4L).get().getSubscribers());
+
+
+        subscriberSetWithOneUser.add(subscriber2);
+
+        User userBD = userRepository.findById(4L).get();
+        userBD.setSubscribers(subscriberSetWithOneUser);
+        userRepository.save(userBD);
+
+        userRepository.deleteById(2L);
+
+        Assert.assertNotNull(userRepository.findById(4L).get().getSubscribers());
+
+
+        userBD.setSubscribers(subscriberSetWithoutUsers);
+        userRepository.save(userBD);
+
+        userRepository.deleteById(3L);
+
+        Assert.assertEquals(userRepository.findById(4L).get().getSubscribers(), Collections.emptySet());
+    }
+
+    @Test
+    void sendMessageTest(){
+        User subscriber1 = User.builder().name("testSubscriber1").lastName("testSubscriber1LastName")
+                .middleName("testSubscriber1sMiddleName")
+                .login("testSubscriber1Login").email("testSubscriber1@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Rostov-on-Don").age(35).aboutUser("testSubscriber1").build();
+
+        User subscriber2 = User.builder().name("testSubscriber2").lastName("testSubscriber2LastName")
+                .middleName("testSubscriber2sMiddleName")
+                .login("testSubscriber2Login").email("testSubscriber2@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Minsk").age(40).aboutUser("testSubscriber2").build();
+
+        subscriberSetWithTwoUsersForMessage.add(subscriber1);
+        subscriberSetWithTwoUsersForMessage.add(subscriber2);
+
+        userRepository.save(subscriber1);
+        userRepository.save(subscriber2);
+
+        User userTestMessage = User.builder().name("testUserWithSubscribers").lastName("testUserWithSubscribersLastName")
+                .middleName("testUserWithSubscribersMiddleName")
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").subscribers(subscriberSetWithTwoUsersForMessage).build();
+
+        userRepository.save(userTestMessage);
+
+        EventType eventType = EventType.builder().type("Game").build();
+        eventTypeRepository.save(eventType);
+
+        Event event = Event.builder().eventName("Football game").descriptionEvent("Join people to play football math")
+                .placeEvent("Moskow").timeEvent(LocalDateTime.now()).authorId(userTestMessage).eventType(eventType).build();
+
+
+        eventService.saveEvent(event);
+
+        Assert.assertNotNull(userRepository.findById(2L).get().getUserMessages());
+        Assert.assertNotNull(userRepository.findById(3L).get().getUserMessages());
     }
 }

@@ -2,10 +2,9 @@ package ru.team.up.core.entity;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.persistence.*;
 
 /**
  * Родительская сущность для пользователя, админа, модератора
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Getter
 @Setter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Account {
 
     /**

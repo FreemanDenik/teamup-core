@@ -53,8 +53,8 @@ class EventTest{
         User userTest = User.builder().name("testUser").lastName("testUserLastName")
                 .middleName("testUserMiddleName").login("testUserLogin").email("testUser@mail.ru")
                 .password("3").accountCreatedTime(LocalDate.now())
-                .lastAccountActivity(LocalDateTime.of(2021, 10, 15, 14, 5))
-                .city("Moskow").age(30).aboutUser("testUser").userInterests(interestsSet).build();
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow")
+                .age(30).aboutUser("testUser").userInterests(interestsSet).build();
         userRepository.save(userTest);
 
         List<User> testListUser = new ArrayList<>();
