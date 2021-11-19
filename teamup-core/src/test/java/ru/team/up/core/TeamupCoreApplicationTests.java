@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Propagation;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.*;
+import ru.team.up.core.service.EventService;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -36,6 +37,12 @@ class TeamupCoreApplicationTests {
     @Autowired
     private ModeratorRepository moderatorRepository;
 
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private EventTypeRepository eventTypeRepository;
+
     private Admin adminTest;
 
     private Moderator moderatorTest;
@@ -49,6 +56,8 @@ class TeamupCoreApplicationTests {
     private Set<User> subscriberSetWithOneUser = new HashSet<>();
 
     private Set<User> subscriberSetWithoutUsers = new HashSet<>();
+
+    private Set<User> subscriberSetWithTwoUsersForMessage = new HashSet<>();
 
     private User userTest;
 
@@ -213,5 +222,39 @@ class TeamupCoreApplicationTests {
         userRepository.deleteById(3L);
 
         Assert.assertEquals(userRepository.findById(4L).get().getSubscribers(), Collections.emptySet());
+    }
+
+    @Test
+    void sendMessageTest(){
+        User subscriber1 = User.builder().name("testSubscriber1").lastName("testSubscriber1LastName")
+                .middleName("testSubscriber1sMiddleName")
+                .login("testSubscriber1Login").email("testSubscriber1@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Rostov-on-Don").age(35).aboutUser("testSubscriber1").build();
+
+        User subscriber2 = User.builder().name("testSubscriber2").lastName("testSubscriber2LastName")
+                .middleName("testSubscriber2sMiddleName")
+                .login("testSubscriber2Login").email("testSubscriber2@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Minsk").age(40).aboutUser("testSubscriber2").build();
+
+        subscriberSetWithTwoUsersForMessage.add(subscriber1);
+        subscriberSetWithTwoUsersForMessage.add(subscriber2);
+
+        userRepository.save(subscriber1);
+        userRepository.save(subscriber2);
+
+        User userTestMessage = User.builder().name("testUserWithSubscribers").lastName("testUserWithSubscribersLastName")
+                .middleName("testUserWithSubscribersMiddleName")
+                .login("testUserLogin").email("testUser@mail.ru").password("3").accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now()).city("Moskow").age(30).aboutUser("testUser").subscribers(subscriberSetWithTwoUsersForMessage).build();
+
+        userRepository.save(userTestMessage);
+
+        EventType eventType = EventType.builder().type("Game").build();
+        eventTypeRepository.save(eventType);
+
+        Event event = Event.builder().eventName("Football game").descriptionEvent("Join people to play football math")
+                .placeEvent("Moskow").timeEvent(LocalDateTime.now()).authorId(userTestMessage).eventType(eventType).build();
+
+        eventService.saveEvent(event);
     }
 }

@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
 import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.repositories.UserRepository;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Alexey Tkachenko
@@ -24,6 +28,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
+    private UserRepository userRepository;
 
     /**
      * @return Возвращает коллекцию Event.
@@ -65,6 +70,18 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event saveEvent(Event event) {
+
+        User userCreatedEventDB = userRepository.findById(event.getAuthorId().getId()).get();
+        Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
+
+        if (userSubscribers != null) {
+            for (User user : userSubscribers) {
+                log.debug("Выводим id подписчика {}", user.getId());
+                System.out.println(user.getId());
+            }
+        }
+
+
         log.debug("Старт метода Event saveEvent(Event event) с параметром {}", event);
 
         Event save = eventRepository.save(event);
