@@ -38,7 +38,7 @@ public class TeamupCoreModeratorControllerTests {
             .login("ModeratorLogin")
             .email("moderator@mail.ru")
             .password("1234")
-            .accountCreatedTime(LocalDate.of(2021, 10, 15))
+            .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .amountOfCheckedEvents(10L)
             .amountOfDeletedEvents(11L)
