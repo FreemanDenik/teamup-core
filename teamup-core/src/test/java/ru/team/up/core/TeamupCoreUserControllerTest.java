@@ -47,7 +47,7 @@ class TeamupCoreUserControllerTest {
             .login("alextk")
             .email("alextk@bk.ru")
             .password("1234")
-            .accountCreatedTime(LocalDate.of(2021, 10, 15))
+            .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)

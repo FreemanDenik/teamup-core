@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.entity.User;
+import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
 import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.repositories.UserMessageRepository;
+import ru.team.up.core.repositories.UserRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * @author Alexey Tkachenko
@@ -24,6 +28,8 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
+    private UserRepository userRepository;
+    private UserMessageRepository userMessageRepository;
 
     /**
      * @return Возвращает коллекцию Event.
@@ -65,6 +71,31 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event saveEvent(Event event) {
+
+        log.debug("Получаем из БД пользователя создавшего мероприятие");
+        User userCreatedEventDB = userRepository.findById(event.getAuthorId().getId()).get();
+
+        log.debug("Формируем сет подписчиков пользователя");
+        Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
+
+        log.debug("Создаем и сохраняем сообщение");
+        UserMessage message = UserMessage.builder().messageOwner(userCreatedEventDB)
+                .message("Пользователь " + userCreatedEventDB.getName() + " создал мероприятие " + event.getEventName())
+                .status("new")
+                .messageCreationTime(LocalDateTime.now()).build();
+        userMessageRepository.save(message);
+
+        log.debug("Отправка сообщения подписчикам");
+        if (userSubscribers != null) {
+            for (User user : userSubscribers) {
+                Set<UserMessage> savedMessage = user.getUserMessages();
+                savedMessage.add(message);
+                user.setUserMessages(savedMessage);
+                userRepository.save(user);
+            }
+        }
+
+
         log.debug("Старт метода Event saveEvent(Event event) с параметром {}", event);
 
         Event save = eventRepository.save(event);

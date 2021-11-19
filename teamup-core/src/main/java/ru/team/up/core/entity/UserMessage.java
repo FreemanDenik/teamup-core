@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * @author Alexey Tkachenko
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+@ToString
 public class UserMessage {
 
     /**
@@ -45,9 +47,8 @@ public class UserMessage {
     /**
      * Статус сообщения
      */
-    @JoinColumn(name = "STATUS")
-    @ManyToOne
-    private Status status;
+    @Column(name = "STATUS")
+    private String status;
 
     /**
      * Время создания сообщения
@@ -60,4 +61,13 @@ public class UserMessage {
      */
     @Column(name = "MESSAGE_READ_TIME")
     private LocalDateTime messageReadTime;
+
+    /**
+     * Пользователи получившие сообщение
+     */
+    @ManyToMany
+    @JoinTable(name = "USER_ACCOUNT_MESSAGES",
+            joinColumns = @JoinColumn(name = "MESSAGE_ID"),
+            inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    private Set<User> users;
 }
