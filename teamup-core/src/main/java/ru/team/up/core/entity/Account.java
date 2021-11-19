@@ -1,7 +1,5 @@
 package ru.team.up.core.entity;
 
-import lombok.*;
-
 import javax.persistence.*;
 
 

@@ -6,12 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserService;
@@ -26,7 +21,8 @@ import java.util.Optional;
  */
 
 @Slf4j
-@RestController("api/public/account/")
+@RestController
+@RequestMapping("api/public/account")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestController {
     private final UserService userService;
@@ -37,7 +33,7 @@ public class UserRestController {
      * @param userId id пользователя
      * @return Ответ поиска и статус
      */
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
         Optional<User> userOptional = Optional.ofNullable(userService.getUserById(userId));
@@ -59,7 +55,7 @@ public class UserRestController {
      * @param userEmail почта пользователя
      * @return Ответ поиска и статус проверки
      */
-    @GetMapping(value = "{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserByEmail(@PathVariable("email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
         Optional<User> userOptional = Optional.ofNullable(userService.getUserByEmail(userEmail));
@@ -75,7 +71,7 @@ public class UserRestController {
      *
      * @return Ответ поиска и статус проверки
      */
-    @GetMapping("accounts")
+    @GetMapping("/")
     public ResponseEntity<List<User>> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
         List<User> users = userService.getAllUsers();
@@ -116,7 +112,7 @@ public class UserRestController {
      * @param userId идентификатор пользователя
      * @return Ответ удаления и статус проверки
      */
-    @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> deleteUserById(@PathVariable("id") Long userId) {
         log.debug("Получен запрос на удаления пользователя с id = {}", userId);
         User user = userService.getUserById(userId);

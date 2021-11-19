@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -16,9 +17,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private SuccessHandler successHandler;
     private UserDetailsService userDetailsService;
 
-    public SecurityConfig(SuccessHandler successHandler,UserDetailsService userDetailsService){
+    public SecurityConfig(SuccessHandler successHandler, UserDetailsService userDetailsService) {
         this.successHandler = successHandler;
-        this.userDetailsService= userDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -32,10 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("Admin")
                 .password("$2a$12$KwmQ4mBkrb70yebG.yjvKu2Cj5nf6iemWOvo6vOtNExZgMGgpdJte")
                 .authorities("ROLE_ADMIN")
-                .and ()
-                .withUser ("Moderator")
-                .password ("$2a$12$VeRlXvgPPjIzNayOwopCmOu01sjPQWCidCRa5wGEDiQWmUuElQDYG")
-                .authorities ("ROLE_MODERATOR");
+                .and()
+                .withUser("Moderator")
+                .password("$2a$12$VeRlXvgPPjIzNayOwopCmOu01sjPQWCidCRa5wGEDiQWmUuElQDYG")
+                .authorities("ROLE_MODERATOR");
     }
 
     @Override
@@ -46,17 +47,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/moderator").hasRole("MODERATOR")
+                .antMatchers("/api/*").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin()
+                .and()
+                .formLogin()
                 .successHandler(successHandler)
-                .and ().oauth2Login()
-                .successHandler (new SuccessHandler());
+                .and()
+                .oauth2Login()
+                .successHandler(new SuccessHandler());
 
-        http.logout ()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
-                .logoutRequestMatcher (new AntPathRequestMatcher ("/logout"))//выход из системы гет запрос на /logout
-                .logoutSuccessUrl ("/login")//успешный выход из системы
+        http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//выход из системы гет запрос на /logout
+                .logoutSuccessUrl("/login")//успешный выход из системы
                 .and().csrf().disable();
     }
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

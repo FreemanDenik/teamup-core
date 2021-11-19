@@ -26,7 +26,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event getEventById(Long id) {
-        return eventRepository.getById(id);
+        return eventRepository.getOne(id);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event addParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
-        User participant = userRepository.getById(userId);
+        User participant = userRepository.getOne(userId);
 //        List<User> participants = event.getParticipantsEvent();
 //        participants.add(participant);
 //        event.setParticipantsEvent(participants);
@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public Event deleteParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
-        User participant = userRepository.getById(userId);
+        User participant = userRepository.getOne(userId);
 //        List<User> participants = event.getParticipantsEvent();
 //        participants.remove(participant);
 //        event.setParticipantsEvent(participants);

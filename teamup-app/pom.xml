@@ -3,12 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.6</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>ru.team.up</groupId>
+        <artifactId>teamup</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>ru.team.up</groupId>
     <artifactId>teamup-app</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>teamup-app</name>
@@ -41,17 +39,17 @@
         </dependency>
         <dependency>
             <groupId>ru.team.up</groupId>
-            <artifactId>teamup-external-impl</artifactId>
+            <artifactId>teamup-input</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>ru.team.up</groupId>-->
+<!--            <artifactId>teamup-external-impl</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>ru.team.up</groupId>
             <artifactId>teamup-external-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.team.up</groupId>
-            <artifactId>teamup-input</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -60,6 +58,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <type>pom</type>
+            <version>2.4.0</version>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>

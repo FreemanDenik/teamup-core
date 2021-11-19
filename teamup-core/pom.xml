@@ -45,4 +45,15 @@
             <version>${postgre.version}</version>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <type>pom</type>
+            <version>2.4.0</version>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+    </dependencyManagement>
 </project>

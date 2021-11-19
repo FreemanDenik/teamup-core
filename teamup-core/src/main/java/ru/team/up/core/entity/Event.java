@@ -17,17 +17,20 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "DESCRIPTION_EVENT", nullable = false)
-    private String descriptionEvent;
+    @Column(name = "NAME", nullable = false)
+    private String name;
 
-    @Column(name = "PLACE_EVENT", nullable = false)
-    private String placeEvent;
+    @Column(name = "DESCRIPTION", nullable = false)
+    private String description;
 
-    @Column(name = "TIME_EVENT", nullable = false)
-    private String timeEvent;
+    @Column(name = "PLACE", nullable = false)
+    private String place;
 
-    @Column(name = "PARTICIPANTS_EVENT")
-    private String participantsEvent;
+    @Column(name = "TIME_START", nullable = false)
+    private String time;
+
+    @Column(name = "PARTICIPANTS")
+    private String participants;
 
     @OneToOne(optional=false, cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     @JoinColumn(name = "EVENT_TYPE_ID")
@@ -45,8 +48,4 @@ public class Event {
    @OneToOne(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
    @JoinColumn(name = "STATUS_ID")
     private Status status;
-
-    public String getEventName() {
-        return null;
-    }
 }

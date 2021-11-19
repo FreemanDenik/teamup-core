@@ -3,17 +3,9 @@ package ru.team.up.input.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.input.exception.EventCheckException;
@@ -36,7 +28,8 @@ import java.util.Optional;
  */
 
 @Slf4j
-@RestController("api/public/event")
+@RestController
+@RequestMapping(value = "api/public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventRestController {
     private final EventService eventService;
@@ -48,7 +41,7 @@ public class EventRestController {
      *
      * @return Список мероприятий и статус ответа
      */
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Получен запрос на список мероприятий");
         List<Event> events = eventService.getAllEvents();
@@ -68,7 +61,7 @@ public class EventRestController {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Event> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
         Optional<Event> eventOptional = Optional.ofNullable(eventService.getEventById(eventId));
@@ -90,7 +83,7 @@ public class EventRestController {
      * @param eventName Название мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "{eventName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/name/{eventName}")
     public ResponseEntity<List<Event>> findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
         List<Event> events = eventService.getEventByName(eventName);
@@ -110,7 +103,7 @@ public class EventRestController {
      * @param author Автор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/author")
     public ResponseEntity<List<Event>> findEventsByAuthor(@RequestBody UserRequest author) {
         log.debug("Получен запрос на поиск мероприятий по автору {}", author);
         List<Event> events = eventService.getAllEventsByAuthor(author.getUser());
@@ -130,7 +123,7 @@ public class EventRestController {
      * @param eventType Тип мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/type")
     public ResponseEntity<List<Event>> findEventsByType(@RequestBody EventType eventType) {
         log.debug("Получен запрос на поиск мероприятий по типу: {}", eventType);
         List<Event> events = eventService.getAllEventsByEventType(eventType);
@@ -145,7 +138,7 @@ public class EventRestController {
      * @param event Данные мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/")
     public ResponseEntity<Event> createEvent(@RequestBody EventRequest event) {
         log.debug("Получен запрос на создание мероприятия:\n {}", event);
 
@@ -160,11 +153,11 @@ public class EventRestController {
     /**
      * Метод обновления мероприятия
      *
-     * @param event Данные мероприятия
+     * @param event   Данные мероприятия
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}")
     public ResponseEntity<Event> updateEvent(@RequestBody EventRequest event, @PathVariable("id") Long eventId) {
         log.debug("Получен запрос на обновление мероприятия {}", event);
 
@@ -182,7 +175,7 @@ public class EventRestController {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @DeleteMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на удаление мероприятия с id: {}", eventId);
         Event event = eventService.getEventById(eventId);
@@ -204,7 +197,7 @@ public class EventRestController {
      * @param joinRequest Данные запроса для добавление участника
      * @return Ответ запроса и статус проверки
      */
-    @PostMapping(value = "/join", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/join")
     public ResponseEntity<Event> addEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на добавление участника мероприятия");
         Event event = eventService.addParticipant(joinRequest.getEventId(), joinRequest.getUserId());
@@ -235,7 +228,7 @@ public class EventRestController {
      */
     private void checkEvent(EventRequest event) {
         if (wordMatcher.detectBadWords(event.getEventName()) ||
-                wordMatcher.detectBadWords(event.getEvent().getDescriptionEvent())) {
+                wordMatcher.detectBadWords(event.getEvent().getDescription())) {
             log.error("Имя или описание мероприятия содержит запрещенные слова:\n {}", event);
             throw new EventCreateRequestException("Имя или описание мероприятия содержит запрещенные слова");
         }
@@ -245,8 +238,8 @@ public class EventRestController {
             throw new EventCreateRequestException("Дата создания мероприятия более 1 года");
         }
 
-        if (wordMatcher.detectUnnecessaryWords(event.getEvent().getEventName()) ||
-                wordMatcher.detectUnnecessaryWords(event.getEvent().getDescriptionEvent())) {
+        if (wordMatcher.detectUnnecessaryWords(event.getEvent().getName()) ||
+                wordMatcher.detectUnnecessaryWords(event.getEvent().getDescription())) {
             log.debug("Мероприятие отправленно на проверку:\n {}", event);
             throw new EventCheckException("Мероприятие отправленно на проверку");
         }
