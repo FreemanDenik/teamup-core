@@ -3,47 +3,48 @@ package ru.team.up.input.controllerPublicTest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.*;
-import ru.team.up.core.repositories.*;
+import ru.team.up.input.controlle.publicController.EventRestControllerPublic;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.service.impl.EventServicePublicImpl;
+import ru.team.up.input.wordmatcher.WordMatcher;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class TeamupInputEventPublicControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Mock
+    private WordMatcher wordMatcher;
+
+    @Mock
+    private EventServicePublicImpl eventService;
 
     @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private EventTypeRepository eventTypeRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private InterestsRepository interestsRepository;
-
-    @Autowired
-    private StatusRepository statusRepository;
+    @InjectMocks
+    private EventRestControllerPublic eventRestControllerPublic;
 
     EventType eventType = EventType.builder()
             .type("type")
@@ -123,189 +124,75 @@ public class TeamupInputEventPublicControllerTest {
             .userId(1L)
             .build();
 
+    UserRequest userRequest = UserRequest.builder()
+            .user(testUser)
+            .build();
+
+    ArrayList<Event> events = new ArrayList<Event>();
+
     @Test
-    public void testCreate() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/public/event?event=")
-                        .content(objectToJsonString(eventRequest2))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated());
+    public void testCreate(){
+        when(wordMatcher.detectBadWords(eventRequest2.getEvent().getEventName())).thenReturn(false);
+        when(wordMatcher.detectBadWords(eventRequest2.getEvent().getDescriptionEvent())).thenReturn(false);
+        when(eventService.saveEvent(eventRequest2.getEvent())).thenReturn(event2);
+        Assert.assertEquals(201, eventRestControllerPublic.createEvent(eventRequest2).getStatusCodeValue());
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/public/event/")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .exists())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .isNotEmpty());
+    public void testGetAll(){
+        events.add(event);
+        when(eventService.getAllEvents()).thenReturn(events);
+        Assert.assertEquals(200, eventRestControllerPublic.getAllEvents().getStatusCodeValue());
     }
 
     @Test
-    public void testGetById() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/public/event/{id}", event.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(event.getId()));
+    public void testGetById(){
+        when(eventService.getEventById(1L)).thenReturn(event2);
+        Assert.assertEquals(200, eventRestControllerPublic.findEventById(1L).getStatusCodeValue());
     }
 
     @Test
-    public void testGetByName() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/public/event/eventName/{eventName}", event.getEventName())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("[0].eventName")
-                        .value(event.getEventName()));
+    public void testGetByName() {
+        events.add(event2);
+        when(eventService.getEventByName(event2.getEventName())).thenReturn(events);
+        Assert.assertEquals(200, eventRestControllerPublic.findEventsByName(event2.getEventName()).getStatusCodeValue());
     }
 
     @Test
-    public void testFindEventsByAuthor() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        UserRequest userRequest = UserRequest.builder()
-                        .user(testUser)
-                        .build();
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/public/event")
-                        .content(objectToJsonString(userRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+    public void testFindEventsByAuthor(){
+        events.add(event2);
+        when(eventService.getAllEventsByAuthor(testUser)).thenReturn(events);
+        Assert.assertEquals(200, eventRestControllerPublic.findEventsByAuthor(userRequest).getStatusCodeValue());
     }
 
     @Test
-    public void testFindEventsByType() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/public/event/type")
-                        .content(objectToJsonString(event.getEventType()))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+    public void testFindEventsByType(){
+        events.add(event2);
+        when(eventService.getAllEventsByEventType(eventType)).thenReturn(events);
+        Assert.assertEquals(200, eventRestControllerPublic.findEventsByType(eventType).getStatusCodeValue());
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        event.setDescriptionEvent("qwerty");
-        event.setEventName("newname");
-        EventRequest eventRequest = EventRequest.builder()
-                .event(event)
-                .build();
-        mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/public/event/1")
-                        .content(objectToJsonString(eventRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.descriptionEvent")
-                        .value("qwerty"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.eventName")
-                        .value("newname"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(event.getId()));
+    public void testUpdate(){
+        when(eventService.updateEvent(event2.getId(), eventRequest2.getEvent())).thenReturn(event2);
+        Assert.assertEquals(200, eventRestControllerPublic.updateEvent(eventRequest2, 1L).getStatusCodeValue());
     }
 
     @Test
-    public void testDelete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/public/event/{id}", 1L)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+    public void testDelete() {
+        when(eventService.getEventById(1L)).thenReturn(event2);
+        Assert.assertEquals(200, eventRestControllerPublic.deleteEvent(1L).getStatusCodeValue());
     }
 
     @Test
     public void testAddEventParticipant() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/public/event/join")
-                        .content(objectToJsonString(joinRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+        when(eventService.addParticipant(joinRequest.getEventId(), joinRequest.getUserId())).thenReturn(event2);
+        Assert.assertEquals(200, eventRestControllerPublic.addEventParticipant(joinRequest).getStatusCodeValue());
     }
 
     @Test
     public void testDeleteEventParticipant() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/public/event/unjoin")
-                        .content(objectToJsonString(joinRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    public static String objectToJsonString(final Object obj) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String now = mapper.writeValueAsString(obj);
-
-//            return new ObjectMapper().writeValueAsString(obj);
-            return now;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        when(eventService.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId())).thenReturn(event2);
+        Assert.assertEquals(200, eventRestControllerPublic.deleteEventParticipant(joinRequest).getStatusCodeValue());
     }
 }

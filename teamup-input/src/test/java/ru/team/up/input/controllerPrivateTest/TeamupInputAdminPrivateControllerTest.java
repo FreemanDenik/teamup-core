@@ -1,31 +1,38 @@
 package ru.team.up.input.controllerPrivateTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.Admin;
-import ru.team.up.core.repositories.AdminRepository;
+import ru.team.up.core.service.AdminService;
+import ru.team.up.input.controlle.privateController.AdminController;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.ArrayList;
 
-/**
- * @author Alexey Tkachenko
- */
+import static org.mockito.Mockito.when;
+
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class TeamupInputAdminPrivateControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+
+    @Mock
+    private AdminService adminService;
 
     @Autowired
-    private AdminRepository adminRepository;
+    @InjectMocks
+    AdminController adminController;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     Admin admin = Admin.builder()
             .id(1L)
@@ -39,89 +46,36 @@ public class TeamupInputAdminPrivateControllerTest {
             .lastAccountActivity("07.11.2021 19:45")
             .build();
 
+    ArrayList<Admin> listAdmin = new ArrayList<>();
+
     @Test
-    public void testCreateUser() throws Exception {
-        admin.setId(2L);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/admin?admin=")
-                        .content(objectToJsonString(admin))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(2L));
+    public void testCreateAdmin() {
+        when(adminService.saveAdmin(admin)).thenReturn(admin);
+        Assert.assertEquals(201, adminController.createAdmin("admin", admin).getStatusCodeValue());
     }
 
     @Test
-    public void testGetOneUserById() throws Exception {
-        adminRepository.save(admin);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/admin/{id}", 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(1));
+    public void testGetOneById() {
+        when(adminService.getOneAdmin(admin.getId())).thenReturn(admin);
+        Assert.assertEquals(200, adminController.getOneAdmin(admin.getId()).getStatusCodeValue());
     }
 
     @Test
-    public void testGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/admin")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .exists())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .isNotEmpty());
+    public void testGetAllAdmins() throws Exception {
+        listAdmin.add(admin);
+        when(adminService.getAllAdmins()).thenReturn(listAdmin);
+        Assert.assertEquals(200, adminController.getAllAdmins().getStatusCodeValue());
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
-        admin.setEmail("mila@gmail.com");
-        admin.setName("Mila");
-        admin.setLogin("mila");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/admin")
-                        .content(objectToJsonString(admin))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.name")
-                        .value("Mila"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.email")
-                        .value("mila@gmail.com"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.login")
-                        .value("mila"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(admin.getId()));
+    public void testUpdateAdmin() {
+        when(adminService.saveAdmin(admin)).thenReturn(admin);
+        Assert.assertEquals(200, adminController.updateAdmin(admin).getStatusCodeValue());
     }
 
     @Test
-    public void testDeleteUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/admin/{id}", admin.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted());
+    public void testDeleteAdmin(){
+        Assert.assertEquals(202, adminController.deleteAdmin(admin.getId()).getStatusCodeValue());
     }
 
-    public static String objectToJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

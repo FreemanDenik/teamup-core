@@ -1,36 +1,33 @@
 package ru.team.up.input.controllerPrivateTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.InterestsRepository;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.service.UserService;
+import ru.team.up.input.controlle.privateController.UserController;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class TeamupInputUserPrivateControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private InterestsRepository interestsRepository;
+    @InjectMocks
+    private UserController userController;
 
     Interests programming = Interests.builder()
             .title("Programming")
@@ -53,90 +50,35 @@ class TeamupInputUserPrivateControllerTest {
             .userInterests(Collections.singleton(programming))
             .build();
 
+    ArrayList<User> listUser = new ArrayList<>();
+
     @Test
-    public void testCreateUser() throws Exception {
-        testUser.setId(2L);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/user?user=")
-                        .content(objectToJsonString(testUser))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(2L));
+    public void testCreateUser() {
+        when(userService.saveUser(testUser)).thenReturn(testUser);
+        Assert.assertEquals(201, userController.createUser("testUser", testUser).getStatusCodeValue());
     }
 
     @Test
-    public void testGetOneUserById() throws Exception {
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/user/{id}", 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(1));
+    public void testGetOneById() {
+        when(userService.getOneUser(testUser.getId())).thenReturn(testUser);
+        Assert.assertEquals(200, userController.getOneUser(testUser.getId()).getStatusCodeValue());
     }
 
     @Test
-    public void testGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/user")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .exists())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .isNotEmpty());
+    public void testGetAllUser() throws Exception {
+        listUser.add(testUser);
+        when(userService.getAllUsers()).thenReturn(listUser);
+        Assert.assertEquals(200, userController.getAllUsers().getStatusCodeValue());
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
-        testUser.setAge(24);
-        testUser.setName("Ruslan");
-        testUser.setCity("Lyubertsy");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/user")
-                        .content(objectToJsonString(testUser))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.name")
-                        .value("Ruslan"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.city")
-                        .value("Lyubertsy"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.age")
-                        .value("24"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(testUser.getId()));
+    public void testUpdateUser() {
+        when(userService.saveUser(testUser)).thenReturn(testUser);
+        Assert.assertEquals(200, userController.updateUser(testUser).getStatusCodeValue());
     }
 
     @Test
-    public void testDeleteUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/user/{id}", testUser.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted());
-    }
-
-    public static String objectToJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void testDeleteUser(){
+        Assert.assertEquals(202, userController.deleteUser(testUser.getId()).getStatusCodeValue());
     }
 }

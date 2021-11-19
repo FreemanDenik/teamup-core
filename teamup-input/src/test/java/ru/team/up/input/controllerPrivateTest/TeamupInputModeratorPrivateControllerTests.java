@@ -1,31 +1,32 @@
 package ru.team.up.input.controllerPrivateTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.Moderator;
-import ru.team.up.core.repositories.ModeratorRepository;
+import ru.team.up.core.service.ModeratorService;
+import ru.team.up.input.controlle.privateController.ModeratorController;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.ArrayList;
 
-/**
- * @author Alexey Tkachenko
- */
+import static org.mockito.Mockito.when;
+
+
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class TeamupInputModeratorPrivateControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+
+    @Mock
+    private ModeratorService moderatorService;
 
     @Autowired
-    private ModeratorRepository moderatorRepository;
+    @InjectMocks
+    private ModeratorController moderatorController;
 
     Moderator moderator = Moderator.builder()
             .id(1L)
@@ -42,89 +43,35 @@ public class TeamupInputModeratorPrivateControllerTests {
             .amountOfClosedRequests(12L)
             .build();
 
+    ArrayList<Moderator> listModerator = new ArrayList<>();
+
     @Test
-    public void testCreateUser() throws Exception {
-        moderator.setId(2L);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/account/moderator?moderator=")
-                        .content(objectToJsonString(moderator))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(2L));
+    public void testCreateModerator() {
+        when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
+        Assert.assertEquals(201, moderatorController.createModerator("moderator", moderator).getStatusCodeValue());
     }
 
     @Test
-    public void testGetOneUserById() throws Exception {
-        moderatorRepository.save(moderator);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/moderator/{id}", 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(1));
+    public void testGetOneById() {
+        when(moderatorService.getOneModerator(moderator.getId())).thenReturn(moderator);
+        Assert.assertEquals(200, moderatorController.getOneModerator(moderator.getId()).getStatusCodeValue());
     }
 
     @Test
-    public void testGetAllUsers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/account/moderator")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .exists())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .isNotEmpty());
+    public void testGetAllModerator() throws Exception {
+        listModerator.add(moderator);
+        when(moderatorService.getAllModerators()).thenReturn(listModerator);
+        Assert.assertEquals(200, moderatorController.getAllModerators().getStatusCodeValue());
     }
 
     @Test
-    public void testUpdateUser() throws Exception {
-        moderator.setEmail("mila@gmail.com");
-        moderator.setName("Mila");
-        moderator.setLogin("mila");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/account/moderator")
-                        .content(objectToJsonString(moderator))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.name")
-                        .value("Mila"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.email")
-                        .value("mila@gmail.com"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.login")
-                        .value("mila"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(moderator.getId()));
+    public void testUpdateModerator() {
+        when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
+        Assert.assertEquals(200, moderatorController.updateModerator(moderator).getStatusCodeValue());
     }
 
     @Test
-    public void testDeleteUser() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/account/moderator/{id}", moderator.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted());
-    }
-
-    public static String objectToJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void testDeleteModerator(){
+        Assert.assertEquals(202, moderatorController.deleteModerator(moderator.getId()).getStatusCodeValue());
     }
 }

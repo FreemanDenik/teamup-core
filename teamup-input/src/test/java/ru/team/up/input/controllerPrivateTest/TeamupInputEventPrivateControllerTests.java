@@ -1,48 +1,41 @@
 package ru.team.up.input.controllerPrivateTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.team.up.core.entity.*;
-import ru.team.up.core.repositories.*;
+import ru.team.up.core.service.EventService;
+import ru.team.up.input.controlle.privateController.EventController;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-/**
- * @author Alexey Tkachenko
- */
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 public class TeamupInputEventPrivateControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+
+    @Mock
+    private EventService eventService;
 
     @Autowired
-    private EventRepository eventRepository;
+    @InjectMocks
+    private EventController eventController;
 
-    @Autowired
-    private EventTypeRepository eventTypeRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private InterestsRepository interestsRepository;
-
-    @Autowired
-    private StatusRepository statusRepository;
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     EventType eventType = EventType.builder()
             .type("type")
@@ -68,21 +61,6 @@ public class TeamupInputEventPrivateControllerTests {
             .userInterests(Collections.singleton(programming))
             .build();
 
-    User testUser2 = User.builder()
-            .name("Aleksey2")
-            .lastName("Tkachenko2")
-            .middleName("Petrovich2")
-            .login("alextk2")
-            .email("alextk2@bk.ru")
-            .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
-            .city("Moscow")
-            .age(43)
-            .aboutUser("Studying to be a programmer.")
-            .userInterests(Collections.singleton(programming))
-            .build();
-
     Status status = Status.builder()
             .status("status")
             .build();
@@ -93,117 +71,42 @@ public class TeamupInputEventPrivateControllerTests {
             .placeEvent("placeEvent")
             .timeEvent(LocalDateTime.now())
             .eventUpdateDate(LocalDate.now())
-            .participantsEvent(Collections.singletonList(testUser2))
+            .participantsEvent(Collections.singletonList(testUser))
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
             .status(status)
             .build();
 
-    Event event2 = Event.builder()
-            .eventName("eventName2")
-            .descriptionEvent("descriptionEvent2")
-            .placeEvent("placeEvent2")
-            .timeEvent(LocalDateTime.now())
-            .eventUpdateDate(LocalDate.now())
-            .participantsEvent(Collections.singletonList(testUser2))
-            .eventType(eventType)
-            .authorId(testUser)
-            .eventInterests(Collections.singleton(programming))
-            .status(status)
-            .build();
+    ArrayList<Event> listEvent = new ArrayList<>();
 
     @Test
-    public void testCreate() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/private/event?event=")
-                        .content(objectToJsonString(event2))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated());
+    public void testCreateEvents() {
+        when(eventService.saveEvent(event)).thenReturn(event);
+        Assert.assertEquals(201, eventController.createEvent("event", event).getStatusCodeValue());
     }
 
     @Test
-    public void testGetOneById() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/event/{id}", event.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(event.getId()));
+    public void testGetOneById() {
+        when(eventService.getOneEvent(event.getId())).thenReturn(event);
+        Assert.assertEquals(200, eventController.getOneEvent(event.getId()).getStatusCodeValue());
     }
 
     @Test
-    public void testGetAll() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/private/event")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .exists())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.[*]")
-                        .isNotEmpty());
+    public void testGetAllEvents() throws Exception {
+        listEvent.add(event);
+        when(eventService.getAllEvents()).thenReturn(listEvent);
+        Assert.assertEquals(200, eventController.getAllEvents().getStatusCodeValue());
     }
 
     @Test
-    public void testUpdate() throws Exception {
-        eventTypeRepository.save(eventType);
-        interestsRepository.save(programming);
-        userRepository.save(testUser);
-        userRepository.save(testUser2);
-        statusRepository.save(status);
-        eventRepository.save(event);
-        event.setDescriptionEvent("qwerty");
-        event.setEventName("newname");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .patch("/private/event")
-                        .content(objectToJsonString(event))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.descriptionEvent")
-                        .value("qwerty"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.eventName")
-                        .value("newname"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("$.id")
-                        .value(event.getId()));
+    public void testUpdateEvents() {
+        when(eventService.saveEvent(event)).thenReturn(event);
+        Assert.assertEquals(200, eventController.updateEvent(event).getStatusCodeValue());
     }
 
     @Test
-    public void testDelete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/private/event/{id}", 1L)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isAccepted());
-    }
-
-    public static String objectToJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().findAndRegisterModules().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void testDeleteEvents(){
+        Assert.assertEquals(202, eventController.deleteAdmin(event.getId()).getStatusCodeValue());
     }
 }
