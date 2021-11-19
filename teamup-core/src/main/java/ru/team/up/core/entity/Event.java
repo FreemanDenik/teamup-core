@@ -19,12 +19,14 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "EVENT")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Event {
     /**
      * Первичный ключ
      */
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
