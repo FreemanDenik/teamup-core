@@ -1,4 +1,4 @@
-package ru.team.up.input.controlle.privateController;
+package ru.team.up.input.controller.privateController;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

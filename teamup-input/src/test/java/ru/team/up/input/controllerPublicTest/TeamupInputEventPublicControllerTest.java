@@ -1,8 +1,5 @@
 package ru.team.up.input.controllerPublicTest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,10 +7,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.team.up.core.entity.*;
-import ru.team.up.input.controlle.publicController.EventRestControllerPublic;
+import ru.team.up.input.controller.publicController.EventRestControllerPublic;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
@@ -62,8 +58,8 @@ public class TeamupInputEventPublicControllerTest {
             .login("alextk")
             .email("alextk@bk.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
+            .accountCreatedTime(LocalDate.now())
+            .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)
             .aboutUser("Studying to be a programmer.")
@@ -77,8 +73,8 @@ public class TeamupInputEventPublicControllerTest {
             .login("alextk2")
             .email("alextk2@bk.ru")
             .password("1234")
-            .accountCreatedTime("07.11.2021 16:55")
-            .lastAccountActivity("07.11.2021 18:32")
+            .accountCreatedTime(LocalDate.now())
+            .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
             .age(43)
             .aboutUser("Studying to be a programmer.")

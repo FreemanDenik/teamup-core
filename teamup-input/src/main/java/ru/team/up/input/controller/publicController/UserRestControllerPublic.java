@@ -1,4 +1,4 @@
-package ru.team.up.input.controlle.publicController;
+package ru.team.up.input.controller.publicController;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
