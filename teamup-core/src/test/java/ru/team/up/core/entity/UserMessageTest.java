@@ -56,7 +56,7 @@ public class UserMessageTest {
     UserMessage userMessage = UserMessage.builder()
             .messageOwner(testUser)
             .message("Hello!")
-            .status(status)
+            .status("new")
             .messageCreationTime(LocalDateTime.now())
             .messageReadTime(LocalDateTime.now())
             .build();
@@ -71,7 +71,7 @@ public class UserMessageTest {
         UserMessage userMessage1 = userMessageRepository.findById(1L).orElse(new UserMessage());
         Assertions.assertEquals(userMessage1.getMessage(), "Hello!");
         Assertions.assertEquals(userMessage1.getMessageOwner().getName(), "Aleksey");
-        Assertions.assertEquals(userMessage1.getStatus().getStatus(), "unread");
+        Assertions.assertEquals(userMessage1.getStatus(), "new");
         Assertions.assertEquals(userMessage1.getId(), 1L);
         Assertions.assertEquals("Hello!",
                 userMessageRepository.findAllByMessageOwner(testUser).getMessage());

@@ -64,4 +64,13 @@ public class User extends Account {
     @JoinTable (name="USER_ACCOUNT_EVENT", joinColumns=@JoinColumn (name="USER_ID"),
             inverseJoinColumns=@JoinColumn(name="EVENT_ID"))
     private Set<Event> userEvent;
+
+    /**
+     *  Сообщения пользователя
+     */
+    @ManyToMany (cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable (name="USER_ACCOUNT_MESSAGES", joinColumns=@JoinColumn (name="USER_ID"),
+            inverseJoinColumns=@JoinColumn(name="MESSAGE_ID"))
+    @Column(name = "USER_MESSAGES")
+    private Set<UserMessage> userMessages;
 }

@@ -43,6 +43,9 @@ class TeamupCoreApplicationTests {
     @Autowired
     private EventTypeRepository eventTypeRepository;
 
+    @Autowired
+    private UserMessageRepository userMessageRepository;
+
     private Admin adminTest;
 
     private Moderator moderatorTest;
@@ -255,6 +258,10 @@ class TeamupCoreApplicationTests {
         Event event = Event.builder().eventName("Football game").descriptionEvent("Join people to play football math")
                 .placeEvent("Moskow").timeEvent(LocalDateTime.now()).authorId(userTestMessage).eventType(eventType).build();
 
+
         eventService.saveEvent(event);
+
+        Assert.assertNotNull(userRepository.findById(2L).get().getUserMessages());
+        Assert.assertNotNull(userRepository.findById(3L).get().getUserMessages());
     }
 }
