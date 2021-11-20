@@ -1,7 +1,9 @@
 package ru.team.up.input.payload.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.team.up.core.entity.Event;
 
 /**
@@ -12,6 +14,8 @@ import ru.team.up.core.entity.Event;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EventRequest {
 
     /**

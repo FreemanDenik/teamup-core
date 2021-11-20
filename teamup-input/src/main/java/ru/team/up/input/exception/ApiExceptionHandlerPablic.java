@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * @author Pavel Kondrashov on 23.10.2021
  */
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionHandlerPablic {
 
     @ExceptionHandler(value = {EventCreateRequestException.class})
     public ResponseEntity<Object> handleApiCreateRequestException(EventCreateRequestException e) {

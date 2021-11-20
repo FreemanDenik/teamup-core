@@ -1,19 +1,12 @@
-package ru.team.up.input.controller;
+package ru.team.up.input.controller.publicController;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.input.exception.EventCheckException;
@@ -21,12 +14,9 @@ import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.EventService;
+import ru.team.up.input.service.EventServicePublic;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +27,11 @@ import java.util.Optional;
  */
 
 @Slf4j
-@RestController("api/public/event")
+@RestController
+@RequestMapping("/api/public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class EventRestController {
-    private final EventService eventService;
+public class EventRestControllerPublic {
+    private final EventServicePublic eventService;
     private final WordMatcher wordMatcher;
 
 
@@ -91,7 +82,7 @@ public class EventRestController {
      * @param eventName Название мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "{eventName}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/eventName/{eventName}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Event>> findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
         List<Event> events = eventService.getEventByName(eventName);
@@ -131,7 +122,7 @@ public class EventRestController {
      * @param eventType Тип мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/type", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Event>> findEventsByType(@RequestBody EventType eventType) {
         log.debug("Получен запрос на поиск мероприятий по типу: {}", eventType);
         List<Event> events = eventService.getAllEventsByEventType(eventType);
@@ -241,10 +232,10 @@ public class EventRestController {
             throw new EventCreateRequestException("Имя или описание мероприятия содержит запрещенные слова");
         }
 
-        if (ChronoUnit.YEARS.between(event.getEvent().getTimeEvent(), LocalDate.now()) >= 1) {
-            log.error("Дата создания мероприятия более 1 года:\n {}", event);
-            throw new EventCreateRequestException("Дата создания мероприятия более 1 года");
-        }
+//        if (ChronoUnit.YEARS.between(event.getEvent().getTimeEvent(), LocalDate.now()) >= 1) {
+//            log.error("Дата создания мероприятия более 1 года:\n {}", event);
+//            throw new EventCreateRequestException("Дата создания мероприятия более 1 года");
+//        }
 
         if (wordMatcher.detectUnnecessaryWords(event.getEvent().getEventName()) ||
                 wordMatcher.detectUnnecessaryWords(event.getEvent().getDescriptionEvent())) {
