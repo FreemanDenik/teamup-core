@@ -2,14 +2,19 @@ package ru.team.up.external.impl;
 
 import org.glassfish.jersey.client.JerseyInvocation;
 import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.team.up.external.impl.model.MapEntity;
 import ru.team.up.external.impl.service.GeoServiceImpl;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 
@@ -19,7 +24,7 @@ import static org.mockito.Mockito.doReturn;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TeamupExternalImplApplicationTests {
+public class TeamupExternalImpApplicationTests {
 
     @Before
     public void setUp() {
@@ -29,7 +34,6 @@ public class TeamupExternalImplApplicationTests {
     @Mock
     private Client client;
 
-    @Autowired
     @InjectMocks
     private GeoServiceImpl geoService;
 
@@ -43,25 +47,25 @@ public class TeamupExternalImplApplicationTests {
     String addressIncorrectData = "https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224%2C+-73.961452%25&key=AIzaSyAHQIILvWIWOguqyXX9nCexRuHNz2y-gO8";
 
     @Test
-    public void getGeocodeCorrectData(){
+    public void getGeocodeCorrectData() {
         MockClient(geocodeCorrectDataURL);
         Assert.assertEquals("OK", geoService.getGeocode("1600+Amphitheatre+Parkway,+Mountain+View,+CA").getStatus());
     }
 
     @Test
-    public void getGeocodeIncorrectData(){
+    public void getGeocodeIncorrectData() {
         MockClient(geocodeIncorrectDataURL);
         Assert.assertEquals(null, geoService.getGeocode("1600%bAmphitheatre+Parkway,+Mountain+View,+CA"));
     }
 
     @Test
-    public void getAddressCorrectData(){
+    public void getAddressCorrectData() {
         MockClient(addressCorrectDataURL);
         Assert.assertEquals("OK", geoService.getAddress("40.714224,-73.961452").getStatus());
     }
 
     @Test
-    public void getAddressIncorrectData(){
+    public void getAddressIncorrectData() {
         MockClient(addressIncorrectData);
         Throwable thrown = assertThrows(RuntimeException.class, () -> {
             geoService.getAddress("40.714224, -73.961452%");
@@ -69,9 +73,9 @@ public class TeamupExternalImplApplicationTests {
         assertNotNull(thrown.getMessage());
     }
 
-    private void MockClient(String url){
+    private void MockClient(String url) {
 
-        if (url ==  geocodeCorrectDataURL || url ==  addressCorrectDataURL){
+        if (url == geocodeCorrectDataURL || url == addressCorrectDataURL) {
             MapEntity map = new MapEntity();
             map.setStatus("OK");
 

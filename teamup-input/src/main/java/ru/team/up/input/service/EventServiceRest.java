@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Pavel Kondrashov on 23.10.2021
  */
-public interface EventService {
+public interface EventServiceRest {
 
     /**
      * Метод для поиска мероприятия по идентификатору

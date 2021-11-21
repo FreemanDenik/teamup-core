@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.UserService;
+import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequestMapping("api/public/account")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestController {
-    private final UserService userService;
+    private final UserServiceRest userServiceRest;
 
     /**
      * Метод для поиска поьзователя по id
@@ -36,7 +36,7 @@ public class UserRestController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        Optional<User> userOptional = Optional.ofNullable(userService.getUserById(userId));
+        Optional<User> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
 
         return userOptional
                 .map(user -> {
@@ -58,7 +58,7 @@ public class UserRestController {
     @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUserByEmail(@PathVariable("email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
-        Optional<User> userOptional = Optional.ofNullable(userService.getUserByEmail(userEmail));
+        Optional<User> userOptional = Optional.ofNullable(userServiceRest.getUserByEmail(userEmail));
 
         log.debug("Пользователь с почтой {} найден", userEmail);
         return userOptional
@@ -74,7 +74,7 @@ public class UserRestController {
     @GetMapping("/")
     public ResponseEntity<List<User>> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
-        List<User> users = userService.getAllUsers();
+        List<User> users = userServiceRest.getAllUsers();
 
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
@@ -95,7 +95,7 @@ public class UserRestController {
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
         log.debug("Получен запрос на обновление пользователя");
-        User existUser = userService.updateUser(userId, user);
+        User existUser = userServiceRest.updateUser(userId, user);
 
         if (existUser == null) {
             log.error("Пользователь не найден");
@@ -115,14 +115,14 @@ public class UserRestController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> deleteUserById(@PathVariable("id") Long userId) {
         log.debug("Получен запрос на удаления пользователя с id = {}", userId);
-        User user = userService.getUserById(userId);
+        User user = userServiceRest.getUserById(userId);
 
         if (user == null) {
             log.error("Пользователь с id = {} не найден", userId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        userService.deleteUserById(userId);
+        userServiceRest.deleteUserById(userId);
 
         log.debug("Пользователь с id = {} успешно удален", userId);
         return new ResponseEntity<>(HttpStatus.OK);

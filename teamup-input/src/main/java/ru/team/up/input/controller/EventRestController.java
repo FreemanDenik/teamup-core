@@ -13,11 +13,10 @@ import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.EventService;
+import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +32,7 @@ import java.util.Optional;
 @RequestMapping(value = "api/public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventRestController {
-    private final EventService eventService;
+    private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
 
 
@@ -45,7 +44,7 @@ public class EventRestController {
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Получен запрос на список мероприятий");
-        List<Event> events = eventService.getAllEvents();
+        List<Event> events = eventServiceRest.getAllEvents();
 
         if (events.isEmpty()) {
             log.error("Список мероприятий пуст");
@@ -65,7 +64,7 @@ public class EventRestController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Event> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
-        Optional<Event> eventOptional = Optional.ofNullable(eventService.getEventById(eventId));
+        Optional<Event> eventOptional = Optional.ofNullable(eventServiceRest.getEventById(eventId));
 
         return eventOptional
                 .map(event -> {
@@ -87,7 +86,7 @@ public class EventRestController {
     @GetMapping(value = "/name/{eventName}")
     public ResponseEntity<List<Event>> findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
-        List<Event> events = eventService.getEventByName(eventName);
+        List<Event> events = eventServiceRest.getEventByName(eventName);
 
         if (events.isEmpty()) {
             log.error("Мероприятия не найдены");
@@ -107,7 +106,7 @@ public class EventRestController {
     @GetMapping(value = "/author")
     public ResponseEntity<List<Event>> findEventsByAuthor(@RequestBody UserRequest author) {
         log.debug("Получен запрос на поиск мероприятий по автору {}", author);
-        List<Event> events = eventService.getAllEventsByAuthor(author.getUser());
+        List<Event> events = eventServiceRest.getAllEventsByAuthor(author.getUser());
 
         if (events.isEmpty()) {
             log.error("Мероприятия по указанному автору {} не найдены", author);
@@ -127,7 +126,7 @@ public class EventRestController {
     @GetMapping(value = "/type")
     public ResponseEntity<List<Event>> findEventsByType(@RequestBody EventType eventType) {
         log.debug("Получен запрос на поиск мероприятий по типу: {}", eventType);
-        List<Event> events = eventService.getAllEventsByEventType(eventType);
+        List<Event> events = eventServiceRest.getAllEventsByEventType(eventType);
 
         log.debug("Мероприятия с типом: {} найдены", eventType);
         return new ResponseEntity<>(events, HttpStatus.OK);
@@ -146,7 +145,7 @@ public class EventRestController {
         checkEvent(event);
 
         log.debug("Мероприятие созданно");
-        Event upcomingEvent = eventService.saveEvent(event.getEvent());
+        Event upcomingEvent = eventServiceRest.saveEvent(event.getEvent());
 
         return new ResponseEntity<>(upcomingEvent, HttpStatus.CREATED);
     }
@@ -165,7 +164,7 @@ public class EventRestController {
         checkEvent(event);
 
         log.debug("Мероприятие {} обновлено", event);
-        Event newEvent = eventService.updateEvent(eventId, event.getEvent());
+        Event newEvent = eventServiceRest.updateEvent(eventId, event.getEvent());
 
         return new ResponseEntity<>(newEvent, HttpStatus.OK);
     }
@@ -179,14 +178,14 @@ public class EventRestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на удаление мероприятия с id: {}", eventId);
-        Event event = eventService.getEventById(eventId);
+        Event event = eventServiceRest.getEventById(eventId);
 
         if (event == null) {
             log.error("Мероприятие с id: {} не найдено", eventId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        eventService.deleteEvent(eventId);
+        eventServiceRest.deleteEvent(eventId);
 
         log.debug("Мероприятие с id: {} успешно удалено", eventId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -201,7 +200,7 @@ public class EventRestController {
     @PostMapping(value = "/join")
     public ResponseEntity<Event> addEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на добавление участника мероприятия");
-        Event event = eventService.addParticipant(joinRequest.getEventId(), joinRequest.getUserId());
+        Event event = eventServiceRest.addParticipant(joinRequest.getEventId(), joinRequest.getUserId());
 
         log.debug("Участник успешно добавлен");
         return new ResponseEntity<>(event, HttpStatus.OK);
@@ -216,7 +215,7 @@ public class EventRestController {
     @PostMapping("/unjoin")
     public ResponseEntity<Event> deleteEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на удаление участника мероприятия");
-        Event event = eventService.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId());
+        Event event = eventServiceRest.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId());
 
         log.debug("Участник успешно удален");
         return new ResponseEntity<>(event, HttpStatus.OK);
