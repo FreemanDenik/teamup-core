@@ -1,4 +1,4 @@
-package ru.team.up.input.controller;
+package ru.team.up.input.controller.publicController;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/public/account")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UserRestController {
+public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
 
     /**

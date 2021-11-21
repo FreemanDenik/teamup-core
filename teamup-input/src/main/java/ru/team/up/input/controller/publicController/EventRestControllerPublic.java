@@ -1,4 +1,4 @@
-package ru.team.up.input.controller;
+package ru.team.up.input.controller.publicController;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "api/public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class EventRestController {
+public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
 
