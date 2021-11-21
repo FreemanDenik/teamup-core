@@ -17,6 +17,7 @@ import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -233,7 +234,7 @@ public class EventRestControllerPublic {
             throw new EventCreateRequestException("Имя или описание мероприятия содержит запрещенные слова");
         }
 
-        if (ChronoUnit.YEARS.between(event.getEvent().getTimeEvent(), LocalDate.now()) >= 1) {
+        if (ChronoUnit.YEARS.between(event.getEvent().getTimeEvent(), LocalDateTime.now()) >= 1) {
             log.error("Дата создания мероприятия более 1 года:\n {}", event);
             throw new EventCreateRequestException("Дата создания мероприятия более 1 года");
         }
