@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
-class TeamupInputUserPrivateControllerTest {
+public class TeamupInputUserPrivateControllerTest {
 
     @Mock
     private UserService userService;
@@ -30,6 +30,11 @@ class TeamupInputUserPrivateControllerTest {
     @Autowired
     @InjectMocks
     private UserController userController;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     Interests programming = Interests.builder()
             .title("Programming")
