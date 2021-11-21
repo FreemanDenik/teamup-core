@@ -9,7 +9,7 @@ import ru.team.up.core.entity.EventType;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.UserRepository;
-import ru.team.up.input.service.EventServicePublic;
+import ru.team.up.input.service.EventServiceRest;
 
 import java.util.List;
 
@@ -20,13 +20,13 @@ import java.util.List;
 @Service
 @Transactional
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class EventServicePublicImpl implements EventServicePublic {
+public class EventServiceRestImpl implements EventServiceRest {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
     @Override
     public Event getEventById(Long id) {
-        return eventRepository.getById(id);
+        return eventRepository.getOne(id);
     }
 
     @Override
@@ -67,20 +67,20 @@ public class EventServicePublicImpl implements EventServicePublic {
     @Override
     public Event addParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
-        User participant = userRepository.getById(userId);
-        List<User> participants = event.getParticipantsEvent();
-        participants.add(participant);
-        event.setParticipantsEvent(participants);
+        User participant = userRepository.getOne(userId);
+//        List<User> participants = event.getParticipantsEvent();
+//        participants.add(participant);
+//        event.setParticipantsEvent(participants);
         return updateEvent(eventId, event);
     }
 
     @Override
     public Event deleteParticipant(Long eventId, Long userId) {
         Event event = getEventById(eventId);
-        User participant = userRepository.getById(userId);
-        List<User> participants = event.getParticipantsEvent();
-        participants.remove(participant);
-        event.setParticipantsEvent(participants);
+        User participant = userRepository.getOne(userId);
+//        List<User> participants = event.getParticipantsEvent();
+//        participants.remove(participant);
+//        event.setParticipantsEvent(participants);
         return updateEvent(eventId, event);
     }
 }

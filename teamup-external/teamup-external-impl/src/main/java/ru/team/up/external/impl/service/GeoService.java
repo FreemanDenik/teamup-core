@@ -1,5 +1,6 @@
 package ru.team.up.external.impl.service;
 
+import org.springframework.stereotype.Service;
 import ru.team.up.external.impl.model.MapEntity;
 
 /*
@@ -8,6 +9,7 @@ import ru.team.up.external.impl.model.MapEntity;
 *  2. Удобочитаемого адреса из географических координат
 * */
 
+@Service
 public interface GeoService {
 
     /*

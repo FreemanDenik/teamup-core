@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.auth.repository.UserRepository;
+import ru.team.up.core.repositories.UserRepository;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -13,6 +13,6 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepository.findUserAndRolesByName (s);
+        return (UserDetails) userRepository.findUserAndRolesByName (s);
     }
 }

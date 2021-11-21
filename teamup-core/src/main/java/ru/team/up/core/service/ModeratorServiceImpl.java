@@ -51,7 +51,7 @@ public class ModeratorServiceImpl implements ModeratorService {
     public Moderator getOneModerator(Long id) {
         log.debug("Старт метода Moderator getOneModerator(Long id) с параметром {}", id);
 
-        Moderator moderator = Optional.of(moderatorRepository.getById(id))
+        Moderator moderator = Optional.of(moderatorRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
         log.debug("Получили модератора из БД {}", moderator);
 

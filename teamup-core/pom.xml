@@ -8,13 +8,21 @@
         <artifactId>teamup</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-
-    <artifactId>teamup-core</artifactId>
-
     <properties>
         <java.version>11</java.version>
     </properties>
+    <artifactId>teamup-core</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>teamup-core</name>
+    <description>
+        The core module contains information about the database.
+    </description>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -22,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
@@ -32,15 +40,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.boot.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.3.0</version>
+            <version>${postgre.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -64,7 +66,16 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0</version>
         </dependency>
-
     </dependencies>
-
+    <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <type>pom</type>
+            <version>2.4.0</version>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+    </dependencyManagement>
 </project>

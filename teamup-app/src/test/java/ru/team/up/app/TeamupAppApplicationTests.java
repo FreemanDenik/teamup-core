@@ -1,12 +1,13 @@
-package ru.team.up.input;
+package ru.team.up.app;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TeamupInputApplicationTests {
+class TeamupAppApplicationTests {
 
     @Test
     void contextLoads() {
     }
+
 }

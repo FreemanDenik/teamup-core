@@ -11,7 +11,6 @@ import ru.team.up.core.entity.User;
  * и переадресации на страницы в зависимости от роли пользователя
  */
 @Controller
-@RequestMapping("/")
 public class MainController {
     /**
      * Стартовая страница

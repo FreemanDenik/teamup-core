@@ -57,7 +57,7 @@ public class EventServiceImpl implements EventService {
     public Event getOneEvent(Long id) {
         log.debug("Старт метода Event getOneEvent(Long id) с параметром {}", id);
 
-        Event event = Optional.of(eventRepository.getById(id))
+        Event event = Optional.of(eventRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
         log.debug("Получили мероприятие из БД {}", event);
 

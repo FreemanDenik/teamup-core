@@ -1,8 +1,6 @@
 package ru.team.up.input.controllerPrivateTest;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

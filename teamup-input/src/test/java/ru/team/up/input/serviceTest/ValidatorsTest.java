@@ -1,9 +1,13 @@
 package ru.team.up.input.serviceTest;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.input.TeamupInputApplication;
 import ru.team.up.input.service.ValidatorService;
+import ru.team.up.input.service.impl.EmailValidatorService;
+import ru.team.up.input.service.impl.PhoneNumberValidatorService;
 
 import java.util.stream.IntStream;
 
@@ -11,8 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ValidatorsTest {
-    @Autowired
-    private ValidatorService validator;
+
+    private final ValidatorService validator =
+            new ValidatorService(new EmailValidatorService(), new PhoneNumberValidatorService());
 
     private final String[] validEmailIds = new String[]{"journaldev@yahoo.com", "journaldev-100@yahoo.com",
             "journaldev.100@yahoo.com", "journaldev111@journaldev.com", "journaldev-100@journaldev.net",
@@ -61,7 +66,7 @@ public class ValidatorsTest {
     private final String[] invalidNumbers = new String[]{"+89033271243", "+3456002938", "qwerty"};
 
     @Test
-    void validNumbers() {
+    public void validNumbers() {
         for (String temp : validNumbers) {
             assertTrue(validator.validateNumber(temp));
         }
@@ -71,7 +76,7 @@ public class ValidatorsTest {
     }
 
     @Test
-    void validEmail() {
+    public void validEmail() {
         for (String temp : validEmailIds) {
             assertTrue(validator.validateEmail(temp));
         }
@@ -81,7 +86,7 @@ public class ValidatorsTest {
     }
 
     @Test
-    void formatNumbers() {
+    public void formatNumbers() {
         IntStream.range(0, validNumbers.length)
                 .forEach(i -> assertEquals(validFormatNumbers[i], validator.uniformFormatNumber(validNumbers[i])));
 

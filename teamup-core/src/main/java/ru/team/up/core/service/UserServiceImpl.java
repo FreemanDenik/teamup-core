@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public User getOneUser(Long id) {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
-        User user = Optional.of(userRepository.getById(id))
+        User user = Optional.of(userRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
         log.debug("Получили юзера из БД {}", user);
 

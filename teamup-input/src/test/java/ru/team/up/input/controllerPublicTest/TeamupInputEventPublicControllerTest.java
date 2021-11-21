@@ -13,7 +13,7 @@ import ru.team.up.input.controller.publicController.EventRestControllerPublic;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.impl.EventServicePublicImpl;
+import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
 import java.time.LocalDate;
@@ -36,7 +36,7 @@ public class TeamupInputEventPublicControllerTest {
     private WordMatcher wordMatcher;
 
     @Mock
-    private EventServicePublicImpl eventService;
+    private EventServiceRest eventService;
 
     @Autowired
     @InjectMocks

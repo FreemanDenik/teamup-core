@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.UserRepository;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.UserServicePublic;
+import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class UserServicePublicImpl implements UserServicePublic {
+public class UserServiceRestImpl implements UserServiceRest {
     private final UserRepository userRepository;
 
     @Override
     @Transactional
     public User getUserById(Long id) {
-        return userRepository.getById(id);
+        return userRepository.getOne(id);
     }
 
     @Override

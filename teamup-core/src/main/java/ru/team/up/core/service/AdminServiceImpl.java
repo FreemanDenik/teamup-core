@@ -50,7 +50,7 @@ public class AdminServiceImpl implements AdminService {
     public Admin getOneAdmin(Long id) {
         log.debug("Старт метода Admin getOneAdmin(Long id) с параметром {}", id);
 
-        Admin admin = Optional.of(adminRepository.getById(id))
+        Admin admin = Optional.of(adminRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
         log.debug("Получили админа из БД {}", admin);
 

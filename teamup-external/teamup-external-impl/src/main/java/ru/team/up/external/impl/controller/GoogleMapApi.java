@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 * Контроллер отвечающий за взаимодействие с Google api
 * */
 
-@Path("/api")
+@Path("/api/external")
 @Component
 @Slf4j
 public class GoogleMapApi {
