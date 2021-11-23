@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Account {
-
     /**
      * Уникальный идентификатор
      */
@@ -47,7 +46,11 @@ public class Account {
      */
     @Column(name = "LOGIN", nullable = false)
     private String login;
-
+    /**
+     * Роль
+     */
+    @Column(name = "ROLE")
+    private String role;
     /**
      * Электронная почта
      */

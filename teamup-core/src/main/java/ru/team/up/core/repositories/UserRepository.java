@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
 import java.util.Optional;
@@ -16,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByLogin(String login);;
 
     Object findUserAndRolesByName(String s);
+
+    Account findByEmail(String email);
 }
