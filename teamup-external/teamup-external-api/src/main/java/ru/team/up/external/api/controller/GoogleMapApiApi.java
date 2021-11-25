@@ -1,10 +1,14 @@
-package ru.team.up.external.impl.controller;
+package ru.team.up.external.api.controller;
 
-import ru.team.up.external.impl.model.MapEntity;
-import ru.team.up.external.impl.service.GeoService;
+
+/*
+ * Контроллер отвечающий за взаимодействие с Google api
+ * */
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.team.up.external.api.service.GeoServiceApi;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -12,22 +16,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-/*
-* Контроллер отвечающий за взаимодействие с Google api
-* */
-
-@Path("/api/external")
+@Path("/api")
 @Component
 @Slf4j
-public class GoogleMapApi {
+public class GoogleMapApiApi {
 
-    private GeoService geoService;
+    private GeoServiceApi geoService;
 
-    public GoogleMapApi() {
+    public GoogleMapApiApi() {
     }
 
     @Autowired
-    public GoogleMapApi(GeoService geoService) {
+    public GoogleMapApiApi(GeoServiceApi geoService) {
         this.geoService = geoService;
     }
 
@@ -44,8 +44,8 @@ public class GoogleMapApi {
     @GET
     @Path("/code/{address}")
     @Produces(MediaType.APPLICATION_JSON)
-    public MapEntity getGeoCode(@PathParam("address") String address) {
-        return geoService.getGeocode(address);
+    public String getGeoCode(@PathParam("address") String address) {
+        return geoService.getGeocodeApi(address);
     }
 
     /*
@@ -58,7 +58,7 @@ public class GoogleMapApi {
     @GET
     @Path("/decode/{geo}")
     @Produces(MediaType.APPLICATION_JSON)
-    public MapEntity getAddress(@PathParam("geo") String geo) {
-        return geoService.getAddress(geo);
+    public String getAddress(@PathParam("geo") String geo) {
+        return geoService.getAddressApi(geo);
     }
 }
