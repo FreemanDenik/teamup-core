@@ -25,6 +25,11 @@ import java.util.Optional;
 public class ModeratorServiceImpl implements ModeratorService {
     private ModeratorRepository moderatorRepository;
 
+    @Override
+    public Moderator update() {
+        return null;
+    }
+
     /**
      * @return Возвращает коллекцию Moderator.
      * Если коллекция пуста, генерирует исключение со статусом HttpStatus.NO_CONTENT

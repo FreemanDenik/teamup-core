@@ -82,11 +82,11 @@ public class ModeratorController {
      * в теле ResponseEntity
      */
     @Operation(summary ="Обновление данных модератора")
-    @PatchMapping
-    public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) {
+    @PatchMapping("/{id}")
+    public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator,@PathVariable("id") Long moderatorId) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
 
-        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.saveModerator(moderator));
+        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.update());
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
