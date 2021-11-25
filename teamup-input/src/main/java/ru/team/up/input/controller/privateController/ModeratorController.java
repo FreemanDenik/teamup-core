@@ -18,6 +18,7 @@ import java.util.List;
  * @author Alexey Tkachenko
  *
  * @link localhost:8080/swagger-ui.html
+ * @link  http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
  * Документация API
  */
 
@@ -68,7 +69,6 @@ public class ModeratorController {
     @PostMapping
     public ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderatorCreate) {
         log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
-
         ResponseEntity<Moderator> responseEntity
                 = new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
         log.debug("Получили ответ {}", responseEntity);
@@ -78,6 +78,7 @@ public class ModeratorController {
 
     /**
      * @param moderator Обновляемый объект класса Moderator
+     * @param moderatorId id модератора
      * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта Moderator
      * в теле ResponseEntity
      */
@@ -85,10 +86,14 @@ public class ModeratorController {
     @PatchMapping("/{id}")
     public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator,@PathVariable("id") Long moderatorId) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
-
-        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.update());
-        log.debug("Получили ответ {}", responseEntity);
-
+        ResponseEntity<Moderator> responseEntity;
+        if(moderatorService.moderatorIsExistsById (moderatorId)){
+            moderator.setId (moderatorId);
+            responseEntity = ResponseEntity.ok(moderatorService.saveModerator (moderator));
+            log.debug("Модератор обновлён {}", responseEntity);
+        }else{
+            responseEntity = new ResponseEntity<> (HttpStatus.NOT_FOUND);
+        }
         return responseEntity;
     }
 
@@ -103,7 +108,7 @@ public class ModeratorController {
 
         moderatorService.deleteModerator(id);
 
-        ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;

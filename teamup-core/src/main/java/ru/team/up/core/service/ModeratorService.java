@@ -15,6 +15,6 @@ public interface ModeratorService {
     Moderator saveModerator(Moderator user);
 
     void deleteModerator(Long id);
+    boolean moderatorIsExistsById(Long id);
 
-    Moderator update();
 }

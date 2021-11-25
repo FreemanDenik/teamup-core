@@ -25,11 +25,6 @@ import java.util.Optional;
 public class ModeratorServiceImpl implements ModeratorService {
     private ModeratorRepository moderatorRepository;
 
-    @Override
-    public Moderator update() {
-        return null;
-    }
-
     /**
      * @return Возвращает коллекцию Moderator.
      * Если коллекция пуста, генерирует исключение со статусом HttpStatus.NO_CONTENT
@@ -86,8 +81,20 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Transactional
     public void deleteModerator(Long id) {
         log.debug("Старт метода void deleteModerator(Long id) с параметром {}", id);
-
         moderatorRepository.deleteById(id);
         log.debug("Удалили модератор из БД {}", id);
+    }
+
+    @Override
+    @Transactional
+    public boolean moderatorIsExistsById(Long id) {
+        log.debug("Старт метода boolean moderatorIsExistsById(Long id) с параметром {}", id);
+        boolean exists = moderatorRepository.existsById (id);
+        if (exists) {
+            log.debug ("Модератор с Id {} есть в БД", id);
+        } else {
+            log.debug ("Модератора с Id {} не существует", id);
+        }
+        return exists;
     }
 }

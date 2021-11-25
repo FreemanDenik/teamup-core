@@ -66,10 +66,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.13.0</version>
         </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
     </dependencies>
     <dependencyManagement>
     <dependencies>
