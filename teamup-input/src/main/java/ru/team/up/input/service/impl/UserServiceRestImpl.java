@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Сервис для работы с пользователями
+ *
  * @author Pavel Kondrashov
  */
 
@@ -24,7 +25,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     @Transactional
     public User getUserById(Long id) {
-        return userRepository.getOne(id);
+        return userRepository.getUserById(id);
     }
 
     @Override
@@ -41,8 +42,10 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     @Transactional
-    public User updateUser(Long id, UserRequest user) {
-        return userRepository.saveAndFlush(user.getUser());
+    public void updateUser(UserRequest user, Long id) {
+        User oldUser = getUserById(id);
+        user.getUser().setId(oldUser.getId());
+        userRepository.saveAndFlush(user.getUser());
     }
 
     @Override

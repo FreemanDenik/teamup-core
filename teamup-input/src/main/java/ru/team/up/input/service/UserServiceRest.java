@@ -39,11 +39,9 @@ public interface UserServiceRest {
     /**
      * Метод обновления пользователя
      *
-     * @param id   идентификатор поиска
      * @param user Пользователь для обновления
-     * @return Обновленный пользователь
      */
-    User updateUser(Long id, UserRequest user);
+    void updateUser(UserRequest user, Long id);
 
     /**
      * Метод для удаления пользователя
