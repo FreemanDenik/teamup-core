@@ -2,7 +2,6 @@ package ru.team.up.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -66,6 +65,7 @@ public class Event {
      */
     @ManyToMany(mappedBy = "userEvent",
             cascade = CascadeType.MERGE, fetch =FetchType.LAZY)
+    @Column(name = "PARTICIPANTS_EVENT")
     private List<User> participantsEvent;
 
     /**
@@ -73,6 +73,7 @@ public class Event {
      */
     @ManyToOne(optional=false, cascade=CascadeType.MERGE)
     @JoinColumn(name = "EVENT_TYPE_ID")
+    @Column(name = "EVENT_TYPE")
     private EventType eventType;
 
     /**
@@ -80,6 +81,7 @@ public class Event {
      */
     @ManyToOne(optional=false,cascade=CascadeType.MERGE)
     @JoinColumn(name = "USER_ID")
+    @Column(name = "AUTHOR")
     private User authorId;
 
     /**
@@ -89,6 +91,7 @@ public class Event {
     @JoinTable(name="INTERESTS_EVENT",
             joinColumns=@JoinColumn(name="EVENT_ID", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "INTERESTS_ID"))
+    @Column(name = "INTERESTS_EVENT")
     private Set<Interests> eventInterests;
 
     /**
@@ -96,5 +99,6 @@ public class Event {
      */
     @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
+    @Column(name = "STATUS_EVENT")
     private Status status;
 }

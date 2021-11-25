@@ -1,9 +1,9 @@
-package ru.team.up.external.impl.config;
+package ru.team.up.external.api.config;
 
-import org.springframework.context.annotation.Bean;
-import ru.team.up.external.impl.controller.GoogleMapApi;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import ru.team.up.external.api.controller.GoogleMapApiApi;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -12,7 +12,7 @@ import javax.ws.rs.client.ClientBuilder;
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
-        register(GoogleMapApi.class);
+        register(GoogleMapApiApi.class);
     }
 
     @Bean
