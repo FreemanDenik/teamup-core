@@ -57,7 +57,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     @Test
     public void testCreateModerator() {
         when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
-        Assert.assertEquals(201, moderatorController.createModerator("moderator", moderator).getStatusCodeValue());
+        Assert.assertEquals(201, moderatorController.createModerator( moderator).getStatusCodeValue());
     }
 
     @Test

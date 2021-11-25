@@ -1,5 +1,7 @@
 package ru.team.up.input.controller.privateController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.util.List;
  */
 
 @Slf4j
+@Tag(name = "Moderator Private Controller",description = "Moderator API")
 @RestController
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/private/account/moderator")
@@ -30,6 +33,7 @@ public class ModeratorController {
      * @return Результат работы метода moderatorService.getAllModerators() в виде коллекции модераторов
      * в теле ResponseEntity
      */
+    @Operation(summary ="Получение списка всех модераторов")
     @GetMapping
     public ResponseEntity<List<Moderator>> getAllModerators() {
         log.debug("Старт метода ResponseEntity<List<Moderator>> getAllModerators()");
@@ -45,6 +49,7 @@ public class ModeratorController {
      * @return Результат работы метода moderatorService.getOneModerator(id) в виде объекта Moderator
      * в теле ResponseEntity
      */
+    @Operation(summary ="Получение модератора по id")
     @GetMapping("/{id}")
     public ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) с параметром {}", id);
@@ -56,12 +61,12 @@ public class ModeratorController {
     }
 
     /**
-     * @param moderator Создаваемый объект класса Moderator
      * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта Moderator
      * в теле ResponseEntity
      */
+    @Operation(summary ="Создание нового модератора")
     @PostMapping
-    public ResponseEntity<Moderator> createModerator(@RequestParam String moderator, @RequestBody @NotNull Moderator moderatorCreate) {
+    public ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderatorCreate) {
         log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
 
         ResponseEntity<Moderator> responseEntity
@@ -76,6 +81,7 @@ public class ModeratorController {
      * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта Moderator
      * в теле ResponseEntity
      */
+    @Operation(summary ="Обновление данных модератора")
     @PatchMapping
     public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
@@ -90,6 +96,7 @@ public class ModeratorController {
      * @param id Удаляемого объекта класса Moderator
      * @return Объект ResponseEntity со статусом OK
      */
+    @Operation(summary ="Удаление модератора по id")
     @DeleteMapping("/{id}")
     public ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) с параметром {}", id);
