@@ -12,7 +12,10 @@ import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.auth.service.impl.UserServiceAuthImpl;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.User;
+
+import java.security.Principal;
 
 /**
  * Контроллер для регистрации, авторизации
@@ -30,6 +33,17 @@ public class MainController {
         this.userDetails = userDetails;
     }
 
+    private Account getCurrentAccount() {
+        String email = null;
+        if (SecurityContextHolder.getContext().getAuthentication().toString().contains ("given_name")) {
+            email = ((DefaultOidcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        } else {
+            email = ((Account)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        }
+        Account account = (Account) userDetails.loadUserByUsername(email);
+        return account;
+    }
+
     /**
      * Стартовая страница
      *
@@ -45,8 +59,7 @@ public class MainController {
      */
     @GetMapping(value = "/user")
     public String printUserPage(Model model) {
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("loggedUser", account);
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "user";
     }
 
@@ -55,19 +68,17 @@ public class MainController {
      */
     @GetMapping(value = "/admin")
     public String printAdminPage(Model model) {
-        String email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
-        Account account = (Account) userDetails.loadUserByUsername(email);
-        model.addAttribute("loggedUser", account);
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "admin";
     }
+
 
     /**
      * @return переход на страницу для пользователя с ролью MODERATOR
      */
     @GetMapping(value = "/moderator")
     public String printModeratorPage(Model model) {
-        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("loggedUser", account);
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "moderator";
     }
 
