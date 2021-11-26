@@ -57,7 +57,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     @Test
     public void testCreateModerator() {
         when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
-        Assert.assertEquals(201, moderatorController.createModerator("moderator", moderator).getStatusCodeValue());
+        Assert.assertEquals(201, moderatorController.createModerator( moderator).getStatusCodeValue());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     @Test
     public void testUpdateModerator() {
         when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
-        Assert.assertEquals(200, moderatorController.updateModerator(moderator).getStatusCodeValue());
+        Assert.assertEquals(200, moderatorController.updateModerator(moderator,moderator.getId ()).getStatusCodeValue());
     }
 
     @Test
