@@ -95,7 +95,7 @@ public class AdminController {
 
         adminService.deleteAdmin(id);
 
-        ResponseEntity<Admin> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        ResponseEntity<Admin> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;

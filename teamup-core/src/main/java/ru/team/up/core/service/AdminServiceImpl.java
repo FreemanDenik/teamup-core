@@ -30,11 +30,14 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Admin> getAllAdmins() {
+    public List<Admin> getAllAdmins() throws NoContentException {
         log.debug("Старт метода List<Admin> getAllAdmins()");
 
-        List<Admin> admins = Optional.of(adminRepository.findAll())
-                .orElseThrow(NoContentException::new);
+        List<Admin> admins = adminRepository.findAll();
+
+        if (admins.isEmpty()){
+            throw new NoContentException();
+        }
         log.debug("Получили список всех админов из БД {}", admins);
 
         return admins;
@@ -47,11 +50,10 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Admin getOneAdmin(Long id) {
+    public Admin getOneAdmin(Long id) throws UserNotFoundException {
         log.debug("Старт метода Admin getOneAdmin(Long id) с параметром {}", id);
 
-        Admin admin = Optional.of(adminRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+        Admin admin = Optional.of(adminRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id))).get();
         log.debug("Получили админа из БД {}", admin);
 
         return admin;
@@ -78,8 +80,11 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public void deleteAdmin(Long id) {
+    public void deleteAdmin(Long id) throws UserNotFoundException {
         log.debug("Старт метода void deleteAdmin(Admin admin) с параметром {}", id);
+
+        log.debug("Проверка существования админа в БД с id {}", id);
+        Optional.of(adminRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
 
         adminRepository.deleteById(id);
         log.debug("Удалили админа из БД {}", id);
