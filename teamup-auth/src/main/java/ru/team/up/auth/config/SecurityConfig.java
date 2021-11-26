@@ -10,20 +10,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.team.up.auth.oauth2.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessHandler successHandler;
     private final UserDetailsService userDetailsService;
-    private final CustomOAuth2UserService oauthUserService;
 
     @Autowired
-    public SecurityConfig(SuccessHandler successHandler, UserDetailsService userDetailsService, CustomOAuth2UserService oauthUserService) {
+    public SecurityConfig(SuccessHandler successHandler, UserDetailsService userDetailsService) {
         this.successHandler = successHandler;
         this.userDetailsService = userDetailsService;
-        this.oauthUserService = oauthUserService;
     }
 
     @Override
