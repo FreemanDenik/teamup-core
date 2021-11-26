@@ -48,8 +48,7 @@ public class UserDetailsImpl implements UserDetailsService {
             throw new UsernameNotFoundException("userDetailsAccount is null");
         } else {
             userDetailsAccount.setLastAccountActivity(LocalDateTime.now());
-            grantedAuthorities.add(new SimpleGrantedAuthority(userDetailsAccount.getRole()));
-            return new User(userDetailsAccount.getEmail(), userDetailsAccount.getPassword(), grantedAuthorities);
+            return userDetailsAccount;
         }
     }
 }

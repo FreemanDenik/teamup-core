@@ -1,12 +1,17 @@
 package ru.team.up.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.team.up.auth.oauth2.CustomOAuth2User;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.auth.service.impl.UserServiceAuthImpl;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
 /**
@@ -17,10 +22,12 @@ import ru.team.up.core.entity.User;
 public class MainController {
 
     private final UserServiceAuth userServiceAuth;
+    private final UserDetailsImpl userDetails;
 
     @Autowired
-    public MainController(UserServiceAuth userServiceAuth) {
+    public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails) {
         this.userServiceAuth = userServiceAuth;
+        this.userDetails = userDetails;
     }
 
     /**
@@ -37,7 +44,9 @@ public class MainController {
      * @return переход на страницу для пользователя с ролью USER
      */
     @GetMapping(value = "/user")
-    public String printUserPage() {
+    public String printUserPage(Model model) {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("loggedUser", account);
         return "user";
     }
 
@@ -45,7 +54,10 @@ public class MainController {
      * @return переход на страницу для пользователя с ролью ADMIN
      */
     @GetMapping(value = "/admin")
-    public String printAdminPage() {
+    public String printAdminPage(Model model) {
+        String email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        Account account = (Account) userDetails.loadUserByUsername(email);
+        model.addAttribute("loggedUser", account);
         return "admin";
     }
 
@@ -53,7 +65,9 @@ public class MainController {
      * @return переход на страницу для пользователя с ролью MODERATOR
      */
     @GetMapping(value = "/moderator")
-    public String printModeratorPage() {
+    public String printModeratorPage(Model model) {
+        Account account = (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("loggedUser", account);
         return "moderator";
     }
 
