@@ -2,20 +2,14 @@ package ru.team.up.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.team.up.auth.oauth2.CustomOAuth2User;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
-import ru.team.up.auth.service.impl.UserServiceAuthImpl;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.User;
-
-import java.security.Principal;
 
 /**
  * Контроллер для регистрации, авторизации
@@ -34,14 +28,13 @@ public class MainController {
     }
 
     private Account getCurrentAccount() {
-        String email = null;
+        String email;
         if (SecurityContextHolder.getContext().getAuthentication().toString().contains ("given_name")) {
             email = ((DefaultOidcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         } else {
             email = ((Account)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         }
-        Account account = (Account) userDetails.loadUserByUsername(email);
-        return account;
+        return (Account) userDetails.loadUserByUsername(email);
     }
 
     /**
