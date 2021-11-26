@@ -1,9 +1,12 @@
 package ru.team.up.auth.controller;
 
-import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.team.up.auth.service.UserServiceAuth;
+import ru.team.up.auth.service.impl.UserDetailsImpl;
+import ru.team.up.auth.service.impl.UserServiceAuthImpl;
 import ru.team.up.core.entity.User;
 
 /**
@@ -12,21 +15,32 @@ import ru.team.up.core.entity.User;
  */
 @Controller
 public class MainController {
+
+    private final UserServiceAuth userServiceAuth;
+
+    @Autowired
+    public MainController(UserServiceAuth userServiceAuth) {
+        this.userServiceAuth = userServiceAuth;
+    }
+
     /**
      * Стартовая страница
+     *
      * @return страница с предложением зарегистрироваться или авторизоваться.
      */
     @GetMapping(value = "")
     public String printWelcomePage() {
         return "welcome";
     }
+
     /**
-     * @return  переход на страницу для пользователя с ролью USER
+     * @return переход на страницу для пользователя с ролью USER
      */
     @GetMapping(value = "/user")
     public String printUserPage() {
         return "user";
     }
+
     /**
      * @return переход на страницу для пользователя с ролью ADMIN
      */
@@ -34,6 +48,7 @@ public class MainController {
     public String printAdminPage() {
         return "admin";
     }
+
     /**
      * @return переход на страницу для пользователя с ролью MODERATOR
      */
@@ -44,30 +59,34 @@ public class MainController {
 
     /**
      * метод для перехода на страницу регистрации
+     *
      * @param model - сущность для передачи юзера в html
-     * @return  страница с формой регистрации
+     * @return страница с формой регистрации
      */
     @GetMapping(value = "/registration")
-    public String printRegistrationPage (Model model){
-        model.addAttribute ("user",new User ());
+    public String printRegistrationPage(Model model) {
+        model.addAttribute("user", new User());
         return "registration";
     }
 
     /**
      * необходимо отредактировать этот метод для проверки, регистрации и сохранения
      * нового пользователя в БД
+     *
      * @param model - сущность для обмена информацией между методом и html.
-     * @param user - юзер, желающий зарегистрироваться.
+     * @param user  - юзер, желающий зарегистрироваться.
      * @return В случае успешной регистрации нового пользователя переход на страницу авторизации,
      * в ином случае - registration.html
      */
     @PostMapping(value = "/registration")
-    public String registrationNewUser(Model model, @ModelAttribute("user") User user){
-        if (1==1){
-            return "registration";
-        }else {
-           return "redirect:/login";
-        }
+    public String registrationNewUser(@ModelAttribute User user, Model model) {
+        userServiceAuth.saveUser(user);
+        return "redirect:/login";
+    }
+
+    @GetMapping(value = "/login")
+    public String loginPage(Model model) {
+        return "login";
     }
 }
 
