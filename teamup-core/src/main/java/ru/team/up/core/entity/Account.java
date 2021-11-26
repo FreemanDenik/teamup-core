@@ -44,7 +44,7 @@ public class Account {
     /**
      * Логин
      */
-    @Column(name = "LOGIN", nullable = false)
+    @Column(name = "LOGIN", nullable = false, unique = true)
     private String login;
     /**
      * Роль
@@ -54,7 +54,7 @@ public class Account {
     /**
      * Электронная почта
      */
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
     /**

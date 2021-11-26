@@ -19,7 +19,6 @@ import java.util.List;
 /**
  * Тест сущности отзыва на мероприятие
  */
-
 @SpringBootTest
 class EventReviewTest {
 
