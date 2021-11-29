@@ -62,11 +62,11 @@ public class TeamupInputUserPublicControllerTest {
         when(userService.getAllUsers ()).thenReturn (Collections.singletonList (testUser));
         Assert.assertEquals (200,userRestControllerPublic.getUsersList ().getStatusCodeValue ());
     }
-    @Test
-    public void updateUser(){
-        when(userService.updateUser (1L,new UserRequest (testUser))).thenReturn (testUser);
-        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest (testUser), 1L).getStatusCodeValue());
-    }
+//    @Test
+//    public void updateUser(){
+//        when(userService.updateUser (1L,new UserRequest (testUser))).thenReturn (testUser);
+//        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest (testUser), 1L).getStatusCodeValue());
+//    }
     @Test
     public void testDeleteUser() {
         when (userService.getUserById (testUser.getId ())).thenReturn (testUser);

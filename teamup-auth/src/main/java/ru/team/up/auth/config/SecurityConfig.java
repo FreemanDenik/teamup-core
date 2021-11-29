@@ -26,18 +26,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService (userDetailsService);
-        auth.inMemoryAuthentication()
-                .withUser("User")
-                .password("$2a$12$YiROvFRAbeIWWz5XHJAfAedV5hVfb4NFKZs5Atw0yrB3yldjRTVmK")
-                .authorities("ROLE_USER")
-                .and()
-                .withUser("Admin")
-                .password("$2a$12$KwmQ4mBkrb70yebG.yjvKu2Cj5nf6iemWOvo6vOtNExZgMGgpdJte")
-                .authorities("ROLE_ADMIN")
-                .and()
-                .withUser("Moderator")
-                .password("$2a$12$VeRlXvgPPjIzNayOwopCmOu01sjPQWCidCRa5wGEDiQWmUuElQDYG")
-                .authorities("ROLE_MODERATOR");
     }
 
     @Override
@@ -53,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login").usernameParameter("auth_email").passwordParameter("auth_password").permitAll()
                 .and()
                 .oauth2Login().loginPage("/oauth2/authorization/google")
-                .successHandler(new SuccessHandler());
+                .successHandler(successHandler);
 
         http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//выход из системы гет запрос на /logout
