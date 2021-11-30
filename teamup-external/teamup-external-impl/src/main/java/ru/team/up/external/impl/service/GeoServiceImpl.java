@@ -1,6 +1,5 @@
 package ru.team.up.external.impl.service;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,22 +15,21 @@ import java.util.Arrays;
 
 @Slf4j
 @Service
-@NoArgsConstructor
 public class GeoServiceImpl implements GeoService {
 
-    @Value("${google_map_geoCoding_url}")
+    @Value("https://maps.googleapis.com/maps/api/geocode/json?address=")
     private String urlGeocode;
 
-    @Value("${google_map_geoDecoding_url}")
+    @Value("https://maps.googleapis.com/maps/api/geocode/json?latlng=")
     private String urlGeoDecode;
 
-    @Value("${google_map_api_key}")
+    @Value("AIzaSyAHQIILvWIWOguqyXX9nCexRuHNz2y-gO8")
     private String apiKey;
 
     private Client client ;
 
     @Autowired
-    public GeoServiceImpl(Client client) {
+    public GeoServiceImpl(Client client){
         this.client = client;
     }
 

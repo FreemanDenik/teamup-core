@@ -95,7 +95,6 @@ public class Event {
      */
     @ManyToOne(optional=false, cascade=CascadeType.MERGE)
     @JoinColumn(name = "EVENT_TYPE_ID")
-    @Column(name = "EVENT_TYPE")
     private EventType eventType;
 
     /**
@@ -103,7 +102,6 @@ public class Event {
      */
     @ManyToOne(optional=false,cascade=CascadeType.MERGE)
     @JoinColumn(name = "USER_ID")
-    @Column(name = "AUTHOR")
     private User authorId;
 
     /**
@@ -121,7 +119,6 @@ public class Event {
      */
     @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
-    @Column(name = "STATUS_EVENT")
     private Status status;
 
     /**
