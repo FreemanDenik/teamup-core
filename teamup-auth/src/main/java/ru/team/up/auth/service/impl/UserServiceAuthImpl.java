@@ -26,7 +26,7 @@ public class UserServiceAuthImpl implements UserServiceAuth {
     @Override
     public void saveUser(User user) throws IncorrectDataRegistrationException {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt(10)));
-        user.setRole(Role.ROLE_USER.name());
+        user.setRole(Role.ROLE_USER);
         user.setAccountCreatedTime(LocalDate.now());
         user.setLastAccountActivity(LocalDateTime.now());
         userRepository.save(user);

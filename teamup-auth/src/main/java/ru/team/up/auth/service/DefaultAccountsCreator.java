@@ -41,7 +41,7 @@ public class DefaultAccountsCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("user@mail.ru")
                 .age(12)
-                .role(Role.ROLE_USER.name())
+                .role(Role.ROLE_USER)
                 .build());
 
         adminRepository.save(Admin.builder()
@@ -53,7 +53,7 @@ public class DefaultAccountsCreator {
                 .password(BCrypt.hashpw("admin", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
-                .email("admin@mail.ru").role(Role.ROLE_ADMIN.name())
+                .email("kagaminobasket@gmail.com").role(Role.ROLE_ADMIN)
                 .build());
 
 
@@ -66,8 +66,8 @@ public class DefaultAccountsCreator {
                 .password(BCrypt.hashpw("moderator", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
-                .email("moderator@mail.ru")
-                .role(Role.ROLE_MODERATOR.name())
+                .email("ckillast@gmail.com")
+                .role(Role.ROLE_MODERATOR)
                 .amountOfCheckedEvents(2L)
                 .amountOfClosedRequests(2L)
                 .amountOfDeletedEvents(3L)

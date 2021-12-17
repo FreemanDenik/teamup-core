@@ -6,7 +6,13 @@
 </head>
 <body>
 <div>
-    Hello,user
+    Hello, <div th:text="${loggedUser.getName()}"></div>
+    <br>
+    Your LastName is <div th:text="${loggedUser.getLastName()}"></div>
+    <br>
+    Your Role is <div th:text="${loggedUser.getRole()}"></div>
+    <br>
+    Your email is <div th:text="${loggedUser.getEmail()}"></div>
 </div>
 </body>
 </html>
