@@ -120,9 +120,9 @@ public class UserRestControllerPublic {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        userServiceRest.updateUser(user, existUser.getId());
+        User newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
-        return new ResponseEntity<>(existUser, HttpStatus.OK);
+        return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 
     /**

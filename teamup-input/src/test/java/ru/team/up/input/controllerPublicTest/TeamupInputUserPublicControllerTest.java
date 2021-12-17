@@ -64,9 +64,10 @@ public class TeamupInputUserPublicControllerTest {
     }
     @Test
     public void updateUser(){
-        when(userService.updateUser (1L,new UserRequest (testUser))).thenReturn (testUser);
+        when(userService.updateUser(new UserRequest (testUser),1L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest (testUser), 1L).getStatusCodeValue());
     }
+
     @Test
     public void testDeleteUser() {
         when (userService.getUserById (testUser.getId ())).thenReturn (testUser);

@@ -42,10 +42,11 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     @Transactional
-    public void updateUser(UserRequest user, Long id) {
+    public User updateUser(UserRequest user, Long id) {
         User oldUser = getUserById(id);
         user.getUser().setId(oldUser.getId());
         userRepository.saveAndFlush(user.getUser());
+        return getUserById(id);
     }
 
     @Override
