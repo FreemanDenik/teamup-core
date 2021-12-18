@@ -101,7 +101,7 @@ public class TeamupInputEventPrivateControllerTests {
     @Test
     public void testCreateEmptyEvents() {
         when(eventService.saveEvent(emptyEvent)).thenThrow(new PersistenceException());
-        Assert.assertEquals(201, eventController.createEvent( emptyEvent).getStatusCodeValue());
+        Assert.assertEquals(400, eventController.createEvent(emptyEvent).getStatusCodeValue());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class TeamupInputEventPrivateControllerTests {
     }
 
     @Test
-    public void testGetAllEvents() throws Exception {
+    public void testGetAllEvents(){
         listEvent.add(event);
         when(eventService.getAllEvents()).thenReturn(listEvent);
         Assert.assertEquals(200, eventController.getAllEvents().getStatusCodeValue());
