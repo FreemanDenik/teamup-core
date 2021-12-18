@@ -2,9 +2,11 @@ package ru.team.up.input.controllerPrivateTest;
 
 import org.junit.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,22 +20,26 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class TeamupInputUserPrivateControllerTest {
 
     @Mock
     private UserService userService;
 
-    @Autowired
+//    @Autowired
     @InjectMocks
     private UserController userController;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+//        MockitoAnnotations.initMocks(this);
+//        метод initMocks помечен как устаревший, удалите эту строку вообще и над классом добавьте аннотацию -
+//        @RunWith(MockitoJUnitRunner.class) из пакета import org.mockito.junit.MockitoJUnitRunner
     }
 
     Interests programming = Interests.builder()
@@ -42,7 +48,7 @@ public class TeamupInputUserPrivateControllerTest {
             .build();
 
     User testUser = User.builder()
-            .id(1L)
+            .id(98L)
             .name("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
@@ -57,6 +63,22 @@ public class TeamupInputUserPrivateControllerTest {
             .userInterests(Collections.singleton(programming))
             .build();
 
+    User nullUser = User.builder()
+            .id(99L)
+            .name(null)
+            .lastName(null)
+            .middleName(null)
+            .login(null)
+            .email(null)
+            .password(null)
+            .accountCreatedTime(LocalDate.now())
+            .lastAccountActivity(LocalDateTime.now())
+            .city(null)
+            .age(null)
+            .aboutUser(null)
+            .userInterests(Collections.singleton(programming))
+            .build();
+
     ArrayList<User> listUser = new ArrayList<>();
 
     @Test
@@ -66,9 +88,21 @@ public class TeamupInputUserPrivateControllerTest {
     }
 
     @Test
+    public void testCreateUserException() {
+        when(userService.saveUser(nullUser)).thenThrow(new NullPointerException());
+        Assert.assertThrows(NullPointerException.class, () -> userController.createUser("nullUser", nullUser));
+    }
+
+    @Test
     public void testGetOneById() {
         when(userService.getOneUser(testUser.getId())).thenReturn(testUser);
         Assert.assertEquals(200, userController.getOneUser(testUser.getId()).getStatusCodeValue());
+    }
+
+    @Test
+    public void testGetOneByIdException() {
+        when(userService.getOneUser(nullUser.getId())).thenThrow(new NullPointerException());
+        Assert.assertThrows(NullPointerException.class, () -> userController.getOneUser(nullUser.getId()));
     }
 
     @Test
@@ -79,13 +113,32 @@ public class TeamupInputUserPrivateControllerTest {
     }
 
     @Test
+    public void testGetAllUserException() {
+        listUser.add(nullUser);
+        when(userService.getAllUsers()).thenThrow(new NullPointerException());
+        Assert.assertThrows(NullPointerException.class, () -> userController.getAllUsers());
+    }
+
+    @Test
     public void testUpdateUser() {
         when(userService.saveUser(testUser)).thenReturn(testUser);
         Assert.assertEquals(200, userController.updateUser(testUser).getStatusCodeValue());
     }
 
     @Test
+    public void testUpdateUserException() {
+        when(userService.saveUser(nullUser)).thenThrow(new NullPointerException());
+        Assert.assertThrows(NullPointerException.class, () -> userController.updateUser(nullUser));
+    }
+
+    @Test
     public void testDeleteUser() {
         Assert.assertEquals(202, userController.deleteUser(testUser.getId()).getStatusCodeValue());
+    }
+
+    @Test
+    public void testDeleteUserException() {
+        doThrow(new NullPointerException()).when(userService).deleteUser(nullUser.getId());
+        Assert.assertThrows(NullPointerException.class, () -> userController.deleteUser(nullUser.getId()));
     }
 }
