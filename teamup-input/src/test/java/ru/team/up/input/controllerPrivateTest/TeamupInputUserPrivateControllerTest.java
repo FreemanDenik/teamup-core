@@ -15,6 +15,7 @@ import ru.team.up.core.entity.User;
 import ru.team.up.core.service.UserService;
 import ru.team.up.input.controller.privateController.UserController;
 
+import javax.persistence.PersistenceException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,20 +64,8 @@ public class TeamupInputUserPrivateControllerTest {
             .userInterests(Collections.singleton(programming))
             .build();
 
-    User nullUser = User.builder()
+    User emptyUser = User.builder()
             .id(99L)
-            .name(null)
-            .lastName(null)
-            .middleName(null)
-            .login(null)
-            .email(null)
-            .password(null)
-            .accountCreatedTime(LocalDate.now())
-            .lastAccountActivity(LocalDateTime.now())
-            .city(null)
-            .age(null)
-            .aboutUser(null)
-            .userInterests(Collections.singleton(programming))
             .build();
 
     ArrayList<User> listUser = new ArrayList<>();
@@ -89,8 +78,8 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testCreateUserException() {
-        when(userService.saveUser(nullUser)).thenThrow(new NullPointerException());
-        Assert.assertThrows(NullPointerException.class, () -> userController.createUser("nullUser", nullUser));
+        when(userService.saveUser(emptyUser)).thenThrow(new PersistenceException());
+        Assert.assertEquals(400, userController.createUser("emptyUser", emptyUser).getStatusCodeValue());
     }
 
     @Test
@@ -101,8 +90,8 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testGetOneByIdException() {
-        when(userService.getOneUser(nullUser.getId())).thenThrow(new NullPointerException());
-        Assert.assertThrows(NullPointerException.class, () -> userController.getOneUser(nullUser.getId()));
+        when(userService.getOneUser(emptyUser.getId())).thenThrow(new PersistenceException());
+        Assert.assertEquals(400, userController.getOneUser(emptyUser.getId()).getStatusCodeValue());
     }
 
     @Test
@@ -114,9 +103,9 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testGetAllUserException() {
-        listUser.add(nullUser);
-        when(userService.getAllUsers()).thenThrow(new NullPointerException());
-        Assert.assertThrows(NullPointerException.class, () -> userController.getAllUsers());
+        listUser.add(emptyUser);
+        when(userService.getAllUsers()).thenThrow(new PersistenceException());
+        Assert.assertEquals(400, userController.getAllUsers().getStatusCodeValue());
     }
 
     @Test
@@ -127,8 +116,8 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testUpdateUserException() {
-        when(userService.saveUser(nullUser)).thenThrow(new NullPointerException());
-        Assert.assertThrows(NullPointerException.class, () -> userController.updateUser(nullUser));
+        when(userService.saveUser(emptyUser)).thenThrow(new PersistenceException());
+        Assert.assertEquals(400, userController.updateUser(emptyUser).getStatusCodeValue());
     }
 
     @Test
@@ -138,7 +127,7 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testDeleteUserException() {
-        doThrow(new NullPointerException()).when(userService).deleteUser(nullUser.getId());
-        Assert.assertThrows(NullPointerException.class, () -> userController.deleteUser(nullUser.getId()));
+        doThrow(new PersistenceException()).when(userService).deleteUser(emptyUser.getId());
+        Assert.assertEquals(400, userController.deleteUser(emptyUser.getId()).getStatusCodeValue());
     }
 }
