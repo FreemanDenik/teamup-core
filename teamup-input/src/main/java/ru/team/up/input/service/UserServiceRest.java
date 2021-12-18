@@ -41,7 +41,7 @@ public interface UserServiceRest {
      *
      * @param user Пользователь для обновления
      */
-    void updateUser(UserRequest user, Long id);
+    User updateUser(UserRequest user, Long id);
 
     /**
      * Метод для удаления пользователя
