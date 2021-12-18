@@ -1,9 +1,12 @@
 package ru.team.up.input.controller.privateController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
@@ -15,14 +18,14 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
- *
  * @link localhost:8080/swagger-ui.html
  * Документация API
  */
 
 @Slf4j
 @RestController
-@RequestMapping("private/event")
+@RequestMapping(value = "private/event", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Private Event RestController", description = "Private Event API")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventController {
     private EventService eventService;
@@ -32,6 +35,7 @@ public class EventController {
      * в теле ResponseEntity
      */
     @GetMapping
+    @Operation(summary = "Получить все мероприятия")
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Старт метода ResponseEntity<List<Event>> getAllEvents()");
 
@@ -47,6 +51,7 @@ public class EventController {
      * в теле ResponseEntity
      */
     @GetMapping("/{id}")
+    @Operation(summary = "Получить одно мероприятие")
     public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> getOneEvent(@PathVariable Long id) с параметром {}", id);
 
@@ -62,6 +67,7 @@ public class EventController {
      * в теле ResponseEntity
      */
     @PostMapping
+    @Operation(summary = "Создать мероприятие")
     public ResponseEntity<Event> createEvent(@RequestParam String event, @RequestBody @NotNull Event eventCreate) {
         log.debug("Старт метода ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) с параметром {}", eventCreate);
 
@@ -77,6 +83,7 @@ public class EventController {
      * в теле ResponseEntity
      */
     @PatchMapping
+    @Operation(summary = "Изменить мероприятие")
     public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
 
@@ -91,6 +98,7 @@ public class EventController {
      * @return Объект ResponseEntity со статусом OK
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить мероприятие")
     public ResponseEntity<Event> deleteAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> deleteAdmin(@PathVariable Long id) с параметром {}", id);
 
