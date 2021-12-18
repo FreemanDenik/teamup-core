@@ -96,12 +96,12 @@ public class TeamupInputEventPrivateControllerTests {
     @Test
     public void testCreateEvents() {
         when(eventService.saveEvent(event)).thenReturn(event);
-        Assert.assertEquals(201, eventController.createEvent(event).getStatusCodeValue());
+        Assert.assertEquals(201, eventController.createEvent("",event).getStatusCodeValue());
     }
     @Test
     public void testCreateEmptyEvents() {
         when(eventService.saveEvent(emptyEvent)).thenThrow(new PersistenceException());
-        Assert.assertEquals(400, eventController.createEvent(emptyEvent).getStatusCodeValue());
+        Assert.assertEquals(400, eventController.createEvent("", emptyEvent).getStatusCodeValue());
     }
 
     @Test
