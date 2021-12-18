@@ -92,7 +92,7 @@ public class ModeratorController {
             responseEntity = ResponseEntity.ok(moderatorService.saveModerator (moderator));
             log.debug("Модератор обновлён {}", responseEntity);
         }else{
-            responseEntity = new ResponseEntity<> (HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<> (HttpStatus.NO_CONTENT);
         }
         return responseEntity;
     }
@@ -108,7 +108,7 @@ public class ModeratorController {
 
         moderatorService.deleteModerator(id);
 
-        ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;

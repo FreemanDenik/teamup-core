@@ -76,6 +76,7 @@ public class TeamupInputModeratorPrivateControllerTests {
     @Test
     public void testUpdateModerator() {
         when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
+        when(moderatorService.moderatorIsExistsById(moderator.getId())).thenReturn(true);
         Assert.assertEquals(200, moderatorController.updateModerator(moderator,moderator.getId ()).getStatusCodeValue());
     }
 
