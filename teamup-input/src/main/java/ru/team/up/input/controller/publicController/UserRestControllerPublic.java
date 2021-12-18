@@ -55,7 +55,7 @@ public class UserRestControllerPublic {
                 })
                 .orElseGet(() -> {
                     log.error("Пользователь с id = {} не найден", userId);
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 });
     }
 
@@ -78,7 +78,7 @@ public class UserRestControllerPublic {
                 })
                 .orElseGet(() -> {
                     log.debug("Пользователь с почтой {} не найден", userEmail);
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 });
     }
 
@@ -117,12 +117,12 @@ public class UserRestControllerPublic {
 
         if (existUser == null) {
             log.error("Пользователь не найден");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        userServiceRest.updateUser(user, existUser.getId());
+        User newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
-        return new ResponseEntity<>(existUser, HttpStatus.OK);
+        return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 
     /**
@@ -139,7 +139,7 @@ public class UserRestControllerPublic {
 
         if (user == null) {
             log.error("Пользователь с id = {} не найден", userId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         userServiceRest.deleteUserById(userId);
