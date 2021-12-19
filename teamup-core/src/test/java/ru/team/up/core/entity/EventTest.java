@@ -64,7 +64,8 @@ class EventTest{
                 .descriptionEvent("совместная игра Core и Input ))")
                 .placeEvent("где-то на просторах Jira")
                 .timeEvent(LocalDateTime.of(2021, 11, 10, 21, 00))
-                .eventUpdateDate(LocalDate.now()).participantsEvent(testListUser).eventType(typeTest)
+                .eventUpdateDate(LocalDate.now()).participantsEvent(testListUser)
+                .eventType(typeTest).eventPrivacy(true)
                 .authorId(userTest).eventInterests(interestsSet).status(statusTest).build();
         eventRepository.save(eventTest);
 

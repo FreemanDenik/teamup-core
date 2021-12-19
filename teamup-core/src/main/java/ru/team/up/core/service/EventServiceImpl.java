@@ -80,7 +80,9 @@ public class EventServiceImpl implements EventService {
 
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedEventDB)
-                .message("Пользователь " + userCreatedEventDB.getName() + " создал мероприятие " + event.getEventName())
+                .message("Пользователь " + userCreatedEventDB.getName()
+                        + " создал мероприятие " + event.getEventName()
+                        + " с приватностью" + event.getEventPrivacy())
                 .status("new")
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
