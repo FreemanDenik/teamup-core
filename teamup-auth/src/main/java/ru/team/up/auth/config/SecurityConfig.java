@@ -2,6 +2,7 @@ package ru.team.up.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,44 +74,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>
-//    accessTokenResponseClient() {
-//
-//        return new NimbusAuthorizationCodeTokenResponseClient();
-//    }
-
     @Bean
     public PrincipalExtractor principalExtractor() {
-        return map -> {
-            return new User();
-        };
+        return new GooglePrincipalExtractor();
     }
 
-//    @Bean
-//    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(WebClient rest) {
-//        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
-//        return request -> {
-//            OAuth2User user = delegate.loadUser(request);
-//            if (!"github".equals(request.getClientRegistration().getRegistrationId())) {
-//                return user;
-//            }
-//
-//            OAuth2AuthorizedClient client = new OAuth2AuthorizedClient
-//                    (request.getClientRegistration(), user.getName(), request.getAccessToken());
-//            String url = user.getAttribute("organizations_url");
-//            List<Map<String, Object>> orgs = rest
-//                    .get().uri(url)
-//                    .attributes(oauth2AuthorizedClient(client))
-//                    .retrieve()
-//                    .bodyToMono(List.class)
-//                    .block();
-//
-//            if (orgs.stream().anyMatch(org -> "spring-projects".equals(org.get("login")))) {
-//                return user;
-//            }
-//
-//            throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token", "Not in Spring Team", ""));
-//        };
-//    }
 }
