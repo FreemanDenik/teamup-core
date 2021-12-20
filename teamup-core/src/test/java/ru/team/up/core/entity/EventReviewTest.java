@@ -20,7 +20,7 @@ import java.util.List;
  * Тест сущности отзыва на мероприятие
  */
 @SpringBootTest
-class EventReviewTest {
+class EventReviewTest extends Assertions {
 
     @Autowired
     private UserRepository userRepository;
@@ -99,10 +99,10 @@ class EventReviewTest {
         eventReviewRepository.save(testReview);
 
         EventReview eventReview = eventReviewRepository.findById(1L).orElse(new EventReview());
-        Assertions.assertEquals(testEvent, eventReview.getReviewForEvent());
-        Assertions.assertEquals(testUser, eventReview.getReviewer());
-        Assertions.assertEquals("test message", eventReview.getReviewMessage());
-        Assertions.assertEquals(testReview.getReviewId(), eventReview.getReviewId());
-        Assertions.assertEquals(10, eventReview.getEventGrade());
+        assertEquals(testEvent, eventReview.getReviewForEvent());
+        assertEquals(testUser, eventReview.getReviewer());
+        assertEquals("test message", eventReview.getReviewMessage());
+        assertEquals(testReview.getReviewId(), eventReview.getReviewId());
+        assertEquals(10, eventReview.getEventGrade());
     }
 }

@@ -1,21 +1,14 @@
 package ru.team.up.core;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Propagation;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.*;
 import ru.team.up.core.service.EventService;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +16,7 @@ import java.util.*;
 
 @SpringBootTest
 
-class TeamupCoreApplicationTests {
+class TeamupCoreApplicationTests extends Assertions {
 
     @Autowired
     private UserRepository userRepository;
@@ -95,20 +88,20 @@ class TeamupCoreApplicationTests {
 
         adminRepository.save(adminTest);
 
-        Assert.assertNotNull(adminRepository.findById(1L));
+        assertNotNull(adminRepository.findById(1L));
 
         Admin adminBD = adminRepository.findById(1L).get();
 
-        Assert.assertNotNull(adminBD.getName());
-        Assert.assertNotNull(adminBD.getLastName());
-        Assert.assertNotNull(adminBD.getLogin());
-        Assert.assertNotNull(adminBD.getEmail());
-        Assert.assertNotNull(adminBD.getPassword());
-        Assert.assertNotNull(adminBD.getAccountCreatedTime());
-        Assert.assertNotNull(adminBD.getLastAccountActivity());
+        assertNotNull(adminBD.getName());
+        assertNotNull(adminBD.getLastName());
+        assertNotNull(adminBD.getLogin());
+        assertNotNull(adminBD.getEmail());
+        assertNotNull(adminBD.getPassword());
+        assertNotNull(adminBD.getAccountCreatedTime());
+        assertNotNull(adminBD.getLastAccountActivity());
 
         adminRepository.deleteById(1L);
-        Assert.assertEquals(adminRepository.findById(1L), Optional.empty());
+        assertEquals(adminRepository.findById(1L), Optional.empty());
     }
 
     @Test
@@ -116,20 +109,20 @@ class TeamupCoreApplicationTests {
 
         moderatorRepository.save(moderatorTest);
 
-        Assert.assertNotNull(moderatorRepository.findById(1L));
+        assertNotNull(moderatorRepository.findById(1L));
 
         Moderator moderatorBD = moderatorRepository.findById(1L).get();
 
-        Assert.assertNotNull(moderatorBD.getName());
-        Assert.assertNotNull(moderatorBD.getLastName());
-        Assert.assertNotNull(moderatorBD.getLogin());
-        Assert.assertNotNull(moderatorBD.getEmail());
-        Assert.assertNotNull(moderatorBD.getPassword());
-        Assert.assertNotNull(moderatorBD.getAccountCreatedTime());
-        Assert.assertNotNull(moderatorBD.getLastAccountActivity());
+        assertNotNull(moderatorBD.getName());
+        assertNotNull(moderatorBD.getLastName());
+        assertNotNull(moderatorBD.getLogin());
+        assertNotNull(moderatorBD.getEmail());
+        assertNotNull(moderatorBD.getPassword());
+        assertNotNull(moderatorBD.getAccountCreatedTime());
+        assertNotNull(moderatorBD.getLastAccountActivity());
 
         moderatorRepository.deleteById(1L);
-        Assert.assertEquals(moderatorRepository.findById(1L), Optional.empty());
+        assertEquals(moderatorRepository.findById(1L), Optional.empty());
     }
 
     @Test
@@ -138,44 +131,44 @@ class TeamupCoreApplicationTests {
         interestsRepository.save(interestsTest);
         interestsRepository.save(interestsTest1);
 
-        Assert.assertNotNull(interestsRepository.findById(1L));
-        Assert.assertNotNull(interestsRepository.findById(2L));
+        assertNotNull(interestsRepository.findById(1L));
+        assertNotNull(interestsRepository.findById(2L));
 
         Interests interestsBD = interestsRepository.findById(1L).get();
 
-        Assert.assertNotNull(interestsBD.getTitle());
-        Assert.assertNotNull(interestsBD.getShortDescription());
+        assertNotNull(interestsBD.getTitle());
+        assertNotNull(interestsBD.getShortDescription());
 
         Interests interestsBD1 = interestsRepository.findById(2L).get();
 
-        Assert.assertNotNull(interestsBD1.getTitle());
-        Assert.assertNotNull(interestsBD1.getShortDescription());
+        assertNotNull(interestsBD1.getTitle());
+        assertNotNull(interestsBD1.getShortDescription());
 
 
         userRepository.save(userTest);
 
-        Assert.assertNotNull(userRepository.findById(1L));
+        assertNotNull(userRepository.findById(1L));
 
         User userBD = userRepository.findById(1L).get();
 
-        Assert.assertNotNull(userBD.getName());
-        Assert.assertNotNull(userBD.getLastName());
-        Assert.assertNotNull(userBD.getLogin());
-        Assert.assertNotNull(userBD.getEmail());
-        Assert.assertNotNull(userBD.getPassword());
-        Assert.assertNotNull(userBD.getAccountCreatedTime());
-        Assert.assertNotNull(userBD.getLastAccountActivity());
-        Assert.assertNotNull(userBD.getAge());
-        Assert.assertNotNull(userBD.getUserInterests());
+        assertNotNull(userBD.getName());
+        assertNotNull(userBD.getLastName());
+        assertNotNull(userBD.getLogin());
+        assertNotNull(userBD.getEmail());
+        assertNotNull(userBD.getPassword());
+        assertNotNull(userBD.getAccountCreatedTime());
+        assertNotNull(userBD.getLastAccountActivity());
+        assertNotNull(userBD.getAge());
+        assertNotNull(userBD.getUserInterests());
 
         interestsRepository.deleteById(1L);
-        Assert.assertEquals(interestsRepository.findById(1L), Optional.empty());
+        assertEquals(interestsRepository.findById(1L), Optional.empty());
 
         interestsRepository.deleteById(2L);
-        Assert.assertEquals(interestsRepository.findById(2L), Optional.empty());
+        assertEquals(interestsRepository.findById(2L), Optional.empty());
 
         userRepository.deleteById(1L);
-        Assert.assertEquals(userRepository.findById(1L), Optional.empty());
+        assertEquals(userRepository.findById(1L), Optional.empty());
     }
 
     @Test
@@ -205,7 +198,7 @@ class TeamupCoreApplicationTests {
 
         userRepository.save(userTest);
 
-        Assert.assertNotNull(userRepository.findById(4L).get().getSubscribers());
+        assertNotNull(userRepository.findById(4L).get().getSubscribers());
 
 
         subscriberSetWithOneUser.add(subscriber2);
@@ -216,7 +209,7 @@ class TeamupCoreApplicationTests {
 
         userRepository.deleteById(2L);
 
-        Assert.assertNotNull(userRepository.findById(4L).get().getSubscribers());
+        assertNotNull(userRepository.findById(4L).get().getSubscribers());
 
 
         userBD.setSubscribers(subscriberSetWithoutUsers);
@@ -224,7 +217,7 @@ class TeamupCoreApplicationTests {
 
         userRepository.deleteById(3L);
 
-        Assert.assertEquals(userRepository.findById(4L).get().getSubscribers(), Collections.emptySet());
+        assertEquals(userRepository.findById(4L).get().getSubscribers(), Collections.emptySet());
     }
 
     @Test
@@ -261,7 +254,7 @@ class TeamupCoreApplicationTests {
 
         eventService.saveEvent(event);
 
-        Assert.assertNotNull(userRepository.findById(2L).get().getUserMessages());
-        Assert.assertNotNull(userRepository.findById(3L).get().getUserMessages());
+        assertNotNull(userRepository.findById(2L).get().getUserMessages());
+        assertNotNull(userRepository.findById(3L).get().getUserMessages());
     }
 }
