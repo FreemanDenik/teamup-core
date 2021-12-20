@@ -17,6 +17,6 @@ public class FailureHandler implements AuthenticationFailureHandler {
                                         , HttpServletResponse httpServletResponse
                                         , AuthenticationException e) throws IOException, ServletException {
 
-        httpServletResponse.sendRedirect("/registration");
+        httpServletResponse.sendRedirect("/oauth2reg");
     }
 }
