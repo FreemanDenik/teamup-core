@@ -1,6 +1,7 @@
 package ru.team.up.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -16,11 +17,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessHandler successHandler;
     private final UserDetailsService userDetailsService;
+    private final FailureHandler failureHandler;
 
     @Autowired
-    public SecurityConfig(SuccessHandler successHandler, UserDetailsService userDetailsService) {
+    public SecurityConfig(SuccessHandler successHandler, @Qualifier("userDetailsImpl") UserDetailsService userDetailsService, FailureHandler failureHandler) {
         this.successHandler = successHandler;
         this.userDetailsService = userDetailsService;
+        this.failureHandler = failureHandler;
     }
 
     @Override
@@ -41,7 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login").usernameParameter("auth_email").passwordParameter("auth_password").permitAll()
                 .and()
                 .oauth2Login().loginPage("/oauth2/authorization/google")
-                .successHandler(successHandler);
+                .successHandler(successHandler)
+                .failureHandler(failureHandler);
 
         http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//выход из системы гет запрос на /logout
