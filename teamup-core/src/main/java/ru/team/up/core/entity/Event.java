@@ -62,6 +62,12 @@ public class Event {
     private LocalDate eventUpdateDate;
 
     /**
+     * Приватность мероприятия
+     */
+    @Column(name = "EVENT_PRIVACY")
+    private Boolean eventPrivacy;
+
+    /**
      * Участники мероприятия
      */
     @ManyToMany(mappedBy = "userEvent",
