@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.*;
 import ru.team.up.core.service.EventService;
@@ -198,26 +199,26 @@ class TeamupCoreApplicationTests extends Assertions {
 
         userRepository.save(userTest);
 
-        assertNotNull(userRepository.findById(4L).get().getSubscribers());
+        assertNotNull(userRepository.findById(3L).get().getSubscribers());
 
 
         subscriberSetWithOneUser.add(subscriber2);
 
-        User userBD = userRepository.findById(4L).get();
+        User userBD = userRepository.findById(3L).get();
         userBD.setSubscribers(subscriberSetWithOneUser);
         userRepository.save(userBD);
 
-        userRepository.deleteById(2L);
+        userRepository.deleteById(1L);
 
-        assertNotNull(userRepository.findById(4L).get().getSubscribers());
+        assertNotNull(userRepository.findById(3L).get().getSubscribers());
 
 
         userBD.setSubscribers(subscriberSetWithoutUsers);
         userRepository.save(userBD);
 
-        userRepository.deleteById(3L);
+        userRepository.deleteById(2L);
 
-        assertEquals(userRepository.findById(4L).get().getSubscribers(), Collections.emptySet());
+        assertEquals(userRepository.findById(3L).get().getSubscribers(), Collections.emptySet());
     }
 
     @Test
@@ -256,5 +257,26 @@ class TeamupCoreApplicationTests extends Assertions {
 
         assertNotNull(userRepository.findById(2L).get().getUserMessages());
         assertNotNull(userRepository.findById(3L).get().getUserMessages());
+    }
+
+    @Test
+    void adminTestNull() {
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{adminRepository.save(Admin.builder().build());
+                });
+    }
+
+    @Test
+    void moderatorTestNull(){
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{moderatorRepository.save(Moderator.builder().build());
+                });
+    }
+
+    @Test
+    void userTestNull(){
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{userRepository.save(User.builder().build());
+                });
     }
 }
