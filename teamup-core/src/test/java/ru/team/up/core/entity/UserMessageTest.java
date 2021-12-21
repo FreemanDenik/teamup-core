@@ -15,7 +15,7 @@ import java.util.Collections;
  */
 
 @SpringBootTest
-public class UserMessageTest {
+class UserMessageTest extends Assertions{
 
     @Autowired
     private UserMessageRepository userMessageRepository;
@@ -69,11 +69,10 @@ public class UserMessageTest {
         userMessageRepository.save(userMessage);
 
         UserMessage userMessage1 = userMessageRepository.findById(1L).orElse(new UserMessage());
-        Assertions.assertEquals(userMessage1.getMessage(), "Hello!");
-        Assertions.assertEquals(userMessage1.getMessageOwner().getName(), "Aleksey");
-        Assertions.assertEquals(userMessage1.getStatus(), "new");
-        Assertions.assertEquals(userMessage1.getId(), 1L);
-        Assertions.assertEquals("Hello!",
-                userMessageRepository.findAllByMessageOwner(testUser).getMessage());
+        assertEquals(userMessage1.getMessage(), "Hello!");
+        assertEquals(userMessage1.getMessageOwner().getName(), "Aleksey");
+        assertEquals(userMessage1.getStatus(), "new");
+        assertEquals(userMessage1.getId(), 1L);
+        assertEquals("Hello!", userMessageRepository.findAllByMessageOwner(testUser).getMessage());
     }
 }

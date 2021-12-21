@@ -1,6 +1,6 @@
 package ru.team.up.core.entity;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +18,7 @@ import java.util.Set;
  * Тест сущности мероприятия
  */
 @SpringBootTest
-class EventTest{
+class EventTest extends Assertions {
 
     @Autowired
     private UserRepository userRepository;
@@ -69,22 +69,22 @@ class EventTest{
                 .authorId(userTest).eventInterests(interestsSet).status(statusTest).build();
         eventRepository.save(eventTest);
 
-        Assert.assertTrue(eventRepository.findById(1L).isPresent());
+        assertTrue(eventRepository.findById(1L).isPresent());
 
         Event userTestBD = eventRepository.findById(1L).get();
 
-        Assert.assertNotNull(userTestBD.getEventName());
-        Assert.assertNotNull(userTestBD.getDescriptionEvent());
-        Assert.assertNotNull(userTestBD.getPlaceEvent());
-        Assert.assertNotNull(userTestBD.getTimeEvent());
-        Assert.assertNotNull(userTestBD.getEventUpdateDate());
-        Assert.assertFalse(userTestBD.getParticipantsEvent().isEmpty());
-        Assert.assertFalse(userTestBD.getEventType().getType().isEmpty());
-        Assert.assertNotNull(userTestBD.getAuthorId());
-        Assert.assertFalse(userTestBD.getEventInterests().isEmpty());
-        Assert.assertFalse(userTestBD.getStatus().getStatus().isEmpty());
+        assertNotNull(userTestBD.getEventName());
+        assertNotNull(userTestBD.getDescriptionEvent());
+        assertNotNull(userTestBD.getPlaceEvent());
+        assertNotNull(userTestBD.getTimeEvent());
+        assertNotNull(userTestBD.getEventUpdateDate());
+        assertFalse(userTestBD.getParticipantsEvent().isEmpty());
+        assertFalse(userTestBD.getEventType().getType().isEmpty());
+        assertNotNull(userTestBD.getAuthorId());
+        assertFalse(userTestBD.getEventInterests().isEmpty());
+        assertFalse(userTestBD.getStatus().getStatus().isEmpty());
 
         eventRepository.deleteById(1L);
-        Assert.assertFalse(eventRepository.findById(1L).isPresent());
+        assertFalse(eventRepository.findById(1L).isPresent());
     }
 }
