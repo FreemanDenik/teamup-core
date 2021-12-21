@@ -1,5 +1,7 @@
 package ru.team.up.input.controller.publicController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -26,9 +27,13 @@ import java.util.Optional;
  * REST-контроллер для мероприятий
  *
  * @author Pavel Kondrashov
+ *
+ * @link localhost:8080/swagger-ui.html
+ * Документация API
  */
 
 @Slf4j
+@Tag(name = "Event Public Controller",description = "Event API")
 @RestController
 @RequestMapping(value = "api/public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,12 +41,12 @@ public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
 
-
     /**
      * Метод получения списка всех мероприятий
      *
      * @return Список мероприятий и статус ответа
      */
+    @Operation(summary ="Получение списка всех мероприятий")
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Получен запрос на список мероприятий");
@@ -49,7 +54,7 @@ public class EventRestControllerPublic {
 
         if (events.isEmpty()) {
             log.error("Список мероприятий пуст");
-            return new ResponseEntity("Список мероприятий пуст", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         log.debug("Список мероприятий получен");
@@ -62,6 +67,7 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Получение мероприятия по идентификатору")
     @GetMapping(value = "/{id}")
     public ResponseEntity<Event> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
@@ -74,7 +80,7 @@ public class EventRestControllerPublic {
                 })
                 .orElseGet(() -> {
                     log.error("Мероприятие с id: {} не найдено", eventId);
-                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 });
     }
 
@@ -84,6 +90,7 @@ public class EventRestControllerPublic {
      * @param eventName Название мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Получение мероприятий по названию")
     @GetMapping(value = "/name/{eventName}")
     public ResponseEntity<List<Event>> findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
@@ -91,7 +98,7 @@ public class EventRestControllerPublic {
 
         if (events.isEmpty()) {
             log.error("Мероприятия не найдены");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         log.debug("Мероприятие с названием {} найдено", eventName);
@@ -104,6 +111,7 @@ public class EventRestControllerPublic {
      * @param author Автор мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Получение мероприятий по автору")
     @GetMapping(value = "/author")
     public ResponseEntity<List<Event>> findEventsByAuthor(@RequestBody UserRequest author) {
         log.debug("Получен запрос на поиск мероприятий по автору {}", author);
@@ -111,7 +119,7 @@ public class EventRestControllerPublic {
 
         if (events.isEmpty()) {
             log.error("Мероприятия по указанному автору {} не найдены", author);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         log.debug("Мероприятия от автора {} найдены", author);
@@ -124,10 +132,16 @@ public class EventRestControllerPublic {
      * @param eventType Тип мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Получение мероприятий по типу")
     @GetMapping(value = "/type")
     public ResponseEntity<List<Event>> findEventsByType(@RequestBody EventType eventType) {
         log.debug("Получен запрос на поиск мероприятий по типу: {}", eventType);
         List<Event> events = eventServiceRest.getAllEventsByEventType(eventType);
+
+        if (events.isEmpty()) {
+            log.error("Мероприятия с типом {} не найдены", eventType);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
         log.debug("Мероприятия с типом: {} найдены", eventType);
         return new ResponseEntity<>(events, HttpStatus.OK);
@@ -139,13 +153,14 @@ public class EventRestControllerPublic {
      * @param event Данные мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Создание нового мероприятия")
     @PostMapping(value = "/")
     public ResponseEntity<Event> createEvent(@RequestBody EventRequest event) {
         log.debug("Получен запрос на создание мероприятия:\n {}", event);
 
         checkEvent(event);
 
-        log.debug("Мероприятие созданно");
+        log.debug("Мероприятие создано");
         Event upcomingEvent = eventServiceRest.saveEvent(event.getEvent());
 
         return new ResponseEntity<>(upcomingEvent, HttpStatus.CREATED);
@@ -158,6 +173,7 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Обновление мероприятия")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Event> updateEvent(@RequestBody EventRequest event, @PathVariable("id") Long eventId) {
         log.debug("Получен запрос на обновление мероприятия {}", event);
@@ -176,6 +192,7 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Удаление мероприятия по идентификатору")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на удаление мероприятия с id: {}", eventId);
@@ -183,7 +200,7 @@ public class EventRestControllerPublic {
 
         if (event == null) {
             log.error("Мероприятие с id: {} не найдено", eventId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         eventServiceRest.deleteEvent(eventId);
@@ -198,6 +215,7 @@ public class EventRestControllerPublic {
      * @param joinRequest Данные запроса для добавление участника
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Добавление участника мероприятия")
     @PostMapping(value = "/join")
     public ResponseEntity<Event> addEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на добавление участника мероприятия");
@@ -213,6 +231,7 @@ public class EventRestControllerPublic {
      * @param joinRequest Данные запроса для удаления участника
      * @return Ответ запроса и статус проверки
      */
+    @Operation(summary ="Удаление участника мероприятия")
     @PostMapping("/unjoin")
     public ResponseEntity<Event> deleteEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на удаление участника мероприятия");
@@ -241,8 +260,8 @@ public class EventRestControllerPublic {
 
         if (wordMatcher.detectUnnecessaryWords(event.getEvent().getEventName()) ||
                 wordMatcher.detectUnnecessaryWords(event.getEvent().getDescriptionEvent())) {
-            log.debug("Мероприятие отправленно на проверку:\n {}", event);
-            throw new EventCheckException("Мероприятие отправленно на проверку");
+            log.debug("Мероприятие отправлено на проверку:\n {}", event);
+            throw new EventCheckException("Мероприятие отправлено на проверку");
         }
     }
 }
