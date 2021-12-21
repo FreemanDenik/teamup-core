@@ -19,12 +19,14 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import ru.team.up.auth.config.GooglePrincipalExtractor;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
@@ -136,10 +138,27 @@ public class MainController {
 //
 //        return "principal";
 //    }
+
     @GetMapping("/oauth2reg")
-    public @ResponseBody Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
-        Map<String, Object> map = Collections.singletonMap("name", principal.getAttribute("name"));
-        return map;
+    public String user(Model model, OAuth2AuthenticationToken authenticationToken, Principal principal) {
+//        Map<String, Object> map = Collections.singletonMap("name", principal.getAttribute("name"));
+        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
+                authenticationToken.getAuthorizedClientRegistrationId(),
+                authenticationToken.getName()
+        );
+
+        String userInfoUri = client.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri();
+        Map userInfo = WebClient.create(userInfoUri)
+                .get()
+                .header(HttpHeaders.AUTHORIZATION
+                        , "Bearer " + client.getAccessToken().getTokenValue())
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+        User user = new User();
+
+        model.addAttribute("user", user);
+        return "registration";
     }
 }
 
