@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.service.EventService;
 
+import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
 /**
  * @author Alexey Tkachenko
- *
  * @link localhost:8080/swagger-ui.html
  * Документация API
  */
@@ -62,13 +62,18 @@ public class EventController {
      * в теле ResponseEntity
      */
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestParam String event, @RequestBody @NotNull Event eventCreate) {
+    public ResponseEntity<Event> createEvent(@RequestBody @NotNull Event eventCreate) {
         log.debug("Старт метода ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) с параметром {}", eventCreate);
 
-        ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
-        log.debug("Получили ответ {}", responseEntity);
-
-        return responseEntity;
+        try {
+            ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
+            log.debug("Получили ответ {}", responseEntity);
+            return responseEntity;
+        } catch (PersistenceException e) {
+            ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            log.debug("Получили ответ {}", responseEntity);
+            return responseEntity;
+        }
     }
 
     /**
@@ -79,11 +84,16 @@ public class EventController {
     @PatchMapping
     public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
+        try {
+            ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.saveEvent(event));
+            log.debug("Получили ответ {}", responseEntity);
+            return responseEntity;
 
-        ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.saveEvent(event));
-        log.debug("Получили ответ {}", responseEntity);
-
-        return responseEntity;
+        } catch (PersistenceException e) {
+            ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            log.debug("Получили ответ {}", responseEntity);
+            return responseEntity;
+        }
     }
 
     /**
