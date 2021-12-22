@@ -1,37 +1,27 @@
 package ru.team.up.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
-import ru.team.up.auth.config.GooglePrincipalExtractor;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.Collections;
-import java.util.Map;
+import java.util.stream.Collectors;
+
 
 /**
  * Контроллер для регистрации, авторизации
@@ -44,6 +34,9 @@ public class MainController {
     private final UserDetailsImpl userDetails;
 
     @Autowired
+    protected AuthenticationManager authenticationManager;
+
+    @Autowired
     public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails) {
         this.userServiceAuth = userServiceAuth;
         this.userDetails = userDetails;
@@ -51,12 +44,29 @@ public class MainController {
 
     private Account getCurrentAccount() {
         String email;
-        if (SecurityContextHolder.getContext().getAuthentication().toString().contains ("given_name")) {
-            email = ((DefaultOidcUser)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        if (SecurityContextHolder.getContext().getAuthentication().toString().contains("given_name")) {
+            email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         } else {
-            email = ((Account)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+            email = ((Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         }
         return (Account) userDetails.loadUserByUsername(email);
+    }
+
+    public void autoLogin(String username, String password, HttpServletRequest request) {
+        UserDetails user = userDetails.loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password
+                , user.getAuthorities());
+
+        try {
+            Authentication auth = authenticationManager.authenticate(token);
+            if (auth.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(auth);
+                request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY
+                        , SecurityContextHolder.getContext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -110,18 +120,44 @@ public class MainController {
     }
 
     /**
-     * необходимо отредактировать этот метод для проверки, регистрации и сохранения
-     * нового пользователя в БД
+     * Метод для сохранения регистрации пользователя
      *
      * @param model - сущность для обмена информацией между методом и html.
      * @param user  - юзер, желающий зарегистрироваться.
-     * @return В случае успешной регистрации нового пользователя переход на страницу авторизации,
+     * @return В случае успешной регистрации нового пользователя автоматический вход в защищеную область в соотвествии
+     * с максимальной ролью пользователя,
      * в ином случае - registration.html
      */
     @PostMapping(value = "/registration")
-    public String registrationNewUser(@ModelAttribute User user, Model model) {
+    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
+        String password = user.getPassword();
         userServiceAuth.saveUser(user);
-        return "redirect:/login";
+        autoLogin(user.getEmail(), password, request);
+        return "redirect:/authority";
+    }
+
+
+    /**
+     * Метод для определения защищеной области для входа зарегистрированного пользоватлея
+     *
+     * @return Переход на ссылку в зависимости от роли, по умолчанию переход на /user
+     */
+    @GetMapping(value = "/authority")
+    public String chooseRole() {
+
+        String role = getCurrentAccount().getAuthorities()
+                .stream()
+                .map(a -> a.getAuthority())
+                .collect(Collectors.joining(","));
+
+        if (role.contains("ROLE_ADMIN")) {
+            return "redirect:/admin";
+        }
+        if (role.contains("ROLE_MODERATOR")) {
+            return "redirect:/moderator";
+        } else {
+            return "redirect:/user";
+        }
     }
 
     @GetMapping(value = "/login")
@@ -129,6 +165,13 @@ public class MainController {
         return "login";
     }
 
+    /**
+     * Метод для подстановки в поля формы регистрации данных полученных от сервера аутентификции (Google)
+     *
+     * @param model          - сущность для обмена информацией между методом и html.
+     * @param authentication - объект, с данными пользователя прошедшего аутентификацию на сервере аутентификации.
+     * @return возвращает страницу с формой регистрации, с предварительно заполеннными полями "Имя", "Фамимлия" и "email"
+     */
     @GetMapping(value = "/oauth2reg")
     public String user(Model model, Authentication authentication) {
 

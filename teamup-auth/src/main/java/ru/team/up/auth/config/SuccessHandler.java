@@ -37,6 +37,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
 
 
         if (authentication.toString().contains ("given_name")){
+
             try {
                 Account account = (Account) userService.loadUserByUsername(((DefaultOidcUser)authentication.getPrincipal()).getEmail());
 
@@ -45,21 +46,21 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
                                 SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
                                 SecurityContextHolder.getContext().getAuthentication().getCredentials(),
                                 Collections.singleton(account.getRole())));
-
-                Set<String> roles = AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-                if (roles.contains("ROLE_ADMIN")) {
-                    httpServletResponse.sendRedirect("/admin");
-                } else if(roles.contains("ROLE_USER")){
-                    httpServletResponse.sendRedirect("/user");
-                }else if(roles.contains("ROLE_MODERATOR")){
-                    httpServletResponse.sendRedirect("/moderator");
-                }else{
-                    httpServletResponse.sendRedirect("/welcome");
-                }
-
             } catch (UsernameNotFoundException e) {
                 httpServletResponse.sendRedirect("/oauth2reg");
+                return;
             }
+        }
+
+        Set<String> roles = AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        if (roles.contains("ROLE_ADMIN")) {
+            httpServletResponse.sendRedirect("/admin");
+        } else if(roles.contains("ROLE_USER")){
+            httpServletResponse.sendRedirect("/user");
+        }else if(roles.contains("ROLE_MODERATOR")){
+            httpServletResponse.sendRedirect("/moderator");
+        }else{
+            httpServletResponse.sendRedirect("/welcome");
         }
     }
 }
