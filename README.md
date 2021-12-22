@@ -1,11 +1,12 @@
-Для первого запуска БД в терминале Docker выполнить команду:
-docker run --name postgresdb14  -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=0 -e POSTGRES_DB=postgres -d postgres:14.0
+# TeamUp
 
-Для повторного запуска БД использовать команду:
-docker start postgresdb14
+---
+## Запуск стека приложений
 
+Для запуска стека приложений (Postgres, Zookeeper, Kafka) выполните в терминале IDEA:
 
-Тестовые аккаунты:
+    docker-compose up -d
+## Тестовые аккаунты:
 
 User: 
 user@gmail.com password: user
@@ -16,4 +17,3 @@ admin@gmail.com password: admin
 Moderator: 
 moderator@gmail.com password: moderator
 ---
-
