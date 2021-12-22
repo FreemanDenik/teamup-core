@@ -3,6 +3,7 @@ package ru.team.up.auth.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -25,6 +27,7 @@ import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import org.springframework.security.core.Authentication;
 
 import java.security.Principal;
 import java.util.Collections;
@@ -126,36 +129,14 @@ public class MainController {
         return "login";
     }
 
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-    @Autowired
-    private PrincipalExtractor principalExtractor;
+    @GetMapping(value = "/oauth2reg")
+    public String user(Model model, Authentication authentication) {
 
-//    @GetMapping("/oauth2reg")
-//    public String getLoginInfo(@AuthenticationPrincipal User principal, PrincipalExtractor principalExtractor) {
-//        System.out.println("         !!!!!!!!!!    " + principalExtractor.toString() + "            !!!!!!!!!!!!           ");
-//
-//
-//        return "principal";
-//    }
-
-    @GetMapping("/oauth2reg")
-    public String user(Model model, OAuth2AuthenticationToken authenticationToken, Principal principal) {
-//        Map<String, Object> map = Collections.singletonMap("name", principal.getAttribute("name"));
-        OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
-                authenticationToken.getAuthorizedClientRegistrationId(),
-                authenticationToken.getName()
-        );
-
-        String userInfoUri = client.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri();
-        Map userInfo = WebClient.create(userInfoUri)
-                .get()
-                .header(HttpHeaders.AUTHORIZATION
-                        , "Bearer " + client.getAccessToken().getTokenValue())
-                .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+        DefaultOidcUser principal = (DefaultOidcUser) authentication.getPrincipal();
         User user = new User();
+        user.setEmail(principal.getEmail());
+        user.setName(principal.getGivenName());
+        user.setLastName(principal.getFamilyName());
 
         model.addAttribute("user", user);
         return "registration";

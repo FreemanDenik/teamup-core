@@ -1,6 +1,8 @@
 package ru.team.up.auth.config;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +18,9 @@ public class FailureHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest httpServletRequest
                                         , HttpServletResponse httpServletResponse
                                         , AuthenticationException e) throws IOException, ServletException {
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         httpServletResponse.sendRedirect("/oauth2reg");
     }
