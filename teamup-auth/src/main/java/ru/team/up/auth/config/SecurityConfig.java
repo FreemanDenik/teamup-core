@@ -39,13 +39,11 @@ import java.util.Map;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessHandler successHandler;
     private final UserDetailsService userDetailsService;
-    private final FailureHandler failureHandler;
 
     @Autowired
-    public SecurityConfig(SuccessHandler successHandler, @Qualifier("userDetailsImpl") UserDetailsService userDetailsService, FailureHandler failureHandler) {
+    public SecurityConfig(SuccessHandler successHandler, @Qualifier("userDetailsImpl") UserDetailsService userDetailsService) {
         this.successHandler = successHandler;
         this.userDetailsService = userDetailsService;
-        this.failureHandler = failureHandler;
     }
 
     @Override
