@@ -116,14 +116,12 @@ public class EventServiceImpl implements EventService {
 
     /**
      * Добавляет нового участника к мероприятию
-     * @param eventId
-     * @param user
      */
     @Override
     @Transactional
     public void addParticipantEvent(Long eventId, User user) {
-        
-        log.debug("Получаем мероприятие по ID");
+
+        log.debug("Получаем мероприятие по ID: {}", eventId);
         Event event = getOneEvent(eventId);
 
         log.debug("Создаем и сохраняем сообщение");
@@ -135,7 +133,7 @@ public class EventServiceImpl implements EventService {
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
-        log.debug("Отправка сообщения создателю данного мероприятия");
+        log.debug("Отправка сообщения создателю c id: {} для мероприятия с id: {}", event.getAuthorId(), eventId);
         sendMessageService.sendMessage(event.getAuthorId(), message);
 
         log.debug("Добавили нового участника {}", user);
