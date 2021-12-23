@@ -69,5 +69,6 @@ public class UserMessage {
     @JoinTable(name = "USER_ACCOUNT_MESSAGES",
             joinColumns = @JoinColumn(name = "MESSAGE_ID"),
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
+    @ToString.Exclude
     private Set<User> users;
 }

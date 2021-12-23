@@ -11,6 +11,7 @@ import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
 import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
 import ru.team.up.core.repositories.UserRepository;
 
@@ -29,6 +30,7 @@ import java.util.*;
 public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
     private UserRepository userRepository;
+    private StatusRepository statusRepository;
     private UserMessageRepository userMessageRepository;
     private SendMessageService sendMessageService;
 
@@ -141,5 +143,55 @@ public class EventServiceImpl implements EventService {
 
         Event save = eventRepository.save(event);
         log.debug("Сохранили мероприятие в БД {}", save);
+    }
+
+    @Override
+    @Transactional
+    public void eventApprovedByModerator(Long eventId){
+
+        log.debug("Получаем мероприятие по ID");
+        Event event = getOneEvent(eventId);
+
+        log.debug("Меняем статус мероприятия на одобренный");
+        event.setStatus((statusRepository.getOne(1L)));
+
+        log.debug("Создаем и сохраняем сообщение");
+        UserMessage message = UserMessage.builder()
+                .messageOwner(event.getAuthorId())
+                .message("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
+                .status("new")
+                .messageCreationTime(LocalDateTime.now()).build();
+        userMessageRepository.save(message);
+
+        log.debug("Отправляем сообщение создателю мероприятия");
+        sendMessageService.sendMessage(event.getAuthorId(), message);
+
+        eventRepository.save(event);
+        log.debug("Сохраняем мероприятие в БД {}", event.getEventName());
+    }
+
+    @Override
+    @Transactional
+    public void eventClosedByModerator(Long eventId){
+
+        log.debug("Получаем мероприятие {} по ID", eventId);
+        Event event = getOneEvent(eventId);
+
+        log.debug("Меняем статус мероприятия {} на закрытый модератором", event.getId());
+        event.setStatus((statusRepository.getOne(4L)));
+
+        log.debug("Создаем и сохраняем сообщение");
+        UserMessage message = UserMessage.builder()
+                .messageOwner(event.getAuthorId())
+                .message("Мероприятие " + event.getEventName() + " закрыто модератором.")
+                .status("new")
+                .messageCreationTime(LocalDateTime.now()).build();
+        userMessageRepository.save(message);
+
+        log.debug("Отправляем сообщение создателю {} мероприятия {}", event.getAuthorId(), event.getId());
+        sendMessageService.sendMessage(event.getAuthorId(), message);
+
+        eventRepository.save(event);
+        log.debug("Сохраняем мероприятие {} в БД ", event.getId());
     }
 }
