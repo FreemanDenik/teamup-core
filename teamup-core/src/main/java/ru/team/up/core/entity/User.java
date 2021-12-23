@@ -73,4 +73,12 @@ public class User extends Account {
             inverseJoinColumns = @JoinColumn(name = "MESSAGE_ID"))
     @Column(name = "USER_MESSAGES")
     private Set<UserMessage> userMessages;
+
+    /**
+     * Добавляет новое сообщение в список сообщений пользователя
+     * @param userMessage
+     */
+    public void addUserMessage(UserMessage userMessage) {
+        userMessages.add(userMessage);
+    }
 }

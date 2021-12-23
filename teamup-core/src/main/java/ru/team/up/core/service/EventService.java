@@ -1,6 +1,7 @@
 package ru.team.up.core.service;
 
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.entity.User;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface EventService {
     Event saveEvent(Event event);
 
     void deleteEvent(Long id);
+
+    void addParticipantEvent(Long Id, User user);
 }
