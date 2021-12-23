@@ -24,6 +24,7 @@
         <module>teamup-auth</module>
         <module>teamup-input</module>
         <module>teamup-external</module>
+        <module>teamup-dto</module>
         <module>teamup-app</module>
     </modules>
 
