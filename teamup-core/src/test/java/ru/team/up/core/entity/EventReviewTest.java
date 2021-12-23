@@ -14,7 +14,7 @@ import ru.team.up.core.repositories.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Тест сущности отзыва на мероприятие
@@ -77,7 +77,7 @@ class EventReviewTest extends Assertions {
             .placeEvent("Moscow")
             .timeEvent(LocalDateTime.of(2021, 11, 3, 15, 0))
             .eventUpdateDate(LocalDate.of(2021, 11, 3))
-            .participantsEvent(List.of(testUser))
+            .participantsEvent(Set.of(testUser))
             .status(testStatus)
             .build();
 
