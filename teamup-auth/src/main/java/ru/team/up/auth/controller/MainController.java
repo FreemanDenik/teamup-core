@@ -1,5 +1,6 @@
 package ru.team.up.auth.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
  * Контроллер для регистрации, авторизации
  * и переадресации на страницы в зависимости от роли пользователя
  */
+@Slf4j
 @Controller
 public class MainController {
 
@@ -52,9 +54,9 @@ public class MainController {
         return (Account) userDetails.loadUserByUsername(email);
     }
 
-    public void autoLogin(String username, String password, HttpServletRequest request) {
-        UserDetails user = userDetails.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password
+    public void autoLogin(String email, String password, HttpServletRequest request) {
+        UserDetails user = userDetails.loadUserByUsername(email);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password
                 , user.getAuthorities());
 
         try {
@@ -63,10 +65,13 @@ public class MainController {
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY
                         , SecurityContextHolder.getContext());
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Account account = (Account) userDetails.loadUserByUsername(email);
+        log.debug("Успешная авторизация id:{},  email:{}", account.getId(), account.getEmail());
     }
 
     /**

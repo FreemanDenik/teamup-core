@@ -1,5 +1,6 @@
 package ru.team.up.auth.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class SuccessHandler implements AuthenticationSuccessHandler {
     @Autowired
@@ -51,7 +53,8 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
                 return;
             }
         }
-
+        Account account = (Account) authentication.getPrincipal();
+        log.debug("Успешная авторизация id:{},  email:{}", account.getId(), account.getEmail());
         Set<String> roles = AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         if (roles.contains("ROLE_ADMIN")) {
             httpServletResponse.sendRedirect("/admin");
