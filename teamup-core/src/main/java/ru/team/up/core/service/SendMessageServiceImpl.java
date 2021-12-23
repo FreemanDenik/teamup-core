@@ -10,13 +10,9 @@ import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.repositories.UserRepository;
 
-import java.util.List;
 import java.util.Set;
 
-/**
- * @author Stanislav Ivashchenko
- * Сервис для отправки сообщений пользовате(лю/лям)
- */
+
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -26,17 +22,6 @@ public class SendMessageServiceImpl implements SendMessageService {
     @Override
     @Transactional
     public void sendMessage(Set<User> users, UserMessage message) {
-        if (users != null) {
-            for (User user : users) {
-                user.addUserMessage(message);
-                userRepository.save(user);
-            }
-        }
-    }
-
-    @Override
-    @Transactional
-    public void sendMessage(List<User> users, UserMessage message) {
         if (users != null) {
             for (User user : users) {
                 user.addUserMessage(message);

@@ -10,19 +10,11 @@ import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventReview;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
-import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.EventReviewRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
-import ru.team.up.core.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 
-
-/**
- * @author Stanislav Ivashchenko
- * <p>
- * Класс сервиса для управления отзывами ru.team.up.core.entity.EventReview
- */
 
 @Slf4j
 @Service
@@ -33,11 +25,6 @@ public class EventReviewServiceImpl implements EventReviewService {
     private SendMessageService sendMessageService;
 
 
-    /**
-     * Метод сохраняет отзыв для мероприятия
-     * @param eventReview
-     * @return
-     */
     @Override
     @Transactional
     public EventReview saveEventReview(EventReview eventReview) {
