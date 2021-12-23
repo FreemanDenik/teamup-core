@@ -77,11 +77,11 @@ public class TeamupInputModeratorPrivateControllerTests {
     public void testUpdateModerator() {
         when(moderatorService.saveModerator(moderator)).thenReturn(moderator);
         when(moderatorService.moderatorIsExistsById(moderator.getId())).thenReturn(true);
-        Assert.assertEquals(200, moderatorController.updateModerator(moderator,moderator.getId ()).getStatusCodeValue());
+        Assert.assertEquals(200 , moderatorController.updateModerator(moderator,moderator.getId ()).getStatusCodeValue());
     }
 
     @Test
     public void testDeleteModerator() {
-        Assert.assertEquals(202, moderatorController.deleteModerator(moderator.getId()).getStatusCodeValue());
+        Assert.assertEquals(202 , moderatorController.deleteModerator(moderator.getId()).getStatusCodeValue());
     }
 }
