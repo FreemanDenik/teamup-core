@@ -34,9 +34,11 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Transactional(readOnly = true)
     public List<Application> getAllApplicationsByEventId(Long id) {
 
+        log.debug("Старт метода List<Application> getAllApplicationsByEventId()");
         List<Application> applications = Optional.of(applicationRepository.findAllByEventId(id))
                 .orElseThrow(NoContentException::new);
 
+        log.debug("Получили список всех заявок по мероприятию из БД {}", applications);
         return applications;
     }
 
@@ -45,20 +47,24 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Transactional(readOnly = true)
     public List<Application> getAllApplicationsByUserId(Long id) {
 
+        log.debug("Старт метода List<Application> getAllApplicationsByUserId()");
         List<Application> applications = Optional.of(applicationRepository.findAllByUserId(id))
                 .orElseThrow(NoContentException::new);
 
+        log.debug("Получили список всех заявок по пользователю из БД {}", applications);
         return applications;
     }
 
 
     @Override
     @Transactional(readOnly = true)
-    public Application getOneApplication(Long id) {
+    public Application getApplication(Long id) {
 
+        log.debug("Старт метода getApplication(Long id) с параметром {}", id);
         Application application = Optional.of(applicationRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
 
+        log.debug("Получили заявку из БД {}", application);
         return application;
     }
 

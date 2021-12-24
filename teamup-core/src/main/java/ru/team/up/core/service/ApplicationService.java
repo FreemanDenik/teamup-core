@@ -11,7 +11,7 @@ public interface ApplicationService {
 
     List<Application> getAllApplicationsByUserId(Long id);
 
-    Application getOneApplication(Long id);
+    Application getApplication(Long id);
 
     Application saveApplication(Application application, User user);
 

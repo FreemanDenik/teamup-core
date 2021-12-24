@@ -21,7 +21,7 @@ public class ApplicationController {
 
     private ApplicationService applicationService;
 
-    @GetMapping("/getByEvent/{id}")
+    @GetMapping("/ByEvent/{id}")
     public ResponseEntity<List<Application>> getAllApplicationsByEventId(@PathVariable Long id) {
 
         ResponseEntity<List<Application>> responseEntity = ResponseEntity.ok(applicationService.getAllApplicationsByEventId(id));
@@ -29,7 +29,7 @@ public class ApplicationController {
         return responseEntity;
     }
 
-    @GetMapping("/getByUserId{id}")
+    @GetMapping("/ByUser/{id}")
     public ResponseEntity<List<Application>> getAllApplicationsByUserId(@PathVariable Long id) {
 
         ResponseEntity<List<Application>> responseEntity = ResponseEntity.ok(applicationService.getAllApplicationsByUserId(id));
