@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.team.up.external.api.service.GeoService;
 import ru.team.up.external.impl.model.Location;
 import ru.team.up.external.impl.model.MapEntity;
 
@@ -34,7 +35,7 @@ public class GeoServiceImpl implements GeoService {
     }
 
     @Override
-    public String getGeocode(String address) {
+    public String getGeoPosition(String address) {
         log.debug("Старт метода GetGeocode с параметром {}", address);
         Location location = getResponseFromGoogleMapApi(urlGeocode, address)
                 .getMapResourceResults().get(0).geometry.location;
@@ -48,7 +49,6 @@ public class GeoServiceImpl implements GeoService {
                 .getMapResourceResults().get(0).formattedAddress;
     }
 
-    @Override
     public MapEntity getResponseFromGoogleMapApi(String url, String addressOrCode) {
         log.debug("Старт метода getResponseFromGoogleMapApi с параметром {}", addressOrCode);
         String encodedAddress = URLEncoder.encode(addressOrCode, StandardCharsets.UTF_8);

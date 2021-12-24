@@ -8,17 +8,17 @@ package ru.team.up.external.api.service;
 *  2. Удобочитаемого адреса из географических координат
 * */
 
-public interface GeoServiceApi<S> {
+public interface GeoService {
 
     /*
     * Метод для получения георафических координат по адресу
     * */
-    String getGeocodeApi(String address);
+    String getGeoPosition(String address);
 
     /*
     * Метод для получения удобочитаемого адреса из географических координат
     * */
-    String getAddressApi(String code);
+    String getAddress(String code);
 
 
 }
