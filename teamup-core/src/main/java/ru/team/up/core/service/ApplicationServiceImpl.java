@@ -34,7 +34,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Transactional(readOnly = true)
     public List<Application> getAllApplicationsByEventId(Long id) {
 
-        log.debug("Старт метода List<Application> getAllApplicationsByEventId()");
+        log.debug("Получение заявок по id мероприятии {}", id);
         List<Application> applications = Optional.of(applicationRepository.findAllByEventId(id))
                 .orElseThrow(NoContentException::new);
 
@@ -47,7 +47,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Transactional(readOnly = true)
     public List<Application> getAllApplicationsByUserId(Long id) {
 
-        log.debug("Старт метода List<Application> getAllApplicationsByUserId()");
+        log.debug("Получение заявок по id пользователя {}", id);
         List<Application> applications = Optional.of(applicationRepository.findAllByUserId(id))
                 .orElseThrow(NoContentException::new);
 
@@ -60,7 +60,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Transactional(readOnly = true)
     public Application getApplication(Long id) {
 
-        log.debug("Старт метода getApplication(Long id) с параметром {}", id);
+        log.debug("Получение заявки по id {}", id);
         Application application = Optional.of(applicationRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
 
@@ -92,7 +92,7 @@ public class ApplicationServiceImpl implements ApplicationService{
                 userRepository.save(user);
 
 
-        log.debug("Старт метода Application saveApplication(Application application) с параметром {}", application);
+        log.debug("Сохранение заявки с параметром {}", application);
 
         Application save = applicationRepository.save(application);
         log.debug("Сохранили заявку в БД {}", save);
@@ -104,7 +104,11 @@ public class ApplicationServiceImpl implements ApplicationService{
     @Override
     @Transactional
     public void deleteApplication(Long id) {
+
+        log.debug("Удаление заявки по id {}", id);
         applicationRepository.deleteById(id);
+
+        log.debug("Удалили заявку из БД {}", id);
     }
 
 }
