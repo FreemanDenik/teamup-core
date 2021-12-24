@@ -88,7 +88,7 @@ public class Event {
      */
     @ManyToMany(mappedBy = "userEvent",
             cascade = CascadeType.MERGE, fetch =FetchType.LAZY)
-    private List<User> participantsEvent;
+    private Set<User> participantsEvent;
 
     /**
      * Тип мероприятия

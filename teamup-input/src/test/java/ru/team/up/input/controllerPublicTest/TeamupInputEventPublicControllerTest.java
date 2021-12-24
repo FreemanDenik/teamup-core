@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 
@@ -91,7 +92,7 @@ public class TeamupInputEventPublicControllerTest {
             .placeEvent("placeEvent")
             .timeEvent(LocalDateTime.now())
             .eventUpdateDate(LocalDate.now())
-            .participantsEvent(Collections.singletonList(testUser2))
+            .participantsEvent(Set.of(testUser2))
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))
@@ -104,7 +105,7 @@ public class TeamupInputEventPublicControllerTest {
             .placeEvent("placeEvent2")
             .timeEvent(LocalDateTime.now().plusDays(10))
             .eventUpdateDate(LocalDate.now())
-            .participantsEvent(Collections.singletonList(testUser2))
+            .participantsEvent(Set.of(testUser2))
             .eventType(eventType)
             .authorId(testUser)
             .eventInterests(Collections.singleton(programming))

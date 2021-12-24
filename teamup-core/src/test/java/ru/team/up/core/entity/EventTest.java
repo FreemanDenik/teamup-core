@@ -57,7 +57,7 @@ class EventTest extends Assertions {
                 .age(30).aboutUser("testUser").userInterests(interestsSet).build();
         userRepository.save(userTest);
 
-        List<User> testListUser = new ArrayList<>();
+        Set<User> testListUser = new HashSet<>();
         testListUser.add(userTest);
 
         Event eventTest = Event.builder().eventName("Football")
