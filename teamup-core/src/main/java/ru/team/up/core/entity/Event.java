@@ -103,4 +103,12 @@ public class Event {
     @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
+
+    /**
+     * Добавляет нового участника мероприятия
+     * @param user
+     */
+    public void addParticipant(User user) {
+        participantsEvent.add(user);
+    }
 }
