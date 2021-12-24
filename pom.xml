@@ -25,6 +25,7 @@
         <module>teamup-input</module>
         <module>teamup-external</module>
         <module>teamup-app</module>
+        <module>teamup-kafka</module>
     </modules>
 
     <dependencyManagement>
