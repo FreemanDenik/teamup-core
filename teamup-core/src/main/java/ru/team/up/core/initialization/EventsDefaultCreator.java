@@ -26,7 +26,10 @@ public class EventsDefaultCreator {
     private final StatusRepository statusRepository;
 
     @Autowired
-    public EventsDefaultCreator(EventRepository eventRepository, EventTypeRepository eventTypeRepository, UserRepository userRepository, StatusRepository statusRepository) {
+    public EventsDefaultCreator(EventRepository eventRepository,
+                                EventTypeRepository eventTypeRepository,
+                                UserRepository userRepository,
+                                StatusRepository statusRepository) {
         this.eventRepository = eventRepository;
         this.eventTypeRepository = eventTypeRepository;
         this.userRepository = userRepository;

@@ -18,4 +18,16 @@ public interface EventService {
     void deleteEvent(Long id);
 
     void addParticipantEvent(Long Id, User user);
+
+    /**
+     * @param eventId Уникальный ключ ID мероприятия
+     *           Метод меняет статус мероприятия на одобренный
+     */
+    void eventApprovedByModerator(Long eventId);
+
+    /**
+     * @param eventId Уникальный ключ ID мероприятия
+     *           Метод меняет стутус мероприятия на закрытый модератором
+     */
+    void eventClosedByModerator(Long eventId);
 }
