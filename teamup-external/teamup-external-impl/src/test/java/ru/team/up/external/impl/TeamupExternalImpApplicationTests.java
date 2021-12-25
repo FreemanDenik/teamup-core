@@ -17,7 +17,7 @@ public class TeamupExternalImpApplicationTests {
 
    @Test
     public void geoCodeCorrect(){
-       String geoCreat = geoService.getGeocode("1600+Amphitheatre+Parkway,+Mountain+View,+CA");
+       String geoCreat = geoService.getGeoPosition("1600+Amphitheatre+Parkway,+Mountain+View,+CA");
        Assert.assertNotNull(geoCreat);
        Assert.assertEquals("37,422388,-122,084188", geoCreat);
    }
@@ -29,7 +29,7 @@ public class TeamupExternalImpApplicationTests {
    }
     @Test(expected = RuntimeException.class)
     public void geoCodeNotCorrect(){
-        String geoCreat = geoService.getGeocode(" ");
+        String geoCreat = geoService.getAddress(" ");
         Assert.assertNotNull(geoCreat);
     }
 
