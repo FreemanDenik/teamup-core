@@ -30,13 +30,6 @@
         <spring-boot-admin.version>2.4.3</spring-boot-admin.version>
     </properties>
     <dependencies>
-
-        <dependency>
-            <groupId>ru.team.up</groupId>
-            <artifactId>teamup-external-api</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jersey</artifactId>
