@@ -1,14 +1,19 @@
 package ru.team.up.dto;
 
-import lombok.Data;
+
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.Set;
 
+
+
 @Data
 @SuperBuilder
 public class UserDto extends AccountDto{
+
+
 
     /**
      * Город

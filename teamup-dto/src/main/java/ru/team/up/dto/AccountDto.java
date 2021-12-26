@@ -1,14 +1,16 @@
 package ru.team.up.dto;
 
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Объект для передачи данных пользователя, админа, модератора
  */
 
-@Data
+@NoArgsConstructor
+@Getter
+@Setter
 @Builder
 public class AccountDto {
     /**
