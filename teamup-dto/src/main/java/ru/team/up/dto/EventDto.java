@@ -1,10 +1,9 @@
 package ru.team.up.dto;
 
+import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
+
 import java.util.Set;
 
 /**
@@ -12,7 +11,13 @@ import java.util.Set;
  */
 
 @Data
-public class EventDTO {
+@Builder
+public class EventDto {
+    /**
+     * Первичный ключ
+     */
+    private Long id;
+
     /**
      * Название мероприятия
      */
@@ -33,10 +38,6 @@ public class EventDTO {
      */
     private LocalDateTime timeEvent;
 
-    /**
-     * Время обновления мероприятия
-     */
-    private LocalDate eventUpdateDate;
 
     /**
      * Приватность мероприятия
@@ -44,9 +45,9 @@ public class EventDTO {
     private Boolean eventPrivacy;
 
     /**
-     * Участники мероприятия email:ФИО
+     * Участники мероприятия
      */
-    private Map<String, String> participantsEventEmailFullName;
+    private Set<UserDto> participantsEvent;
 
     /**
      * Тип мероприятия
@@ -54,20 +55,15 @@ public class EventDTO {
     private String eventType;
 
     /**
-     * ФИО создателя мероприятия
+     * Создатель мероприятия
      */
-    private String authorFullName;
-
-    /**
-     * Email создателя мероприятия
-     */
-    private String authorEmail;
+    private UserDto authorId;
 
 
     /**
      * С какими интересами связанно мероприятие
      */
-    private Set<String> eventInterests;
+    private Set<InterestsDto> eventInterests;
 
     /**
      * Статус мероприятия (модерация, доступно и т.д.)

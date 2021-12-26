@@ -1,9 +1,21 @@
 package ru.team.up.dto;
 
+
+import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Объект для передачи данных пользователя, админа, модератора
+ */
+
 @Data
-public class AccountCreateDTO {
+@Builder
+public class AccountDto {
+    /**
+     * Первичный ключ
+     */
+    private Long id;
+
     /**
      * Имя
      */
@@ -24,8 +36,4 @@ public class AccountCreateDTO {
      */
     private String email;
 
-    /**
-     * Пароль
-     */
-    private String password;
 }

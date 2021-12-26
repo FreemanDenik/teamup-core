@@ -1,23 +1,23 @@
 package ru.team.up.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Set;
 
 @Data
-public class UserMessageDTO {
+@Builder
+public class UserMessageDto {
+    /**
+     * Первичный ключ
+     */
+    private Long id;
 
     /**
-     * Полное имя владелеца сообщения
+     * Владелец сообщения
      */
-    private String messageOwnerFullName;
-
-    /**
-     * Email владелеца сообщения
-     */
-    private String messageOwnerEmail;
+    private UserDto messageOwner;
 
     /**
      * Текст сообщения
@@ -40,7 +40,7 @@ public class UserMessageDTO {
     private LocalDateTime messageReadTime;
 
     /**
-     * Пользователи получившие сообщение еmail: полное имя
+     * Пользователи получившие сообщение
      */
-    private Map<String, String > users;
+    private Set<UserDto> users;
 }
