@@ -31,4 +31,12 @@ public class UserServiceAuthImpl implements UserServiceAuth {
         user.setLastAccountActivity(LocalDateTime.now());
         userRepository.save(user);
     }
+
+    @Override
+    public boolean checkLogin(String login) {
+        if (userRepository.findByLogin(login) != null) {
+            return true;
+        }
+        return false;
+    }
 }

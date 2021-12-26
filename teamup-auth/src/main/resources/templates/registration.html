@@ -39,9 +39,12 @@
             <textarea class="form-control" id="aboutUser" th:field = "${user.aboutUser}" rows="2"></textarea>
         </div>
         <div>
-            <label for="login">Login &#8432</label>
+            <label for="login">NickName &#8432</label>
             <input type="text" required class="form-control" id="login" th:field = "${user.login}"  aria-describedby="loginHelp">
             <small id="loginHelp" class="form-text text-muted">&#8432 Required field</small>
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p th:text="${'Указанный nickname уже занят'}" class="error" style="color: red"></p>
+            </div>
         </div>
         <div>
             <label for="email">Email address &#8432</label>

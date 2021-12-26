@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
@@ -54,7 +56,7 @@ public class MainController {
         return (Account) userDetails.loadUserByUsername(email);
     }
 
-    public void autoLogin(String email, String password, HttpServletRequest request) {
+    private void autoLogin(String email, String password, HttpServletRequest request) {
         UserDetails user = userDetails.loadUserByUsername(email);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(email, password
                 , user.getAuthorities());
@@ -73,6 +75,7 @@ public class MainController {
         Account account = (Account) userDetails.loadUserByUsername(email);
         log.debug("Успешная авторизация id:{},  email:{}", account.getId(), account.getEmail());
     }
+
 
     /**
      * Стартовая страница
@@ -134,8 +137,16 @@ public class MainController {
      * в ином случае - registration.html
      */
     @PostMapping(value = "/registration")
-    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
+    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
         String password = user.getPassword();
+
+        if(userServiceAuth.checkLogin(user.getLogin())) {
+            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
+            result.addError(error);
+        }
+        if (result.hasErrors()) {
+            return "/registration";
+        }
         userServiceAuth.saveUser(user);
         autoLogin(user.getEmail(), password, request);
         return "redirect:/authority";
@@ -185,6 +196,7 @@ public class MainController {
         user.setEmail(principal.getEmail());
         user.setName(principal.getGivenName());
         user.setLastName(principal.getFamilyName());
+
 
         model.addAttribute("user", user);
         return "registration";
