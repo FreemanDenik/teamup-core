@@ -8,10 +8,8 @@ import lombok.experimental.SuperBuilder;
  * Объект для передачи данных пользователя, админа, модератора
  */
 
-@NoArgsConstructor
-@Getter
-@Setter
-@Builder
+@Data
+@SuperBuilder
 public class AccountDto {
     /**
      * Первичный ключ
