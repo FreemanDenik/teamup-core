@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -84,6 +86,15 @@ public class Event {
     private Boolean eventPrivacy;
 
     /**
+     * Число участников мероприятия
+     */
+
+    @Max(200)
+    @Value("1")
+    @Column(name = "EVENT_NUMBER_OF_PARTICIPANT", nullable = false)
+    private Byte eventNumberOfParticipant;
+
+    /**
      * Участники мероприятия
      */
     @ManyToMany(mappedBy = "userEvent",
@@ -105,7 +116,7 @@ public class Event {
     private User authorId;
 
     /**
-     * С какими интересами связанно мероприятие
+     * С какими интересами связано мероприятие
      */
     @ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     @JoinTable(name="INTERESTS_EVENT",
