@@ -28,28 +28,29 @@ public class EventReviewServiceImpl implements EventReviewService {
     @Override
     @Transactional
     public EventReview saveEventReview(EventReview eventReview) {
+        log.debug("Старт метода сохранения отзыва для мероприятия");
 
-        log.debug("Получаем мероприятие для которого оставили отзыв");
         Event event = eventReview.getReviewForEvent();
+        log.debug("Получили мероприятие с ID {} для которого оставили отзыв", event.getId());
 
-        log.debug("Получаем пользователя создавшего отзыв");
         User reviewer = eventReview.getReviewer();
+        log.debug("Получили пользователя с ID {} создавшего отзыв", reviewer.getId());
 
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder()
                 .messageOwner(reviewer)
-                .message("Пользователь " + reviewer.getName()
+                .message("Пользователь " + reviewer.getLogin()
                         + " написал отзыв о мероприятии " + event.getEventName()
                         + " и поставил оценку " + eventReview.getEventGrade())
                 .status("new")
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
-        log.debug("Отправка сообщения создателю мероприятия");
         sendMessageService.sendMessage(event.getAuthorId(), message);
+        log.debug("Отправили сообщение создателю c ID {} мероприятия ", event.getAuthorId());
 
         EventReview eventReviewSave = eventReviewRepository.save(eventReview);
-        log.debug("Сохранили отзыв для мероприятия в БД {}", eventReviewSave);
+        log.debug("Сохранили отзыв для мероприятия с ID {} в БД ", eventReviewSave.getReviewForEvent().getId());
 
         return eventReviewSave;
     }

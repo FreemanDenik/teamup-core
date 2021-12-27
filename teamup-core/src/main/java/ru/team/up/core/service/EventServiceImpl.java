@@ -41,11 +41,11 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public List<Event> getAllEvents() {
-        log.debug("Старт метода List<Event> getAllEvents()");
+        log.debug("Старт метода получения всех мероприятий");
 
         List<Event> events = Optional.of(eventRepository.findAll())
                 .orElseThrow(NoContentException::new);
-        log.debug("Получили список всех мероприятий из БД {}", events);
+        log.debug("Получили список из {} мероприятий из БД", events.size());
 
         return events;
     }
@@ -58,11 +58,12 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional(readOnly = true)
     public Event getOneEvent(Long id) {
-        log.debug("Старт метода Event getOneEvent(Long id) с параметром {}", id);
+        log.debug("Старт метода получения мероприятия по ID {}", id);
 
         Event event = Optional.of(eventRepository.getOne(id))
                 .orElseThrow(() -> new UserNotFoundException(id));
-        log.debug("Получили мероприятие из БД {}", event);
+
+        log.debug("Получили мероприятие из БД с ID {}", event.getId());
 
         return event;
     }
@@ -74,28 +75,30 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event saveEvent(Event event) {
+        log.debug("Старт метода сохранения мероприятия");
 
-        log.debug("Получаем из БД пользователя создавшего мероприятие");
         User userCreatedEventDB = userRepository.findById(event.getAuthorId().getId()).get();
+        log.debug("Получили из БД пользователя с ID {}, создавшего мероприятие {}", userCreatedEventDB.getId(), event.getEventName());
 
         log.debug("Формируем список подписчиков пользователя");
         Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
 
+
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedEventDB)
-                .message("Пользователь " + userCreatedEventDB.getName()
+                .message("Пользователь " + userCreatedEventDB.getLogin()
                         + " создал мероприятие " + event.getEventName()
                         + " с приватностью" + event.getEventPrivacy())
                 .status("new")
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
-        log.debug("Отправка сообщения подписчикам");
+        log.debug("Отправка сообщения {} подписчикам", userSubscribers.size());
         sendMessageService.sendMessage(userSubscribers, message);
 
-        log.debug("Старт метода Event saveEvent(Event event) с параметром {}", event);
+        log.debug("Старт метода сохранения мероприятия");
         Event save = eventRepository.save(event);
-        log.debug("Сохранили мероприятие в БД {}", save);
+        log.debug("Успешно сохранили мероприятие с ID {} в БД ", save.getId());
 
         return save;
     }
@@ -107,10 +110,10 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void deleteEvent(Long id) {
-        log.debug("Старт метода void deleteEvent(Event event) с параметром {}", id);
+        log.debug("Старт метода удаления мероприятия с ID {}", id);
 
         eventRepository.deleteById(id);
-        log.debug("Удалили мероприятие из БД {}", id);
+        log.debug("Удалили мероприятие c ID {} из БД ", id);
     }
 
 
@@ -120,6 +123,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void addParticipantEvent(Long eventId, User user) {
+        log.debug("Старт метода добавления участника в мероприятие");
 
         log.debug("Получаем мероприятие по ID: {}", eventId);
         Event event = getOneEvent(eventId);
@@ -127,20 +131,20 @@ public class EventServiceImpl implements EventService {
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder()
                 .messageOwner(user)
-                .message("Пользователь " + user.getName()
+                .message("Пользователь " + user.getLogin()
                         + " стал участником мероприятия " + event.getEventName())
                 .status("new")
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
-        log.debug("Отправка сообщения создателю c id: {} для мероприятия с id: {}", event.getAuthorId(), eventId);
+        log.debug("Отправка сообщения создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
         sendMessageService.sendMessage(event.getAuthorId(), message);
 
-        log.debug("Добавили нового участника {}", user);
         event.addParticipant(user);
+        log.debug("Добавили нового участника с ID {}", user.getId());
 
         Event save = eventRepository.save(event);
-        log.debug("Сохранили мероприятие в БД {}", save);
+        log.debug("Сохранили мероприятие с ID {} в БД ", save.getId());
     }
 
     @Override
