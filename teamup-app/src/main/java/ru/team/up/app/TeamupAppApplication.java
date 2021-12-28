@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @PropertySource({
         "classpath:db.properties",
         "classpath:auth.properties",
+        "classpath:email.properties",
 //        "classpath:external.properties"
 })
 @EnableWebMvc

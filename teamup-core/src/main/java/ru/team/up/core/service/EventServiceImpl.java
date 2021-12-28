@@ -86,7 +86,7 @@ public class EventServiceImpl implements EventService {
                 .message("Пользователь " + userCreatedEventDB.getName()
                         + " создал мероприятие " + event.getEventName()
                         + " с приватностью" + event.getEventPrivacy())
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
@@ -129,7 +129,7 @@ public class EventServiceImpl implements EventService {
                 .messageOwner(user)
                 .message("Пользователь " + user.getName()
                         + " стал участником мероприятия " + event.getEventName())
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
@@ -157,7 +157,7 @@ public class EventServiceImpl implements EventService {
         UserMessage message = UserMessage.builder()
                 .messageOwner(event.getAuthorId())
                 .message("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
@@ -182,7 +182,7 @@ public class EventServiceImpl implements EventService {
         UserMessage message = UserMessage.builder()
                 .messageOwner(event.getAuthorId())
                 .message("Мероприятие " + event.getEventName() + " закрыто модератором.")
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 

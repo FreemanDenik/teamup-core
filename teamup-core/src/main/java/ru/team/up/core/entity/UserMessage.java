@@ -2,21 +2,24 @@ package ru.team.up.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
  * @author Alexey Tkachenko
- *
+ * <p>
  * Сущность сообщения для пользователя
  */
 
 @Entity
 @Table(name = "USER_MESSAGE")
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor()
 @Getter
 @Setter
 @Builder
@@ -47,8 +50,17 @@ public class UserMessage {
     /**
      * Статус сообщения
      */
-    @Column(name = "STATUS")
-    private String status;
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "STATUS_ID")
+    private Status status;
+
+    /**
+     * Тип сообщения
+     */
+    @Column(name = "MESSAGE_TYPE")
+//    @Enumerated(EnumType.STRING)
+    @Value("${ru.team.up.core.entity.usermessagetype:my default value}")
+    private String messageType;
 
     /**
      * Время создания сообщения
@@ -71,4 +83,8 @@ public class UserMessage {
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     @ToString.Exclude
     private Set<User> users;
+
+
+
+
 }
