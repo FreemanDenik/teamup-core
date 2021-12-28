@@ -58,9 +58,8 @@ public class UserMessage {
      * Тип сообщения
      */
     @Column(name = "MESSAGE_TYPE")
-//    @Enumerated(EnumType.STRING)
-    @Value("${ru.team.up.core.entity.usermessagetype:my default value}")
-    private String messageType;
+    @Enumerated(EnumType.STRING)
+    private UserMessageType messageType;
 
     /**
      * Время создания сообщения
@@ -83,8 +82,5 @@ public class UserMessage {
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     @ToString.Exclude
     private Set<User> users;
-
-
-
 
 }

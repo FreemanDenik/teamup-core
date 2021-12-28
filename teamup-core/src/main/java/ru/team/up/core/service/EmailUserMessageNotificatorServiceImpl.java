@@ -12,7 +12,7 @@ import ru.team.up.core.repositories.UserMessageRepository;
 
 /**
  * @author Stepan Glushchenko
- * Сущность, которая выполняет отправку уведомления по электронной почте о новом сообщении пользователя
+ * Почтовый сервис, выполняющий отправку уведомления по электронной почте о новом сообщении пользователя
  */
 
 @Slf4j
@@ -29,27 +29,29 @@ public class EmailUserMessageNotificatorServiceImpl implements EmailUserMessageN
     }
 
     /**
-     * Метод отправляет уведомления по электронной почте о новом сообщении пользователя в зависимости от типа сообщения.
+     * Метод отправляет уведомления по электронной почте о новом сообщении пользователя.
      */
     @Override
     public void send() {
         for (UserMessage userMessage : userMessageRepository.findAll()) {
             if (userMessage.getMessageType().equals(UserMessageType.NOT_SENT)) {
-                log.debug("Подготовка сообщения id:{} к отправке для пользователя {}", userMessage.getId(), userMessage.getMessageOwner().getLogin());
+                log.debug("Подготовка сообщения id:{} к отправке для пользователя {}",
+                        userMessage.getId(), userMessage.getMessageOwner().getLogin());
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("noreply@teamup.ru");
                 message.setTo(userMessage.getMessageOwner().getEmail());
                 message.setSubject("Новое сообщение");
                 message.setText(userMessage.toString());
                 try {
                     emailSender.send(message);
                 } catch (MailException e) {
-                    log.debug("Ошибка при отправке уведомлений по электронной почте. Сообщение id:{}, пользователь:{}. {}", userMessage.getId(), userMessage.getMessageOwner().getLogin(), e.toString());
+                    log.debug("Ошибка при отправке уведомлений по электронной почте. Сообщение id:{}, пользователь:{}. {}",
+                            userMessage.getId(), userMessage.getMessageOwner().getLogin(), e.toString());
                     continue;
                 }
-//                userMessage.setMessageType(UserMessageType.SENT);
+                userMessage.setMessageType(UserMessageType.SENT);
                 userMessageRepository.save(userMessage);
-                log.debug("Уведомление по электронной почте о сообщении id:{} для пользователя {} отправлены.", userMessage.getId(), userMessage.getMessageOwner().getLogin());
+                log.debug("Уведомление по электронной почте о сообщении id:{} для пользователя {} отправлены.",
+                        userMessage.getId(), userMessage.getMessageOwner().getLogin());
             }
         }
     }
