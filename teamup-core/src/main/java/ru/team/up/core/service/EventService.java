@@ -30,4 +30,6 @@ public interface EventService {
      *           Метод меняет стутус мероприятия на закрытый модератором
      */
     void eventClosedByModerator(Long eventId);
+
+    void updateNumberOfViews(Long id);
 }

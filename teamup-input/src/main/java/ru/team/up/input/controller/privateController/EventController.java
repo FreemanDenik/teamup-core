@@ -57,7 +57,24 @@ public class EventController {
     }
 
     /**
-     * @param event Создаваемый объект класса Event
+     * @param id Значение ID мероприятия
+     * @return Результат работы метода eventService.updateNumberOfViews(id)
+     * в виде объекта ResponseEntity со статусом OK
+     */
+    @GetMapping("viewEvent/{id}")
+    public ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) с параметром {}", id);
+
+        eventService.updateNumberOfViews(id);
+
+        ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
+    }
+
+    /**
+     * @param eventCreate Создаваемый объект класса Event
      * @return Результат работы метода eventService.saveEvent(event) в виде объекта Event
      * в теле ResponseEntity
      */

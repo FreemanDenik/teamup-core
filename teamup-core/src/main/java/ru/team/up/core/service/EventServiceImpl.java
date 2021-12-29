@@ -116,7 +116,6 @@ public class EventServiceImpl implements EventService {
         log.debug("Удалили мероприятие c ID {} из БД ", id);
     }
 
-
     /**
      * Добавляет нового участника к мероприятию
      */
@@ -195,5 +194,14 @@ public class EventServiceImpl implements EventService {
 
         eventRepository.save(event);
         log.debug("Сохраняем мероприятие {} в БД ", event.getId());
+    }
+
+    @Override
+    @Transactional
+    public void updateNumberOfViews(Long id) {
+
+        log.debug("Обновляем количество просмотров мероприятия {} по ID", id);
+        eventRepository.updateNumberOfViews(id);
+        log.debug("Обновили количество просмотров мероприятия {} по ID", id);
     }
 }
