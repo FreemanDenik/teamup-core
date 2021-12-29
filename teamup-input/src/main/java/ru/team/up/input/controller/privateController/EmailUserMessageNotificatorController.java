@@ -13,11 +13,8 @@ import ru.team.up.core.service.EmailUserMessageNotificatorService;
 
 /**
  * @author Stepan Glushchenko
- *
  * @link localhost:8080/swagger-ui.html
  */
-
-
 @Slf4j
 @RestController
 @RequestMapping("/private/email-notificator")
@@ -33,5 +30,4 @@ public class EmailUserMessageNotificatorController {
         log.debug("Рассылка уведомлений о новых сообщениях пользователей по электронной почте завершена.");
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

@@ -12,14 +12,12 @@ import java.util.Set;
 
 /**
  * @author Alexey Tkachenko
- * <p>
  * Сущность сообщения для пользователя
  */
-
 @Entity
 @Table(name = "USER_MESSAGE")
 @NoArgsConstructor
-@AllArgsConstructor()
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
@@ -82,5 +80,4 @@ public class UserMessage {
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
     @ToString.Exclude
     private Set<User> users;
-
 }

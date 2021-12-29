@@ -1,5 +1,6 @@
 package ru.team.up.core.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -14,26 +15,20 @@ import ru.team.up.core.repositories.UserMessageRepository;
  * @author Stepan Glushchenko
  * Почтовый сервис, выполняющий отправку уведомления по электронной почте о новом сообщении пользователя
  */
-
 @Slf4j
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EmailUserMessageNotificatorServiceImpl implements EmailUserMessageNotificatorService {
 
     private UserMessageRepository userMessageRepository;
     private JavaMailSender emailSender;
-
-    @Autowired
-    public EmailUserMessageNotificatorServiceImpl(UserMessageRepository userMessageRepository, JavaMailSender javaMailSender) {
-        this.userMessageRepository = userMessageRepository;
-        this.emailSender = javaMailSender;
-    }
 
     /**
      * Метод отправляет уведомления по электронной почте о новом сообщении пользователя.
      */
     @Override
     public void send() {
-        for (UserMessage userMessage : userMessageRepository.findAll()) {
+        for (UserMessage userMessage : userMessageRepository. findAll()) {
             if (userMessage.getMessageType().equals(UserMessageType.NOT_SENT)) {
                 log.debug("Подготовка сообщения id:{} к отправке для пользователя {}",
                         userMessage.getId(), userMessage.getMessageOwner().getLogin());
