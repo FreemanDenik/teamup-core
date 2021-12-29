@@ -1,12 +1,7 @@
 package ru.team.up.core.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -88,11 +83,17 @@ public class Event {
     /**
      * Число участников мероприятия
      */
-
     @Max(200)
     @Value("1")
     @Column(name = "EVENT_NUMBER_OF_PARTICIPANT", nullable = false)
     private Byte eventNumberOfParticipant;
+
+    /**
+     * Количество просмотров мероприятия
+     */
+    @Value("1")
+    @Column(name = "COUNT_VIEW_EVENT")
+    private Integer countViewEvent;
 
     /**
      * Участники мероприятия
