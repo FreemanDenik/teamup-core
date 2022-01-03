@@ -56,7 +56,7 @@ class UserMessageTest extends Assertions{
     UserMessage userMessage = UserMessage.builder()
             .messageOwner(testUser)
             .message("Hello!")
-            .status("new")
+            .status(statusRepository.getOne(4L))
             .messageCreationTime(LocalDateTime.now())
             .messageReadTime(LocalDateTime.now())
             .build();

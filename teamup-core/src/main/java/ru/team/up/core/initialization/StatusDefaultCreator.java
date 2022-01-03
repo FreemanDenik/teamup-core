@@ -43,5 +43,15 @@ public class StatusDefaultCreator {
                 .id(4L)
                 .status("Закрыто модератором")
                 .build());
+
+        statusRepository.save(Status.builder()
+                .id(5L)
+                .status("Новое")
+                .build());
+
+        statusRepository.save(Status.builder()
+                .id(6L)
+                .status("Отправлено")
+                .build());
     }
 }

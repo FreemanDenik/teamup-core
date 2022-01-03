@@ -153,7 +153,7 @@ class TeamupCoreRepositoryTests extends Assertions {
 
         userMessageTest = UserMessage.builder()
                 .message("Благодарю за подписку!")
-                .status("Доставлено")
+                .status(statusRepository.getOne(6L))
                 .messageCreationTime(LocalDateTime.now())
                 .build();
     }

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Application;
-import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
 import ru.team.up.core.repositories.ApplicationRepository;
+import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
 import ru.team.up.core.repositories.UserRepository;
 
@@ -28,6 +28,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     private ApplicationRepository applicationRepository;
     private UserRepository userRepository;
     private UserMessageRepository userMessageRepository;
+    private StatusRepository statusRepository;
 
 
     @Override
@@ -80,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService{
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedApplicationDB)
                 .message("Пользователь " + userCreatedApplicationDB.getName())
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 

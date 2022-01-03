@@ -11,6 +11,7 @@ import ru.team.up.core.entity.EventReview;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.repositories.EventReviewRepository;
+import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class EventReviewServiceImpl implements EventReviewService {
     private EventReviewRepository eventReviewRepository;
     private UserMessageRepository userMessageRepository;
     private SendMessageService sendMessageService;
+    private StatusRepository statusRepository;
 
 
     @Override
@@ -42,7 +44,7 @@ public class EventReviewServiceImpl implements EventReviewService {
                 .message("Пользователь " + reviewer.getLogin()
                         + " написал отзыв о мероприятии " + event.getEventName()
                         + " и поставил оценку " + eventReview.getEventGrade())
-                .status("new")
+                .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);
 
