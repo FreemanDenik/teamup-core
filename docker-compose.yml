@@ -23,3 +23,11 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  mongo:
+    image: mongo:4.4.11
+    restart: always
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
