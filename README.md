@@ -3,7 +3,7 @@
 ---
 ## Запуск стека приложений
 
-Для запуска стека приложений (Postgres, Zookeeper, Kafka) выполните в терминале IDEA:
+Для запуска стека приложений (PostgreSQL, MongoDB, Zookeeper, Kafka) выполните в терминале IDEA:
 
     docker-compose up -d
 ## Тестовые аккаунты:
