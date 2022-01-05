@@ -30,7 +30,7 @@ public class KafkaConsumerConfig {
 
         DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
         Map<String, Class<?>> classMap = new HashMap<>();
-        classMap.put("keyTest", Data.class);
+        classMap.put("INPUT_KEY", Data.class);
         typeMapper.setIdClassMapping(classMap);
         typeMapper.addTrustedPackages("*");
 

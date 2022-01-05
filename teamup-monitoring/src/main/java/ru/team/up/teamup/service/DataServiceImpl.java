@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.team.up.teamup.repositories.DataRepository;
 
 @Service
-public class DataServiceImpl {
+public class DataServiceImpl implements DataService {
 
     private DataRepository repository;
 
@@ -13,6 +13,7 @@ public class DataServiceImpl {
         this.repository = repository;
     }
 
+    @Override
     public Data saveMessage(Data data) {
         return repository.save(data);
     }
