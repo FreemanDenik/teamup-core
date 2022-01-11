@@ -5,18 +5,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -131,6 +120,10 @@ public class Event {
     @ManyToOne(cascade=CascadeType.MERGE)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
+
+//    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL)
+//    @PrimaryKeyJoinColumn
+//    private AssignedEvents assignedEventsId;
 
     /**
      * Добавляет нового участника мероприятия
