@@ -23,39 +23,10 @@ public class ModeratorsSessions {
 
     private long moderatorId;
 
-    private LocalDateTime createdDateTime;
+    private LocalDateTime lastUpdateSessionTime;
 
-    private LocalDate createdDate;
+    private LocalDateTime createdSessionTime;
 
-    public Long getId() {
-        return id;
-    }
+    private Long countOfModeratorsSessions;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public long getModeratorId() {
-        return moderatorId;
-    }
-
-    public void setModeratorId(long moderatorId) {
-        this.moderatorId = moderatorId;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
-    public void setCreatedDateTime(LocalDateTime createdDateTime) {
-        this.createdDateTime = createdDateTime;
-    }
-
-    public LocalDate getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
-    }
-}
+  }

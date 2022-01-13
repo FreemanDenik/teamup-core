@@ -26,7 +26,11 @@ public class AssignedEventsServiceImpl implements AssignedEventsService{
     }
 
     public void removeAssignedEvent(Long id) {
-        assignedEventsRepository.deleteById(id);
+        try {
+            assignedEventsRepository.deleteById(id);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -39,9 +39,4 @@ public class Moderator extends Account {
     @Column(name = "AMOUNT_OF_DELETED_EVENTS")
     private Long amountOfDeletedEvents;
 
-
-
-    @OneToMany(mappedBy = "moderator", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private List<AssignedEvents> assignedEventsId;
 }

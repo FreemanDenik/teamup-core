@@ -1,6 +1,7 @@
 package ru.team.up.auth.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -28,7 +29,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
     private final UserDetailsImpl userService;
 
     private final ModeratorsSessionsService moderatorsSessionsService;
-
+    @Autowired
     public SuccessHandler(UserDetailsImpl userService, ModeratorsSessionsService moderatorsSessionsService) {
         this.userService = userService;
         this.moderatorsSessionsService = moderatorsSessionsService;
@@ -64,7 +65,7 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         } else if (roles.contains("ROLE_USER")) {
             httpServletResponse.sendRedirect("/user");
         } else if (roles.contains("ROLE_MODERATOR")) {
-            moderatorsSessionsService.saveModeratorsSession(account.getId(), LocalDateTime.now(), LocalDate.now());
+            moderatorsSessionsService.createModeratorsSession(account.getId(), LocalDateTime.now());
             httpServletResponse.sendRedirect("/moderator");
         } else {
             httpServletResponse.sendRedirect("/welcome");

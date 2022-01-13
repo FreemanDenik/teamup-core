@@ -121,10 +121,6 @@ public class Event {
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 
-//    @OneToOne(mappedBy = "event", cascade = CascadeType.ALL)
-//    @PrimaryKeyJoinColumn
-//    private AssignedEvents assignedEventsId;
-
     /**
      * Добавляет нового участника мероприятия
      * @param user

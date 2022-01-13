@@ -21,7 +21,7 @@ public class AssignedEvents {
     @ManyToOne
     @MapsId
     @JoinColumn(name = "moderator_id")
-    private Moderator moderator;
+    private ModeratorsSessions moderatorsSessions;
 
     @OneToOne
     @MapsId

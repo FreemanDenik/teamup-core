@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.exception.UserNotFoundException;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.Optional;
+
+/**
+ * Author Mirseit Ibraimov
+ * класс управления сессиями модераторов
+ */
 
 @Slf4j
 @Service
@@ -22,14 +24,23 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
     ModeratorsSessionsRepository moderatorsSessionsRepository;
 
     public ModeratorsSessionsServiceImpl() {
-
     }
 
+    /**
+     * Метод получения сессии модератора по ID
+     * @param id
+     * @return moderatorSession
+     */
     public ModeratorsSessions getModeratorsSession(Long id) {
         log.debug("Получение сессию по ID сессии {}", id);
         return moderatorsSessionsRepository.getOne(id);
     }
 
+    /**
+     * Метод получения всех сессий модератора
+     * @param id
+     * @return moderatorsSessions
+     */
     @Override
     public ModeratorsSessions getModeratorsSessionByModerator(Long id) {
         ModeratorsSessions moderatorsSessions = null;
@@ -44,16 +55,26 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
         return moderatorsSessions;
     }
 
-    public ModeratorsSessions saveModeratorsSession(Long id, LocalDateTime localDateTime, LocalDate localDate) {
-        log.debug("Создание новой сессии");
+    /**
+     * метод создания новой сессии
+     * @param id
+     * @param localDateTime
+     * @return
+     */
+    public ModeratorsSessions createModeratorsSession(Long id, LocalDateTime localDateTime) {
+        log.debug("Создание новой сессии c id {}", id);
         ModeratorsSessions moderatorsSessions = new ModeratorsSessions();
         moderatorsSessions.setModeratorId(id);
-        moderatorsSessions.setCreatedDateTime(localDateTime);
-        moderatorsSessions.setCreatedDate(localDate);
-        log.debug("Получили новую сессию");
+        moderatorsSessions.setLastUpdateSessionTime(localDateTime);
+        moderatorsSessions.setCreatedSessionTime(localDateTime);
+        log.debug("Получили новую сессию с id {}", id);
         return moderatorsSessionsRepository.saveAndFlush(moderatorsSessions);
     }
 
+    /**
+     * метод удаления сессии модератора по id
+     * @param id
+     */
     public void removeModeratorSession(Long id) {
         log.debug("Удаление сессии по ID сессии {}", id);
         moderatorsSessionsRepository.deleteById(id);
