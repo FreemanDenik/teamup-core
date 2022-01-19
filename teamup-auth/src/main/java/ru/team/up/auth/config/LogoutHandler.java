@@ -1,0 +1,36 @@
+package ru.team.up.auth.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.entity.ModeratorsSessions;
+import ru.team.up.core.service.ModeratorService;
+import ru.team.up.core.service.ModeratorsSessionsService;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static ru.team.up.core.entity.Role.ROLE_MODERATOR;
+
+public class LogoutHandler implements LogoutSuccessHandler {
+
+    @Autowired
+    private ModeratorsSessionsService moderatorsSessionsService;
+
+    @Override
+    public void onLogoutSuccess(HttpServletRequest httpServletRequest,
+                                HttpServletResponse httpServletResponse,
+                                Authentication authentication) throws IOException, ServletException {
+
+        Account account = (Account) authentication.getPrincipal();
+        if (account.getRole() == ROLE_MODERATOR) {
+            ModeratorsSessions moderatorsSessions = moderatorsSessionsService.getModeratorsSessionByModerator(account.getId());
+            moderatorsSessionsService.removeModeratorSession(moderatorsSessions.getId());
+        }
+    }
+}

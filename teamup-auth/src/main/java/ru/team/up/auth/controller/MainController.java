@@ -2,7 +2,6 @@ package ru.team.up.auth.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,15 +13,16 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
+import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.stream.Collectors;
 
 
@@ -41,7 +41,7 @@ public class MainController {
     protected AuthenticationManager authenticationManager;
 
     @Autowired
-    public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails) {
+    public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
         this.userServiceAuth = userServiceAuth;
         this.userDetails = userDetails;
     }
@@ -55,6 +55,7 @@ public class MainController {
         }
         return (Account) userDetails.loadUserByUsername(email);
     }
+
 
     private void autoLogin(String email, String password, HttpServletRequest request) {
         UserDetails user = userDetails.loadUserByUsername(email);

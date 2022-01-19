@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Сущность модератор
@@ -36,4 +38,5 @@ public class Moderator extends Account {
      */
     @Column(name = "AMOUNT_OF_DELETED_EVENTS")
     private Long amountOfDeletedEvents;
+
 }

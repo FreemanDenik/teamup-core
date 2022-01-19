@@ -68,7 +68,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         log.debug("Старт метода Moderator saveModerator(Moderator user) с параметром {}", moderator);
 
         Moderator save = moderatorRepository.save(moderator);
-        log.debug("Сохранили модератора в БД {}", save);
+        log.debug("Создали нового модератора в БД {}", save);
 
         return save;
     }
