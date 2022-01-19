@@ -112,6 +112,7 @@ public class Event {
     @JoinTable(name="INTERESTS_EVENT",
             joinColumns=@JoinColumn(name="EVENT_ID", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "INTERESTS_ID"))
+    @Column(name = "INTERESTS_EVENT")
     private Set<Interests> eventInterests;
 
     /**

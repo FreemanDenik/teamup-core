@@ -49,13 +49,13 @@ public class TeamupExternalImpApplicationTests {
     @Test
     public void getGeocodeCorrectData() {
         MockClient(geocodeCorrectDataURL);
-        Assert.assertEquals("OK", geoService.getGeocode("1600+Amphitheatre+Parkway,+Mountain+View,+CA").getStatus());
+        Assert.assertEquals("OK", geoService.getGeoPosition("1600+Amphitheatre+Parkway,+Mountain+View,+CA").getStatus());
     }
 
     @Test
     public void getGeocodeIncorrectData() {
         MockClient(geocodeIncorrectDataURL);
-        Assert.assertEquals(null, geoService.getGeocode("1600%bAmphitheatre+Parkway,+Mountain+View,+CA"));
+        Assert.assertEquals(null, geoService.getGeoPosition("1600%bAmphitheatre+Parkway,+Mountain+View,+CA"));
     }
 
     @Test
