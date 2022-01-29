@@ -29,6 +29,7 @@
         <module>teamup-app</module>
         <module>teamup-kafka</module>
         <module>teamup-moderator</module>
+        <module>teamup-monitoring</module>
     </modules>
 
     <dependencyManagement>

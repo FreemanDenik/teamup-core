@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ru.team.up</groupId>
-    <artifactId>teamup</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>teamup-monitoring</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <name>teamup-monitoring</name>
     <description>TeamUp monitoring</description>
     <properties>

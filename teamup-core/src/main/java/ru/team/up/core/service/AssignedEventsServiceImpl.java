@@ -9,7 +9,7 @@ import ru.team.up.core.repositories.AssignedEventsRepository;
 
 @Slf4j
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+
 public class AssignedEventsServiceImpl implements AssignedEventsService{
 
     AssignedEventsRepository assignedEventsRepository;
