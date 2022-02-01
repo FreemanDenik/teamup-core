@@ -22,7 +22,7 @@ public class Geometry {
     /*
     * Геокодированные значения широты и долготы
     * */
-    private Location location;
+    public Location location;
 
     /*
     * Рекомендуемая область просмотра для отображения возвращенного результата.
