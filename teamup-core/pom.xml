@@ -90,6 +90,14 @@
             <artifactId>spring-kafka</artifactId>
             <version>${spring.boot.starter.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
     <dependencies>
