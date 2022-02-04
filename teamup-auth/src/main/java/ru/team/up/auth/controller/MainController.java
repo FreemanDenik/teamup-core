@@ -13,13 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
 import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
+import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,14 +45,14 @@ public class MainController {
         this.userDetails = userDetails;
     }
 
-    private Account getCurrentAccount() {
+    private User getCurrentUser() {
         String email;
         if (SecurityContextHolder.getContext().getAuthentication().toString().contains("given_name")) {
             email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         } else {
             email = ((Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         }
-        return (Account) userDetails.loadUserByUsername(email);
+        return (User) userDetails.loadUserByUsername(email);
     }
 
 
@@ -93,7 +92,7 @@ public class MainController {
      */
     @GetMapping(value = "/user")
     public String printUserPage(Model model) {
-        model.addAttribute("loggedUser", getCurrentAccount());
+        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
         return "user";
     }
 
@@ -102,7 +101,7 @@ public class MainController {
      */
     @GetMapping(value = "/admin")
     public String printAdminPage(Model model) {
-        model.addAttribute("loggedUser", getCurrentAccount());
+        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
         return "admin";
     }
 
@@ -112,7 +111,7 @@ public class MainController {
      */
     @GetMapping(value = "/moderator")
     public String printModeratorPage(Model model) {
-        model.addAttribute("loggedUser", getCurrentAccount());
+        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
         return "moderator";
     }
 
@@ -162,7 +161,7 @@ public class MainController {
     @GetMapping(value = "/authority")
     public String chooseRole() {
 
-        String role = getCurrentAccount().getAuthorities()
+        String role = getCurrentUser().getAuthorities()
                 .stream()
                 .map(a -> a.getAuthority())
                 .collect(Collectors.joining(","));
