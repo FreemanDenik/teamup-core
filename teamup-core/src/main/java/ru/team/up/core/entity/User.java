@@ -27,7 +27,7 @@ public class User extends Account {
     private String city;
 
     /**
-     * Возрастgit bra
+     * Возраст
      */
     @Column(name = "AGE", nullable = false)
     private Integer age;
