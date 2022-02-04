@@ -18,7 +18,6 @@ import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
-import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,14 +44,14 @@ public class MainController {
         this.userDetails = userDetails;
     }
 
-    private User getCurrentUser() {
+    private Account getCurrentAccount() {
         String email;
         if (SecurityContextHolder.getContext().getAuthentication().toString().contains("given_name")) {
             email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         } else {
             email = ((Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         }
-        return (User) userDetails.loadUserByUsername(email);
+        return (Account) userDetails.loadUserByUsername(email);
     }
 
 
@@ -92,7 +91,7 @@ public class MainController {
      */
     @GetMapping(value = "/user")
     public String printUserPage(Model model) {
-        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "user";
     }
 
@@ -101,7 +100,7 @@ public class MainController {
      */
     @GetMapping(value = "/admin")
     public String printAdminPage(Model model) {
-        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "admin";
     }
 
@@ -111,7 +110,7 @@ public class MainController {
      */
     @GetMapping(value = "/moderator")
     public String printModeratorPage(Model model) {
-        model.addAttribute("loggedUser", UserMapper.INSTANCE.toDto(getCurrentUser()));
+        model.addAttribute("loggedUser", getCurrentAccount());
         return "moderator";
     }
 
@@ -161,7 +160,7 @@ public class MainController {
     @GetMapping(value = "/authority")
     public String chooseRole() {
 
-        String role = getCurrentUser().getAuthorities()
+        String role = getCurrentAccount().getAuthorities()
                 .stream()
                 .map(a -> a.getAuthority())
                 .collect(Collectors.joining(","));
