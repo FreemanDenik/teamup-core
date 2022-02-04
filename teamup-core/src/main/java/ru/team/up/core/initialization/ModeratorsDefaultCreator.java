@@ -31,7 +31,7 @@ public class ModeratorsDefaultCreator {
                 .id(1L)
                 .firstName("Moderator")
                 .lastName("DefaultModerator")
-                .login("moderator")
+                .username("moderator")
                 .password(BCrypt.hashpw("moderator", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())

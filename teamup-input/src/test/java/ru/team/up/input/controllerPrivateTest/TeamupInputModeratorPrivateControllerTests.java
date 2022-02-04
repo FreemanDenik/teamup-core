@@ -42,7 +42,7 @@ public class TeamupInputModeratorPrivateControllerTests {
             .firstName("Moderator")
             .lastName("ModeratorLastName")
             .middleName("ModeratorMiddleName")
-            .login("ModeratorLogin")
+            .username("ModeratorLogin")
             .email("moderator@mail.ru")
             .password("1234")
             .accountCreatedTime(LocalDate.now())

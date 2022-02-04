@@ -39,7 +39,7 @@ public class TeamupInputAdminPrivateControllerTest {
             .firstName("Natalya")
             .lastName("Tkachenko")
             .middleName("Mihaylovna")
-            .login("natatk")
+            .username("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
             .accountCreatedTime(LocalDate.now())

@@ -41,7 +41,7 @@ public class EventReviewServiceImpl implements EventReviewService {
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder()
                 .messageOwner(reviewer)
-                .message("Пользователь " + reviewer.getLogin()
+                .message("Пользователь " + reviewer.getUsername()
                         + " написал отзыв о мероприятии " + event.getEventName()
                         + " и поставил оценку " + eventReview.getEventGrade())
                 .status(statusRepository.getOne(5L))

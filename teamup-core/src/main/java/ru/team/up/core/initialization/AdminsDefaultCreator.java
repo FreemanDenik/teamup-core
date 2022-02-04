@@ -31,7 +31,7 @@ public class AdminsDefaultCreator {
                 .id(1L)
                 .firstName("Admin")
                 .lastName("DefaultAdmin")
-                .login("admin")
+                .username("admin")
                 .password(BCrypt.hashpw("admin", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())

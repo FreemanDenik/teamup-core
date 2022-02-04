@@ -34,7 +34,7 @@ public class UserServiceAuthImpl implements UserServiceAuth {
 
     @Override
     public boolean checkLogin(String login) {
-        if (userRepository.findByLogin(login) != null) {
+        if (userRepository.findByUsername(login) != null) {
             return true;
         }
         return false;

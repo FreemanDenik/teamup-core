@@ -139,7 +139,7 @@ public class MainController {
     public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
         String password = user.getPassword();
 
-        if(userServiceAuth.checkLogin(user.getLogin())) {
+        if(userServiceAuth.checkLogin(user.getUsername())) {
             ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
             result.addError(error);
         }

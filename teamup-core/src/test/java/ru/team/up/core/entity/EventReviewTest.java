@@ -49,7 +49,7 @@ class EventReviewTest extends Assertions {
             .firstName("User")
             .lastName("User")
             .middleName("User")
-            .login("Usertest")
+            .username("Usertest")
             .email("User@gmail.com")
             .password("user")
             .accountCreatedTime(LocalDate.of(2020, 5, 12))

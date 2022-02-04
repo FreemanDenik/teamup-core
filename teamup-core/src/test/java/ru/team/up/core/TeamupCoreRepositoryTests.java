@@ -63,7 +63,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .firstName("testAdmin")
                 .lastName("testAdminLastName")
                 .middleName("testAdminMiddleName")
-                .login("testAdminLogin")
+                .username("testAdminLogin")
                 .email("testAdmin@mail.ru")
                 .password("admin")
                 .accountCreatedTime(LocalDate.now())
@@ -74,7 +74,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .firstName("testModerator")
                 .lastName("testModeratorLastName")
                 .middleName("testModeratorMiddleName")
-                .login("testModeratorLogin")
+                .username("testModeratorLogin")
                 .email("testModerator@mail.ru")
                 .password("moderator")
                 .accountCreatedTime(LocalDate.now())
@@ -98,7 +98,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .firstName("testUser")
                 .lastName("testUserLastName")
                 .middleName("testUserMiddleName")
-                .login("testUserLogin")
+                .username("testUserLogin")
                 .email("testUser@mail.ru")
                 .password("user")
                 .accountCreatedTime(LocalDate.now())
@@ -112,7 +112,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .firstName("testSubscriber1Name")
                 .lastName("testSubscriber1LastName")
                 .middleName("testSubscriber1MiddleName")
-                .login("testSubscriber1Login")
+                .username("testSubscriber1Login")
                 .email("testSubscriber1@mail.ru")
                 .password("subscriber1")
                 .accountCreatedTime(LocalDate.now())
@@ -126,7 +126,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .firstName("testSubscriber2Name")
                 .lastName("testSubscriber2LastName")
                 .middleName("testSubscriber2MiddleName")
-                .login("testSubscriber2Login")
+                .username("testSubscriber2Login")
                 .email("testSubscriber2@mail.ru")
                 .password("testSubscriber2")
                 .accountCreatedTime(LocalDate.now())
@@ -175,7 +175,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         // Проверили данные на совпадение
         assertEquals(testAdminBD.getFirstName(), adminTest.getFirstName());
         assertEquals(testAdminBD.getLastName(), adminTest.getLastName());
-        assertEquals(testAdminBD.getLogin(), adminTest.getLogin());
+        assertEquals(testAdminBD.getUsername(), adminTest.getUsername());
         assertEquals(testAdminBD.getEmail(), adminTest.getEmail());
         assertEquals(testAdminBD.getPassword(), adminTest.getPassword());
         assertEquals(testAdminBD.getAccountCreatedTime(), adminTest.getAccountCreatedTime());
@@ -204,7 +204,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         // Проверили данные на совпадение
         assertEquals(moderatorBD.getFirstName(), moderatorTest.getFirstName());
         assertEquals(moderatorBD.getLastName(), moderatorTest.getLastName());
-        assertEquals(moderatorBD.getLogin(), moderatorTest.getLogin());
+        assertEquals(moderatorBD.getUsername(), moderatorTest.getUsername());
         assertEquals(moderatorBD.getEmail(), moderatorTest.getEmail());
         assertEquals(moderatorBD.getPassword(), moderatorTest.getPassword());
         assertEquals(moderatorBD.getAmountOfCheckedEvents(), moderatorTest.getAmountOfCheckedEvents());
@@ -263,7 +263,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertEquals(userBD.getFirstName(), userTest.getFirstName());
         assertEquals(userBD.getLastName(), userTest.getLastName());
         assertEquals(userBD.getMiddleName(), userTest.getMiddleName());
-        assertEquals(userBD.getLogin(), userTest.getLogin());
+        assertEquals(userBD.getUsername(), userTest.getUsername());
         assertEquals(userBD.getEmail(), userTest.getEmail());
         assertEquals(userBD.getPassword(), userTest.getPassword());
         assertEquals(userBD.getAccountCreatedTime(), userTest.getAccountCreatedTime());

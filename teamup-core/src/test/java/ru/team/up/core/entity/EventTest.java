@@ -49,7 +49,7 @@ class EventTest extends Assertions {
         interestsSet.add(interestsTest);
 
         User userTest = User.builder().firstName("testUser").lastName("testUserLastName")
-                .middleName("testUserMiddleName").login("testUserLogin").email("testUser@mail.ru")
+                .middleName("testUserMiddleName").username("testUserLogin").email("testUser@mail.ru")
                 .password("3").accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now()).city("Moskow")
                 .age(30).aboutUser("testUser").userInterests(interestsSet).build();
