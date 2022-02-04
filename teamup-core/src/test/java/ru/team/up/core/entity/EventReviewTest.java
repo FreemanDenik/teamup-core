@@ -46,7 +46,7 @@ class EventReviewTest extends Assertions {
             .build();
 
     User testUser = User.builder()
-            .name("User")
+            .firstName("User")
             .lastName("User")
             .middleName("User")
             .login("Usertest")

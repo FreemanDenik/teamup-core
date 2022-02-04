@@ -39,7 +39,7 @@ public class TeamupInputModeratorPrivateControllerTests {
 
     Moderator moderator = Moderator.builder()
             .id(1L)
-            .name("Moderator")
+            .firstName("Moderator")
             .lastName("ModeratorLastName")
             .middleName("ModeratorMiddleName")
             .login("ModeratorLogin")

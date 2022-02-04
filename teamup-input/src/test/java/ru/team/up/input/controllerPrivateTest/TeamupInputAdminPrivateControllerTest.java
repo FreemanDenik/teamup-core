@@ -36,7 +36,7 @@ public class TeamupInputAdminPrivateControllerTest {
 
     Admin admin = Admin.builder()
             .id(1L)
-            .name("Natalya")
+            .firstName("Natalya")
             .lastName("Tkachenko")
             .middleName("Mihaylovna")
             .login("natatk")

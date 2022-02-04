@@ -33,7 +33,7 @@ public class Account implements UserDetails {
      * Имя
      */
     @Column(name = "NAME", nullable = false)
-    private String name;
+    private String firstName;
 
     /**
      * Фамилия

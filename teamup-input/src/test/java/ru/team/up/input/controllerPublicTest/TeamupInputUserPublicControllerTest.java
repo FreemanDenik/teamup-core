@@ -35,7 +35,7 @@ public class TeamupInputUserPublicControllerTest {
 
     User testUser = User.builder ()
             .id(1L)
-            .name("Marina")
+            .firstName("Marina")
             .lastName("Sysenko")
             .middleName("Alexsandrovna")
             .login("test")

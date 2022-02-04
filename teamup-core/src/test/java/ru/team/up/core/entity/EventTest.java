@@ -9,9 +9,7 @@ import ru.team.up.core.repositories.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,7 +48,7 @@ class EventTest extends Assertions {
         Set<Interests> interestsSet = new HashSet<>();
         interestsSet.add(interestsTest);
 
-        User userTest = User.builder().name("testUser").lastName("testUserLastName")
+        User userTest = User.builder().firstName("testUser").lastName("testUserLastName")
                 .middleName("testUserMiddleName").login("testUserLogin").email("testUser@mail.ru")
                 .password("3").accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now()).city("Moskow")

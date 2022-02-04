@@ -35,7 +35,7 @@ class UserMessageTest extends Assertions{
             .build();
 
     User testUser = User.builder()
-            .name("Aleksey")
+            .firstName("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
             .login("alextk")
@@ -70,7 +70,7 @@ class UserMessageTest extends Assertions{
 
         UserMessage userMessage1 = userMessageRepository.findById(1L).orElse(new UserMessage());
         assertEquals(userMessage1.getMessage(), "Hello!");
-        assertEquals(userMessage1.getMessageOwner().getName(), "Aleksey");
+        assertEquals(userMessage1.getMessageOwner().getFirstName(), "Aleksey");
         assertEquals(userMessage1.getStatus(), "new");
         assertEquals(userMessage1.getId(), 1L);
         assertEquals("Hello!", userMessageRepository.findAllByMessageOwner(testUser).getMessage());

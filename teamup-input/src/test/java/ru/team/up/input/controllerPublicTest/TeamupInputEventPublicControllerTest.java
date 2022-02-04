@@ -53,7 +53,7 @@ public class TeamupInputEventPublicControllerTest {
             .build();
 
     User testUser = User.builder()
-            .name("Aleksey")
+            .firstName("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
             .login("alextk")
@@ -68,7 +68,7 @@ public class TeamupInputEventPublicControllerTest {
             .build();
 
     User testUser2 = User.builder()
-            .name("Aleksey2")
+            .firstName("Aleksey2")
             .lastName("Tkachenko2")
             .middleName("Petrovich2")
             .login("alextk2")

@@ -60,7 +60,7 @@ class TeamupCoreRepositoryTests extends Assertions {
     @BeforeEach
     public void setUpEntity() {
         adminTest = Admin.builder()
-                .name("testAdmin")
+                .firstName("testAdmin")
                 .lastName("testAdminLastName")
                 .middleName("testAdminMiddleName")
                 .login("testAdminLogin")
@@ -71,7 +71,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         moderatorTest = Moderator.builder()
-                .name("testModerator")
+                .firstName("testModerator")
                 .lastName("testModeratorLastName")
                 .middleName("testModeratorMiddleName")
                 .login("testModeratorLogin")
@@ -95,7 +95,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         userTest = User.builder()
-                .name("testUser")
+                .firstName("testUser")
                 .lastName("testUserLastName")
                 .middleName("testUserMiddleName")
                 .login("testUserLogin")
@@ -109,7 +109,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         subscriberTest1 = User.builder()
-                .name("testSubscriber1Name")
+                .firstName("testSubscriber1Name")
                 .lastName("testSubscriber1LastName")
                 .middleName("testSubscriber1MiddleName")
                 .login("testSubscriber1Login")
@@ -123,7 +123,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         subscriberTest2 = User.builder()
-                .name("testSubscriber2Name")
+                .firstName("testSubscriber2Name")
                 .lastName("testSubscriber2LastName")
                 .middleName("testSubscriber2MiddleName")
                 .login("testSubscriber2Login")
@@ -173,7 +173,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         Admin testAdminBD = adminRepository.findById(testAdminId).get();
 
         // Проверили данные на совпадение
-        assertEquals(testAdminBD.getName(), adminTest.getName());
+        assertEquals(testAdminBD.getFirstName(), adminTest.getFirstName());
         assertEquals(testAdminBD.getLastName(), adminTest.getLastName());
         assertEquals(testAdminBD.getLogin(), adminTest.getLogin());
         assertEquals(testAdminBD.getEmail(), adminTest.getEmail());
@@ -202,7 +202,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         Moderator moderatorBD = moderatorRepository.findById(testModeratorId).get();
 
         // Проверили данные на совпадение
-        assertEquals(moderatorBD.getName(), moderatorTest.getName());
+        assertEquals(moderatorBD.getFirstName(), moderatorTest.getFirstName());
         assertEquals(moderatorBD.getLastName(), moderatorTest.getLastName());
         assertEquals(moderatorBD.getLogin(), moderatorTest.getLogin());
         assertEquals(moderatorBD.getEmail(), moderatorTest.getEmail());
@@ -260,7 +260,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         User userBD = userRepository.findById(testUserId).get();
 
         // Проверили данные на соответствие
-        assertEquals(userBD.getName(), userTest.getName());
+        assertEquals(userBD.getFirstName(), userTest.getFirstName());
         assertEquals(userBD.getLastName(), userTest.getLastName());
         assertEquals(userBD.getMiddleName(), userTest.getMiddleName());
         assertEquals(userBD.getLogin(), userTest.getLogin());

@@ -29,7 +29,7 @@ public class ModeratorsDefaultCreator {
     public void moderatorsDefaultCreator() {
         moderatorRepository.save(Moderator.builder()
                 .id(1L)
-                .name("Moderator")
+                .firstName("Moderator")
                 .lastName("DefaultModerator")
                 .login("moderator")
                 .password(BCrypt.hashpw("moderator", BCrypt.gensalt(10)))

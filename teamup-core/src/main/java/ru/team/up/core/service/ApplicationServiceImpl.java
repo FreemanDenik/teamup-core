@@ -80,7 +80,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedApplicationDB)
-                .message("Пользователь " + userCreatedApplicationDB.getName())
+                .message("Пользователь " + userCreatedApplicationDB.getFirstName())
                 .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);

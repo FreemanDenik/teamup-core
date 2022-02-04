@@ -29,7 +29,7 @@ public class AdminsDefaultCreator {
     public void adminsDefaultCreator() {
         adminRepository.save(Admin.builder()
                 .id(1L)
-                .name("Admin")
+                .firstName("Admin")
                 .lastName("DefaultAdmin")
                 .login("admin")
                 .password(BCrypt.hashpw("admin", BCrypt.gensalt(10)))

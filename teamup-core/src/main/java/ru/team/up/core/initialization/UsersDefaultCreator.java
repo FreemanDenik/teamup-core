@@ -27,7 +27,7 @@ public class UsersDefaultCreator {
     public void usersDefaultCreator() {
         userRepository.save(User.builder()
                 .id(1L)
-                .name("User")
+                .firstName("User")
                 .lastName("DefaultUser")
                 .login("user")
                 .password(BCrypt.hashpw("user", BCrypt.gensalt(10)))
@@ -42,7 +42,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(2L)
-                .name("Иван")
+                .firstName("Иван")
                 .lastName("Петров")
                 .middleName("Иванович")
                 .login("ivan")
@@ -58,7 +58,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(3L)
-                .name("Ольга")
+                .firstName("Ольга")
                 .lastName("Смирнова")
                 .middleName("Васильевна")
                 .login("olga")
@@ -74,7 +74,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(4L)
-                .name("Фёдор")
+                .firstName("Фёдор")
                 .lastName("Жуков")
                 .middleName("Семёнович")
                 .login("fedor")
@@ -90,7 +90,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(5L)
-                .name("Роман")
+                .firstName("Роман")
                 .lastName("Соколов")
                 .middleName("Иванович")
                 .login("roman")
@@ -106,7 +106,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(6L)
-                .name("Мария")
+                .firstName("Мария")
                 .lastName("Морозова")
                 .middleName("Михайловна")
                 .login("mariya")
@@ -122,7 +122,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(7L)
-                .name("Александр")
+                .firstName("Александр")
                 .lastName("Павлов")
                 .middleName("Сергеевич")
                 .login("alex")
@@ -138,7 +138,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(8L)
-                .name("Василий")
+                .firstName("Василий")
                 .lastName("Сергеев")
                 .middleName("Петрович")
                 .login("vasiliy")
@@ -154,7 +154,7 @@ public class UsersDefaultCreator {
 
         userRepository.save(User.builder()
                 .id(9L)
-                .name("Елена")
+                .firstName("Елена")
                 .lastName("Орлова")
                 .middleName("Сергеевна")
                 .login("lena")

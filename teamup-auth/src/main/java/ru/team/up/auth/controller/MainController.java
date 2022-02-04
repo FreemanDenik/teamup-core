@@ -193,7 +193,7 @@ public class MainController {
         DefaultOidcUser principal = (DefaultOidcUser) authentication.getPrincipal();
         User user = new User();
         user.setEmail(principal.getEmail());
-        user.setName(principal.getGivenName());
+        user.setFirstName(principal.getGivenName());
         user.setLastName(principal.getFamilyName());
 
 
