@@ -44,7 +44,7 @@ public class TeamupInputUserPublicControllerTest {
             .accountCreatedTime(LocalDate.of(2021,11,20))
             .lastAccountActivity(LocalDateTime.of(2021,11,20,19,00))
             .city("Volgograd")
-            .age(54)
+            .birthday(LocalDate.of (1967, 1, 20))
             .aboutUser("I like to cook")
             .build();
     @Test

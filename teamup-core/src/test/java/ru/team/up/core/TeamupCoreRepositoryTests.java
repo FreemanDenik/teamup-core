@@ -104,7 +104,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Moscow")
-                .age(30)
+                .birthday(LocalDate.of (1992, 1, 20))
                 .aboutUser("testUserAbout")
                 .build();
 
@@ -118,7 +118,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Rostov-on-Don")
-                .age(35)
+                .birthday(LocalDate.of (1987, 1, 20))
                 .aboutUser("testSubscriber1About")
                 .build();
 
@@ -132,7 +132,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Minsk")
-                .age(40)
+                .birthday(LocalDate.of (1982, 1, 20))
                 .aboutUser("testSubscriber2About")
                 .build();
 
@@ -268,7 +268,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertEquals(userBD.getPassword(), userTest.getPassword());
         assertEquals(userBD.getAccountCreatedTime(), userTest.getAccountCreatedTime());
         assertEquals(userBD.getLastAccountActivity(), userTest.getLastAccountActivity());
-        assertEquals(userBD.getAge(), userTest.getAge());
+        assertEquals(userBD.getBirthday(), userTest.getBirthday());
         assertEquals(userBD.getCity(), userTest.getCity());
         assertNotNull(userBD.getUserInterests());
 

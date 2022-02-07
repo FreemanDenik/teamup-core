@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -29,8 +30,8 @@ public class User extends Account {
     /**
      * Возраст
      */
-    @Column(name = "AGE", nullable = false)
-    private Integer age;
+    @Column(name = "BIRTHDAY", nullable = false)
+    private LocalDate birthday;
 
     /**
      * Информация о пользователе

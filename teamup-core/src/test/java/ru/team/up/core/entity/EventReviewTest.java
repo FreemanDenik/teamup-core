@@ -55,7 +55,7 @@ class EventReviewTest extends Assertions {
             .accountCreatedTime(LocalDate.of(2020, 5, 12))
             .lastAccountActivity(LocalDateTime.of(2021, 6, 23, 15,0))
             .city("Moscow")
-            .age(30)
+            .birthday(LocalDate.of (1992, 1, 20))
             .aboutUser("123")
             .userInterests(Collections.singleton(testInterest))
             .build();

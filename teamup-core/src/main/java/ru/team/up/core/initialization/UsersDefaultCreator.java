@@ -35,7 +35,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("user@gmail.com")
                 .role(Role.ROLE_USER)
-                .age(100)
+                .birthday(LocalDate.of (1922, 1, 20))
                 .aboutUser("Default user")
                 .city("Default city")
                 .build());
@@ -51,7 +51,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("ivan@mail.ru")
                 .role(Role.ROLE_USER)
-                .age(30)
+                .birthday(LocalDate.of (1992, 5, 20))
                 .aboutUser("Любит играть в футбол.")
                 .city("Иваново")
                 .build());
@@ -67,7 +67,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("olga@yandex.ru")
                 .role(Role.ROLE_USER)
-                .age(24)
+                .birthday(LocalDate.of (1998, 6, 15))
                 .aboutUser("Увлекается фотографией")
                 .city("Санкт-Петербург")
                 .build());
@@ -83,7 +83,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("fedor@hotmail.com")
                 .role(Role.ROLE_USER)
-                .age(45)
+                .birthday(LocalDate.of (1977, 2, 10))
                 .aboutUser("Увлекается охотой и рыбалкой.")
                 .city("Самара")
                 .build());
@@ -99,7 +99,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("roman@gmail.com")
                 .role(Role.ROLE_USER)
-                .age(28)
+                .birthday(LocalDate.of (1996, 3, 29))
                 .aboutUser("Любит писать программы на Java.")
                 .city("Москва")
                 .build());
@@ -115,7 +115,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("mariya@mail.ru")
                 .role(Role.ROLE_USER)
-                .age(25)
+                .birthday(LocalDate.of (1997, 1, 20))
                 .aboutUser("Увлекается искусством")
                 .city("Санкт-Петербург")
                 .build());
@@ -131,7 +131,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("alex@yahoo.com")
                 .role(Role.ROLE_USER)
-                .age(27)
+                .birthday(LocalDate.of (1995, 1, 20))
                 .aboutUser("Занимается Web-разработкой")
                 .city("Москва")
                 .build());
@@ -147,7 +147,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("vasiliy@rambler.ru")
                 .role(Role.ROLE_USER)
-                .age(39)
+                .birthday(LocalDate.of (1983, 1, 20))
                 .aboutUser("Женат. Любит путешествовать.")
                 .city("Казань")
                 .build());
@@ -163,7 +163,7 @@ public class UsersDefaultCreator {
                 .lastAccountActivity(LocalDateTime.now())
                 .email("lena@yandex.ru")
                 .role(Role.ROLE_USER)
-                .age(31)
+                .birthday(LocalDate.of (1993, 1, 20))
                 .aboutUser("Занимается спортом. Ведёт свой блог и тренировки.")
                 .city("Сочи")
                 .build());

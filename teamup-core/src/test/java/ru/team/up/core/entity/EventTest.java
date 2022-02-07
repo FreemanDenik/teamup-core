@@ -52,7 +52,7 @@ class EventTest extends Assertions {
                 .middleName("testUserMiddleName").username("testUserLogin").email("testUser@mail.ru")
                 .password("3").accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now()).city("Moskow")
-                .age(30).aboutUser("testUser").userInterests(interestsSet).build();
+                .birthday(LocalDate.of (1992, 1, 20)).aboutUser("testUser").userInterests(interestsSet).build();
         userRepository.save(userTest);
 
         Set<User> testListUser = new HashSet<>();

@@ -57,7 +57,7 @@ public class TeamupInputUserPrivateControllerTest {
             .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
-            .age(43)
+            .birthday(LocalDate.of (1979, 1, 20))
             .aboutUser("Studying to be a programmer.")
             .userInterests(Collections.singleton(programming))
             .build();
