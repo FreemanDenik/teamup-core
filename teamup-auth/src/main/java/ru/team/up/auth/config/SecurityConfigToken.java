@@ -21,13 +21,11 @@ import ru.team.up.auth.config.jwt.JwtFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
-    private final SuccessHandler successHandler;
     private final UserDetailsService userDetailsService;
     private JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfigToken(SuccessHandler successHandler, @Qualifier("userDetailsImpl") UserDetailsService userDetailsService, JwtFilter jwtFilter) {
-        this.successHandler = successHandler;
+    public SecurityConfigToken(@Qualifier("userDetailsImpl") UserDetailsService userDetailsService, JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
         this.jwtFilter = jwtFilter;
     }

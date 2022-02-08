@@ -1,24 +1,18 @@
 package ru.team.up.auth.controller.authController;
 
 import lombok.AllArgsConstructor;
-import org.dom4j.rule.Mode;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.auth.config.jwt.JwtProvider;
-import ru.team.up.auth.service.UserServiceAuth;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.core.service.UserService;
 import ru.team.up.core.service.UserServiceImpl;
 import ru.team.up.dto.UserDto;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -29,22 +23,17 @@ public class AuthController {
     private UserDetailsService userDetailsService;
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
-    private UserServiceAuth userServiceAuth;
     private UserServiceImpl userService;
 
     @PostMapping("/registration")
-    public AuthResponse register(@RequestBody @Valid RegistrationRequest registrationRequest) {
+    public AuthResponse register(@RequestBody RegistrationRequest registrationRequest) {
         UserDto userDto = registrationRequest.getUserDto();
-
-        if (userServiceAuth.checkLogin(userDto.getUsername())) {
-//            Вот тут что нужно делать? Бросать ошибку или что? Как проинформировать о том, что такой юзер уже есть
-            return null;
-        }
         User user = UserMapper.INSTANCE.mapUserFromDto(userDto);
         user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt(10)));
         user.setRole(Role.ROLE_USER);
         user.setAccountCreatedTime(LocalDate.now());
         user.setLastAccountActivity(LocalDateTime.now());
+
         User newUser = userService.saveUser(user);
 
         String token = jwtProvider.generateToken(user.getEmail());

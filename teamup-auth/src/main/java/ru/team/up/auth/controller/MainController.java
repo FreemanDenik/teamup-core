@@ -10,10 +10,8 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import ru.team.up.auth.service.UserServiceAuth;
+
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
@@ -32,15 +30,13 @@ import java.util.stream.Collectors;
 @Controller
 public class MainController {
 
-    private final UserServiceAuth userServiceAuth;
     private final UserDetailsImpl userDetails;
 
     @Autowired
     protected AuthenticationManager authenticationManager;
 
     @Autowired
-    public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
-        this.userServiceAuth = userServiceAuth;
+    public MainController(UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
         this.userDetails = userDetails;
     }
 
