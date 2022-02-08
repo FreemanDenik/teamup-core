@@ -31,7 +31,7 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     @Transactional
     public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        return userRepository.findUserByEmail(email);
     }
 
     @Override

@@ -135,21 +135,21 @@ public class MainController {
      * с максимальной ролью пользователя,
      * в ином случае - registration.html
      */
-    @PostMapping(value = "/registration")
-    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
-        String password = user.getPassword();
-
-        if(userServiceAuth.checkLogin(user.getUsername())) {
-            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
-            result.addError(error);
-        }
-        if (result.hasErrors()) {
-            return "/registration";
-        }
-        userServiceAuth.saveUser(user);
-        autoLogin(user.getEmail(), password, request);
-        return "redirect:/authority";
-    }
+//    @PostMapping(value = "/registration")
+//    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
+//        String password = user.getPassword();
+//
+//        if(userServiceAuth.checkLogin(user.getUsername())) {
+//            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
+//            result.addError(error);
+//        }
+//        if (result.hasErrors()) {
+//            return "/registration";
+//        }
+//        userServiceAuth.saveUser(user);
+//        autoLogin(user.getEmail(), password, request);
+//        return "redirect:/authority";
+//    }
 
 
     /**
@@ -175,10 +175,10 @@ public class MainController {
         }
     }
 
-    @GetMapping(value = "/login")
-    public String loginPage(Model model) {
-        return "login";
-    }
+//    @GetMapping(value = "/login")
+//    public String loginPage(Model model) {
+//        return "login";
+//    }
 
     /**
      * Метод для подстановки в поля формы регистрации данных полученных от сервера аутентификции (Google)

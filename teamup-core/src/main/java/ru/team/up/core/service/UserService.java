@@ -1,5 +1,6 @@
 package ru.team.up.core.service;
 
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface UserService {
     User saveUser(User user);
 
     void deleteUser(Long id);
+
 }

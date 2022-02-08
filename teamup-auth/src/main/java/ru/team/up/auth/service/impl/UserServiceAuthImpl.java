@@ -11,6 +11,7 @@ import ru.team.up.core.repositories.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Service
@@ -34,7 +35,7 @@ public class UserServiceAuthImpl implements UserServiceAuth {
 
     @Override
     public boolean checkLogin(String login) {
-        if (userRepository.findByUsername(login) != null) {
+        if (Objects.nonNull(userRepository.findByUsername(login))) {
             return true;
         }
         return false;
