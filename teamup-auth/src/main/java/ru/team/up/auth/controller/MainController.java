@@ -131,6 +131,7 @@ public class MainController {
      * с максимальной ролью пользователя,
      * в ином случае - registration.html
      */
+    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос уже обрабатывается в AuthController
 //    @PostMapping(value = "/registration")
 //    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
 //        String password = user.getPassword();
@@ -171,6 +172,7 @@ public class MainController {
         }
     }
 
+    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос не нужен
 //    @GetMapping(value = "/login")
 //    public String loginPage(Model model) {
 //        return "login";

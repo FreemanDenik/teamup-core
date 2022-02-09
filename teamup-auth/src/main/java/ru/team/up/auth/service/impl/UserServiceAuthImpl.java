@@ -1,3 +1,4 @@
+//TODO Аргунов М.С. Не забыть удалить, так как данный класс по идее нигде не используется
 //package ru.team.up.auth.service.impl;
 //
 //import org.springframework.beans.factory.annotation.Autowired;

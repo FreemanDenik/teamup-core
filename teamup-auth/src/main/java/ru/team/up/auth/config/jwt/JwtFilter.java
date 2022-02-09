@@ -1,7 +1,7 @@
 package ru.team.up.auth.config.jwt;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +20,7 @@ import java.util.Objects;
 import static org.springframework.util.StringUtils.hasText;
 
 @Component
-@Log
+@Slf4j
 @AllArgsConstructor
 public class JwtFilter extends GenericFilterBean {
 
@@ -31,12 +31,11 @@ public class JwtFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        logger.info("do filter.....");
+//        logger.info("do filter.....");
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
         if (Objects.nonNull(token) && jwtProvider.validateToken(token)) {
             String userLogin = jwtProvider.getLoginFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(userLogin);
-            logger.info("userDetails = " + userDetails);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

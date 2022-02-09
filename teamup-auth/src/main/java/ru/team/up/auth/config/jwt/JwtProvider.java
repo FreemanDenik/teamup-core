@@ -1,14 +1,14 @@
 package ru.team.up.auth.config.jwt;
 
 import io.jsonwebtoken.*;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 @Component
-@Log
+@Slf4j
 public class JwtProvider {
 
     @Value("${jwt.token.secret}")
@@ -32,15 +32,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException expEx) {
-            log.severe("Token expired");
+            log.error("Token expired");
         } catch (UnsupportedJwtException unsEx) {
-            log.severe("Unsupported jwt");
+            log.error("Unsupported jwt");
         } catch (MalformedJwtException mjEx) {
-            log.severe("Malformed jwt");
+            log.error("Malformed jwt");
         } catch (SignatureException sEx) {
-            log.severe("Invalid signature");
+            log.error("Invalid signature");
         } catch (Exception e) {
-            log.severe("invalid token");
+            log.error("invalid token");
         }
         return false;
     }

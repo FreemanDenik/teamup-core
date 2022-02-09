@@ -1,3 +1,4 @@
+//TODO Аргунов М.С. Не забыть удалить, так как вместо этого класса заведен класс SecurityConfigToken с авторизацией с помощью токенов
 //package ru.team.up.auth.config;
 //
 //import org.springframework.beans.factory.annotation.Autowired;
