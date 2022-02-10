@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.Role;
-import ru.team.up.core.repositories.AdminRepository;
+import ru.team.up.core.repositories.AccountRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -18,17 +18,16 @@ import java.time.LocalDateTime;
 @Transactional
 public class AdminsDefaultCreator {
 
-    private final AdminRepository adminRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public AdminsDefaultCreator(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+    public AdminsDefaultCreator(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
     @Bean("AdminsDefaultCreator")
     public void adminsDefaultCreator() {
-        adminRepository.save(Admin.builder()
-                .id(1L)
+        accountRepository.save(Admin.builder()
                 .firstName("Admin")
                 .lastName("DefaultAdmin")
                 .username("admin")

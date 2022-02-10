@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
     public Event saveEvent(Event event) {
         log.debug("Старт метода сохранения мероприятия");
 
-        User userCreatedEventDB = userRepository.findById(event.getAuthorId().getId()).get();
+        User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
         log.debug("Получили из БД пользователя с ID {}, создавшего мероприятие {}", userCreatedEventDB.getId(), event.getEventName());
 
         log.debug("Формируем список подписчиков пользователя");

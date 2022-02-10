@@ -18,8 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_ACCOUNT")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userInterests"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userInterests", "userMessages", "userEvent"})
 public class User extends Account {
+
 
     /**
      * Город
@@ -82,4 +83,5 @@ public class User extends Account {
     public void addUserMessage(UserMessage userMessage) {
         userMessages.add(userMessage);
     }
+
 }

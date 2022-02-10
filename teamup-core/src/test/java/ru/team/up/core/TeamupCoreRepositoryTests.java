@@ -170,7 +170,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertNotNull(adminRepository.findById(testAdminId));
 
         // Создали нового тестового админа и получили его из БД по ID
-        Admin testAdminBD = adminRepository.findById(testAdminId).get();
+        Admin testAdminBD = (Admin) adminRepository.findById(testAdminId).get();
 
         // Проверили данные на совпадение
         assertEquals(testAdminBD.getFirstName(), adminTest.getFirstName());
@@ -199,7 +199,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertNotNull(moderatorRepository.findById(testModeratorId));
 
         // Создали нового тестового модератора и получили его из БД по ID
-        Moderator moderatorBD = moderatorRepository.findById(testModeratorId).get();
+        Moderator moderatorBD = (Moderator) moderatorRepository.findById(testModeratorId).get();
 
         // Проверили данные на совпадение
         assertEquals(moderatorBD.getFirstName(), moderatorTest.getFirstName());
@@ -257,7 +257,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         // Проверка на наличие тестового пользователя на назначенному ID
         assertNotNull(userRepository.findById(testUserId));
         // Создали нового тестового пользователя и получили данные из БД по назначенному ID
-        User userBD = userRepository.findById(testUserId).get();
+        User userBD = (User) userRepository.findById(testUserId).get();
 
         // Проверили данные на соответствие
         assertEquals(userBD.getFirstName(), userTest.getFirstName());
@@ -316,14 +316,14 @@ class TeamupCoreRepositoryTests extends Assertions {
         Long testUserId = testUser.getId();
 
         // Проверка на наличие подписчиков у пользователя
-        assertNotNull(userRepository.findById(testUserId).get().getSubscribers());
+        assertNotNull(userRepository.getUserById(testUserId).getSubscribers());
 
         // Создали множество из одного подписчика
         Set<User> setOneSubscriber = new HashSet<>();
         setOneSubscriber.add(subscriber2);
 
         // Создали нового тестового пользователя и получили его из БД
-        User testUserBD = userRepository.findById(testUserId).get();
+        User testUserBD = (User) userRepository.findById(testUserId).get();
 
         // Назначили для нового пользователя одного подписчика
         testUserBD.setSubscribers(setOneSubscriber);
@@ -333,7 +333,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         userRepository.deleteById(subscriberId1);
 
         // Проверили что у тестового пользователя остался один подписчик
-        assertNotNull(userRepository.findById(testUserId).get().getSubscribers());
+        assertNotNull(userRepository.getUserById(testUserId).getSubscribers());
 
         // У тестового пользователя удалили всех подписчиков
         Set<User> subscribersEmpty = new HashSet<>();
@@ -344,7 +344,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         userRepository.deleteById(subscriberId2);
 
         // Проверили что у пользователя больше нет подписчиков
-        assertEquals(userRepository.findById(testUserId).get().getSubscribers(), Collections.emptySet());
+        assertEquals(userRepository.getUserById(testUserId).getSubscribers(), Collections.emptySet());
     }
 
     @Test
@@ -446,7 +446,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         Long testUserId = testUser.getId();
 
         // Проверка на наличие подписчиков у пользователя
-        assertNotNull(userRepository.findById(testUserId).get().getSubscribers());
+        assertNotNull(userRepository.getUserById(testUserId).getSubscribers());
 
         // Создали тестовое сообщение
         UserMessage testUserMessage = userMessageTest;

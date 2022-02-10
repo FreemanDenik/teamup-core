@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
@@ -44,9 +46,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение пользователя по id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUserById(@PathVariable("id") Long userId) {
+    public ResponseEntity<Account> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        Optional<User> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
+        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
 
         return userOptional
                 .map(user -> {
@@ -67,9 +69,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск пользователя по email")
     @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getUserByEmail(@PathVariable("email") String userEmail) {
+    public ResponseEntity<Account> getUserByEmail(@PathVariable("email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
-        Optional<User> userOptional = Optional.ofNullable(userServiceRest.getUserByEmail(userEmail));
+        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserByEmail(userEmail));
 
         return userOptional
                 .map(user -> {
@@ -89,9 +91,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение списка всех пользователей")
     @GetMapping("/")
-    public ResponseEntity<List<User>> getUsersList() {
+    public ResponseEntity<List<Account>> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
-        List<User> users = userServiceRest.getAllUsers();
+        List<Account> users = userServiceRest.getAllUsers();
 
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
@@ -111,16 +113,16 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Изменение пользователя")
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
+    public ResponseEntity<Account> updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
         log.debug("Получен запрос на обновление пользователя");
-        User existUser = userServiceRest.getUserById(userId);
+        Account existUser = userServiceRest.getUserById(userId);
 
         if (existUser == null) {
             log.error("Пользователь не найден");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        User newUser = userServiceRest.updateUser(user, existUser.getId());
+        Account newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
         return new ResponseEntity<>(newUser, HttpStatus.OK);
     }
@@ -133,9 +135,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Удаление пользователя")
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> deleteUserById(@PathVariable("id") Long userId) {
+    public ResponseEntity<Account> deleteUserById(@PathVariable("id") Long userId) {
         log.debug("Получен запрос на удаления пользователя с id = {}", userId);
-        User user = userServiceRest.getUserById(userId);
+        Account user = userServiceRest.getUserById(userId);
 
         if (user == null) {
             log.error("Пользователь с id = {} не найден", userId);

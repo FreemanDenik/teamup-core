@@ -1,5 +1,6 @@
 package ru.team.up.core.service;
 
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Moderator;
 
 import java.util.List;
@@ -8,11 +9,11 @@ import java.util.List;
  * @author Alexey Tkachenko
  */
 public interface ModeratorService {
-    List<Moderator> getAllModerators();
+    List<Account> getAllModerators();
 
-    Moderator getOneModerator(Long id);
+    Account getOneModerator(Long id);
 
-    Moderator saveModerator(Moderator user);
+    Account saveModerator(Account user);
 
     void deleteModerator(Long id);
     boolean moderatorIsExistsById(Long id);

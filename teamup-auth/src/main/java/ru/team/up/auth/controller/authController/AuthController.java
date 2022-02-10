@@ -34,7 +34,7 @@ public class AuthController {
         user.setAccountCreatedTime(LocalDate.now());
         user.setLastAccountActivity(LocalDateTime.now());
 
-        User newUser = userService.saveUser(user);
+        Account newUser = userService.saveUser(user);
 
         String token = jwtProvider.generateToken(user.getEmail());
 

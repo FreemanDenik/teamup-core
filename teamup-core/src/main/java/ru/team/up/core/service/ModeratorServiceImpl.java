@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
-import ru.team.up.core.repositories.ModeratorRepository;
+import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ModeratorServiceImpl implements ModeratorService {
-    private ModeratorRepository moderatorRepository;
+    private AccountRepository accountRepository;
 
     /**
      * @return Возвращает коллекцию Moderator.
@@ -31,10 +32,10 @@ public class ModeratorServiceImpl implements ModeratorService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Moderator> getAllModerators() {
+    public List<Account> getAllModerators() {
         log.debug("Старт метода List<Moderator> getAllModerators()");
 
-        List<Moderator> moderators = Optional.of(moderatorRepository.findAll())
+        List<Account> moderators = Optional.of(accountRepository.findAllByRole(Role.ROLE_MODERATOR))
                 .orElseThrow(NoContentException::new);
         log.debug("Получили список всех модераторов из БД {}", moderators);
 
@@ -48,10 +49,10 @@ public class ModeratorServiceImpl implements ModeratorService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Moderator getOneModerator(Long id) {
+    public Account getOneModerator(Long id) {
         log.debug("Старт метода Moderator getOneModerator(Long id) с параметром {}", id);
 
-        Moderator moderator = Optional.of(moderatorRepository.getOne(id))
+        Account moderator = Optional.of(accountRepository.findById(id)).get()
                 .orElseThrow(() -> new UserNotFoundException(id));
         log.debug("Получили модератора из БД {}", moderator);
 
@@ -64,10 +65,10 @@ public class ModeratorServiceImpl implements ModeratorService {
      */
     @Override
     @Transactional
-    public Moderator saveModerator(Moderator moderator) {
+    public Account saveModerator(Account moderator) {
         log.debug("Старт метода Moderator saveModerator(Moderator user) с параметром {}", moderator);
 
-        Moderator save = moderatorRepository.save(moderator);
+        Account save = accountRepository.save(moderator);
         log.debug("Создали нового модератора в БД {}", save);
 
         return save;
@@ -81,7 +82,7 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Transactional
     public void deleteModerator(Long id) {
         log.debug("Старт метода void deleteModerator(Long id) с параметром {}", id);
-        moderatorRepository.deleteById(id);
+        accountRepository.deleteById(id);
         log.debug("Удалили модератор из БД {}", id);
     }
 
@@ -89,7 +90,7 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Transactional
     public boolean moderatorIsExistsById(Long id) {
         log.debug("Старт метода boolean moderatorIsExistsById(Long id) с параметром {}", id);
-        boolean exists = moderatorRepository.existsById (id);
+        boolean exists = accountRepository.existsById (id);
         if (exists) {
             log.debug ("Модератор с Id {} есть в БД", id);
         } else {
