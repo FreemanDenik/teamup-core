@@ -26,7 +26,7 @@ public class AuthController {
     private UserServiceImpl userService;
 
     @PostMapping("/registration")
-    public AuthResponse register(@RequestBody RegistrationRequest registrationRequest) {
+    public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {
         UserDto userDto = registrationRequest.getUserDto();
         User user = UserMapper.INSTANCE.mapUserFromDto(userDto);
         user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt(10)));
@@ -38,11 +38,11 @@ public class AuthController {
 
         String token = jwtProvider.generateToken(user.getEmail());
 
-        return AuthResponse.builder().token(token).userDto(UserMapper.INSTANCE.mapUserToDto(newUser)).build();
+        return AuthResponse.builder().token(token).userDto(UserMapper.INSTANCE.mapUserToDto((User) newUser)).build();
     }
 
     @PostMapping("/login")
-    public AuthResponse auth(@RequestBody AuthRequest request) {
+    public AuthResponse login(@RequestBody AuthRequest request) {
         String token = null;
         UserDto userDto = null;
         Account account = (Account) userDetailsService.loadUserByUsername(request.getUsername());
