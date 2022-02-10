@@ -3,7 +3,6 @@ package ru.team.up.core.entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
@@ -32,8 +31,8 @@ public class Account implements UserDetails {
     /**
      * Имя
      */
-    @Column(name = "NAME", nullable = false)
-    private String name;
+    @Column(name = "FIRST_NAME", nullable = false)
+    private String firstName;
 
     /**
      * Фамилия
@@ -50,8 +49,8 @@ public class Account implements UserDetails {
     /**
      * Логин
      */
-    @Column(name = "LOGIN", nullable = false, unique = true)
-    private String login;
+    @Column(name = "USERNAME", nullable = false, unique = true)
+    private String username;
     /**
      * Роль
      */
@@ -88,7 +87,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override

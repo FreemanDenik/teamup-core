@@ -60,10 +60,10 @@ class TeamupCoreRepositoryTests extends Assertions {
     @BeforeEach
     public void setUpEntity() {
         adminTest = Admin.builder()
-                .name("testAdmin")
+                .firstName("testAdmin")
                 .lastName("testAdminLastName")
                 .middleName("testAdminMiddleName")
-                .login("testAdminLogin")
+                .username("testAdminLogin")
                 .email("testAdmin@mail.ru")
                 .password("admin")
                 .accountCreatedTime(LocalDate.now())
@@ -71,10 +71,10 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         moderatorTest = Moderator.builder()
-                .name("testModerator")
+                .firstName("testModerator")
                 .lastName("testModeratorLastName")
                 .middleName("testModeratorMiddleName")
-                .login("testModeratorLogin")
+                .username("testModeratorLogin")
                 .email("testModerator@mail.ru")
                 .password("moderator")
                 .accountCreatedTime(LocalDate.now())
@@ -95,44 +95,44 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .build();
 
         userTest = User.builder()
-                .name("testUser")
+                .firstName("testUser")
                 .lastName("testUserLastName")
                 .middleName("testUserMiddleName")
-                .login("testUserLogin")
+                .username("testUserLogin")
                 .email("testUser@mail.ru")
                 .password("user")
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Moscow")
-                .age(30)
+                .birthday(LocalDate.of (1992, 1, 20))
                 .aboutUser("testUserAbout")
                 .build();
 
         subscriberTest1 = User.builder()
-                .name("testSubscriber1Name")
+                .firstName("testSubscriber1Name")
                 .lastName("testSubscriber1LastName")
                 .middleName("testSubscriber1MiddleName")
-                .login("testSubscriber1Login")
+                .username("testSubscriber1Login")
                 .email("testSubscriber1@mail.ru")
                 .password("subscriber1")
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Rostov-on-Don")
-                .age(35)
+                .birthday(LocalDate.of (1987, 1, 20))
                 .aboutUser("testSubscriber1About")
                 .build();
 
         subscriberTest2 = User.builder()
-                .name("testSubscriber2Name")
+                .firstName("testSubscriber2Name")
                 .lastName("testSubscriber2LastName")
                 .middleName("testSubscriber2MiddleName")
-                .login("testSubscriber2Login")
+                .username("testSubscriber2Login")
                 .email("testSubscriber2@mail.ru")
                 .password("testSubscriber2")
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .city("Minsk")
-                .age(40)
+                .birthday(LocalDate.of (1982, 1, 20))
                 .aboutUser("testSubscriber2About")
                 .build();
 
@@ -173,9 +173,9 @@ class TeamupCoreRepositoryTests extends Assertions {
         Admin testAdminBD = adminRepository.findById(testAdminId).get();
 
         // Проверили данные на совпадение
-        assertEquals(testAdminBD.getName(), adminTest.getName());
+        assertEquals(testAdminBD.getFirstName(), adminTest.getFirstName());
         assertEquals(testAdminBD.getLastName(), adminTest.getLastName());
-        assertEquals(testAdminBD.getLogin(), adminTest.getLogin());
+        assertEquals(testAdminBD.getUsername(), adminTest.getUsername());
         assertEquals(testAdminBD.getEmail(), adminTest.getEmail());
         assertEquals(testAdminBD.getPassword(), adminTest.getPassword());
         assertEquals(testAdminBD.getAccountCreatedTime(), adminTest.getAccountCreatedTime());
@@ -202,9 +202,9 @@ class TeamupCoreRepositoryTests extends Assertions {
         Moderator moderatorBD = moderatorRepository.findById(testModeratorId).get();
 
         // Проверили данные на совпадение
-        assertEquals(moderatorBD.getName(), moderatorTest.getName());
+        assertEquals(moderatorBD.getFirstName(), moderatorTest.getFirstName());
         assertEquals(moderatorBD.getLastName(), moderatorTest.getLastName());
-        assertEquals(moderatorBD.getLogin(), moderatorTest.getLogin());
+        assertEquals(moderatorBD.getUsername(), moderatorTest.getUsername());
         assertEquals(moderatorBD.getEmail(), moderatorTest.getEmail());
         assertEquals(moderatorBD.getPassword(), moderatorTest.getPassword());
         assertEquals(moderatorBD.getAmountOfCheckedEvents(), moderatorTest.getAmountOfCheckedEvents());
@@ -260,15 +260,15 @@ class TeamupCoreRepositoryTests extends Assertions {
         User userBD = userRepository.findById(testUserId).get();
 
         // Проверили данные на соответствие
-        assertEquals(userBD.getName(), userTest.getName());
+        assertEquals(userBD.getFirstName(), userTest.getFirstName());
         assertEquals(userBD.getLastName(), userTest.getLastName());
         assertEquals(userBD.getMiddleName(), userTest.getMiddleName());
-        assertEquals(userBD.getLogin(), userTest.getLogin());
+        assertEquals(userBD.getUsername(), userTest.getUsername());
         assertEquals(userBD.getEmail(), userTest.getEmail());
         assertEquals(userBD.getPassword(), userTest.getPassword());
         assertEquals(userBD.getAccountCreatedTime(), userTest.getAccountCreatedTime());
         assertEquals(userBD.getLastAccountActivity(), userTest.getLastAccountActivity());
-        assertEquals(userBD.getAge(), userTest.getAge());
+        assertEquals(userBD.getBirthday(), userTest.getBirthday());
         assertEquals(userBD.getCity(), userTest.getCity());
         assertNotNull(userBD.getUserInterests());
 

@@ -3,14 +3,19 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.repositories.AdminRepository;
+import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.core.repositories.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -24,6 +29,9 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private AdminRepository adminRepository;
+    private ModeratorRepository moderatorRepository;
 
     /**
      * @return Возвращает коллекцию User.

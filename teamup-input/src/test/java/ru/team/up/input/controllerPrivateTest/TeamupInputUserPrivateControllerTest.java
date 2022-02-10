@@ -5,10 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.entity.User;
@@ -50,16 +48,16 @@ public class TeamupInputUserPrivateControllerTest {
 
     User testUser = User.builder()
             .id(98L)
-            .name("Aleksey")
+            .firstName("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
-            .login("alextk")
+            .username("alextk")
             .email("alextk@bk.ru")
             .password("1234")
             .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
-            .age(43)
+            .birthday(LocalDate.of (1979, 1, 20))
             .aboutUser("Studying to be a programmer.")
             .userInterests(Collections.singleton(programming))
             .build();

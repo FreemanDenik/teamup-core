@@ -36,10 +36,10 @@ public class TeamupInputAdminPrivateControllerTest {
 
     Admin admin = Admin.builder()
             .id(1L)
-            .name("Natalya")
+            .firstName("Natalya")
             .lastName("Tkachenko")
             .middleName("Mihaylovna")
-            .login("natatk")
+            .username("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
             .accountCreatedTime(LocalDate.now())

@@ -39,10 +39,10 @@ public class TeamupInputModeratorPrivateControllerTests {
 
     Moderator moderator = Moderator.builder()
             .id(1L)
-            .name("Moderator")
+            .firstName("Moderator")
             .lastName("ModeratorLastName")
             .middleName("ModeratorMiddleName")
-            .login("ModeratorLogin")
+            .username("ModeratorLogin")
             .email("moderator@mail.ru")
             .password("1234")
             .accountCreatedTime(LocalDate.now())

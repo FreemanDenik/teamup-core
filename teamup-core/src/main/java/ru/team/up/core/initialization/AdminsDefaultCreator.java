@@ -29,9 +29,9 @@ public class AdminsDefaultCreator {
     public void adminsDefaultCreator() {
         adminRepository.save(Admin.builder()
                 .id(1L)
-                .name("Admin")
+                .firstName("Admin")
                 .lastName("DefaultAdmin")
-                .login("admin")
+                .username("admin")
                 .password(BCrypt.hashpw("admin", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())

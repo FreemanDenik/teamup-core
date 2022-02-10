@@ -35,16 +35,16 @@ public class TeamupInputUserPublicControllerTest {
 
     User testUser = User.builder ()
             .id(1L)
-            .name("Marina")
+            .firstName("Marina")
             .lastName("Sysenko")
             .middleName("Alexsandrovna")
-            .login("test")
+            .username("test")
             .email("testemail@gmail.com")
             .password("1234")
             .accountCreatedTime(LocalDate.of(2021,11,20))
             .lastAccountActivity(LocalDateTime.of(2021,11,20,19,00))
             .city("Volgograd")
-            .age(54)
+            .birthday(LocalDate.of (1967, 1, 20))
             .aboutUser("I like to cook")
             .build();
     @Test

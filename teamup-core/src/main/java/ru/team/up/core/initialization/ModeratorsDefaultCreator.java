@@ -29,9 +29,9 @@ public class ModeratorsDefaultCreator {
     public void moderatorsDefaultCreator() {
         moderatorRepository.save(Moderator.builder()
                 .id(1L)
-                .name("Moderator")
+                .firstName("Moderator")
                 .lastName("DefaultModerator")
-                .login("moderator")
+                .username("moderator")
                 .password(BCrypt.hashpw("moderator", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
