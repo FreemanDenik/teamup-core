@@ -1,11 +1,7 @@
 package ru.team.up.core.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.Moderator;
 
 @Repository
-public interface ModeratorRepository extends JpaRepository<Moderator, Long> {
-    Account findByEmail(String email);
+public interface ModeratorRepository extends AccountRepository {
 }

@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.service.ModeratorService;
 import ru.team.up.input.controller.privateController.ModeratorController;
@@ -37,8 +38,7 @@ public class TeamupInputModeratorPrivateControllerTests {
         MockitoAnnotations.initMocks(this);
     }
 
-    Moderator moderator = Moderator.builder()
-            .id(1L)
+    Account moderator = Moderator.builder()
             .firstName("Moderator")
             .lastName("ModeratorLastName")
             .middleName("ModeratorMiddleName")
@@ -52,7 +52,7 @@ public class TeamupInputModeratorPrivateControllerTests {
             .amountOfClosedRequests(12L)
             .build();
 
-    ArrayList<Moderator> listModerator = new ArrayList<>();
+    ArrayList<Account> listModerator = new ArrayList<>();
 
     @Test
     public void testCreateModerator() {

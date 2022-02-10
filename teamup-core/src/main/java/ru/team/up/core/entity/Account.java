@@ -1,5 +1,6 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,10 +16,12 @@ import javax.persistence.*;
  * Родительская сущность для пользователя, админа, модератора
  */
 @NoArgsConstructor
-@MappedSuperclass
 @SuperBuilder
+@Entity
 @Getter
 @Setter
+@Table
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Account implements UserDetails {
     /**
      * Уникальный идентификатор
@@ -109,4 +112,6 @@ public class Account implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }

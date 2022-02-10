@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.controller.publicController.UserRestControllerPublic;
 import ru.team.up.input.payload.request.UserRequest;
@@ -33,8 +34,7 @@ public class TeamupInputUserPublicControllerTest {
     @InjectMocks
     private UserRestControllerPublic userRestControllerPublic;
 
-    User testUser = User.builder ()
-            .id(1L)
+    Account testUser = User.builder ()
             .firstName("Marina")
             .lastName("Sysenko")
             .middleName("Alexsandrovna")
@@ -65,7 +65,7 @@ public class TeamupInputUserPublicControllerTest {
     @Test
     public void updateUser(){
         when(userService.getUserById(1L)).thenReturn (testUser);
-        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest (testUser), 1L).getStatusCodeValue());
+        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest ((User) testUser), 1L).getStatusCodeValue());
     }
 
     @Test
