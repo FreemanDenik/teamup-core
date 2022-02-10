@@ -1,3 +1,4 @@
+//TODO Аргунов М.С. Не забыть удалить, так как в текущей реализации переадресации нет
 //package ru.team.up.auth.config;
 //
 //import lombok.extern.slf4j.Slf4j;

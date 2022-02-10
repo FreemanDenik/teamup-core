@@ -38,7 +38,7 @@ public class AuthController {
 
         String token = jwtProvider.generateToken(user.getEmail());
 
-        return new AuthResponse(token, UserMapper.INSTANCE.mapUserToDto((User) newUser));
+        return AuthResponse.builder().token(token).userDto(UserMapper.INSTANCE.mapUserToDto(newUser)).build();
     }
 
     @PostMapping("/login")
