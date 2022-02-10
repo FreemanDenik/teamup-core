@@ -15,18 +15,17 @@ import java.time.LocalDateTime;
 @Transactional
 public class UsersDefaultCreator {
 
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public UsersDefaultCreator(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UsersDefaultCreator(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
 
     @Bean("UsersDefaultCreator")
     public void usersDefaultCreator() {
-        userRepository.save(User.builder()
-                .id(1L)
+        accountRepository.save(User.builder()
                 .firstName("User")
                 .lastName("DefaultUser")
                 .username("user")
@@ -40,8 +39,7 @@ public class UsersDefaultCreator {
                 .city("Default city")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(2L)
+        accountRepository.save(User.builder()
                 .firstName("Иван")
                 .lastName("Петров")
                 .middleName("Иванович")
@@ -56,8 +54,7 @@ public class UsersDefaultCreator {
                 .city("Иваново")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(3L)
+        accountRepository.save(User.builder()
                 .firstName("Ольга")
                 .lastName("Смирнова")
                 .middleName("Васильевна")
@@ -72,8 +69,7 @@ public class UsersDefaultCreator {
                 .city("Санкт-Петербург")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(4L)
+        accountRepository.save(User.builder()
                 .firstName("Фёдор")
                 .lastName("Жуков")
                 .middleName("Семёнович")
@@ -88,8 +84,7 @@ public class UsersDefaultCreator {
                 .city("Самара")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(5L)
+        accountRepository.save(User.builder()
                 .firstName("Роман")
                 .lastName("Соколов")
                 .middleName("Иванович")
@@ -104,8 +99,7 @@ public class UsersDefaultCreator {
                 .city("Москва")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(6L)
+        accountRepository.save(User.builder()
                 .firstName("Мария")
                 .lastName("Морозова")
                 .middleName("Михайловна")
@@ -120,8 +114,7 @@ public class UsersDefaultCreator {
                 .city("Санкт-Петербург")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(7L)
+        accountRepository.save(User.builder()
                 .firstName("Александр")
                 .lastName("Павлов")
                 .middleName("Сергеевич")
@@ -136,8 +129,7 @@ public class UsersDefaultCreator {
                 .city("Москва")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(8L)
+        accountRepository.save(User.builder()
                 .firstName("Василий")
                 .lastName("Сергеев")
                 .middleName("Петрович")
@@ -152,8 +144,7 @@ public class UsersDefaultCreator {
                 .city("Казань")
                 .build());
 
-        userRepository.save(User.builder()
-                .id(9L)
+        accountRepository.save(User.builder()
                 .firstName("Елена")
                 .lastName("Орлова")
                 .middleName("Сергеевна")

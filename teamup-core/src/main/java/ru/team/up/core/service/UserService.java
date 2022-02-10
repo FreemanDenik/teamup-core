@@ -9,11 +9,11 @@ import java.util.List;
  * @author Alexey Tkachenko
  */
 public interface UserService {
-    List<User> getAllUsers();
+    List<Account> getAllUsers();
 
-    User getOneUser(Long id);
+    Account getOneUser(Long id);
 
-    User saveUser(User user);
+    Account saveUser(Account user);
 
     void deleteUser(Long id);
 

@@ -75,7 +75,7 @@ public class ApplicationServiceImpl implements ApplicationService{
     public Application saveApplication(Application application, User user) {
 
         log.debug("Получаем из БД пользователя создавшего заявку");
-        User userCreatedApplicationDB = userRepository.findById(application.getUser().getId()).get();
+        User userCreatedApplicationDB = (User) userRepository.findById(application.getUser().getId()).get();
 
 
         log.debug("Создаем и сохраняем сообщение");

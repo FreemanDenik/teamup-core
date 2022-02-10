@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.service.UserService;
 
@@ -38,10 +39,10 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary ="Получение списка всех юзеров")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<Account>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
 
-        ResponseEntity<List<User>> responseEntity;
+        ResponseEntity<List<Account>> responseEntity;
         try {
             responseEntity = ResponseEntity.ok(userService.getAllUsers());
         } catch (PersistenceException e) {
@@ -59,10 +60,10 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @Operation(summary ="Получение юзера по id")
-    public ResponseEntity<User> getOneUser(@PathVariable Long id) {
+    public ResponseEntity<Account> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
 
-        ResponseEntity<User> responseEntity;
+        ResponseEntity<Account> responseEntity;
         try {
             responseEntity = ResponseEntity.ok(userService.getOneUser(id));
         } catch (PersistenceException e) {
@@ -80,10 +81,10 @@ public class UserController {
      */
     @PostMapping
     @Operation(summary ="Создание юзера")
-    public ResponseEntity<User> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
+    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull Account userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
-        ResponseEntity<User> responseEntity;
+        ResponseEntity<Account> responseEntity;
         try {
             responseEntity = new ResponseEntity<>(userService.saveUser(userCreate), HttpStatus.CREATED);
         } catch (PersistenceException e) {
@@ -101,10 +102,10 @@ public class UserController {
      */
     @PatchMapping
     @Operation(summary ="Обновление юзера")
-    public ResponseEntity<User> updateUser(@RequestBody @NotNull User user) {
+    public ResponseEntity<Account> updateUser(@RequestBody @NotNull Account user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
 
-        ResponseEntity<User> responseEntity;
+        ResponseEntity<Account> responseEntity;
         try {
             responseEntity = ResponseEntity.ok(userService.saveUser(user));
         } catch (PersistenceException e) {

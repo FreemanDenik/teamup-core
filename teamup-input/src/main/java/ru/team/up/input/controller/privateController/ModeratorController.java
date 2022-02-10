@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.service.ModeratorService;
 
@@ -36,10 +37,10 @@ public class ModeratorController {
      */
     @Operation(summary ="Получение списка всех модераторов")
     @GetMapping
-    public ResponseEntity<List<Moderator>> getAllModerators() {
+    public ResponseEntity<List<Account>> getAllModerators() {
         log.debug("Старт метода ResponseEntity<List<Moderator>> getAllModerators()");
 
-        ResponseEntity<List<Moderator>> responseEntity = ResponseEntity.ok(moderatorService.getAllModerators());
+        ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(moderatorService.getAllModerators());
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
@@ -52,10 +53,10 @@ public class ModeratorController {
      */
     @Operation(summary ="Получение модератора по id")
     @GetMapping("/{id}")
-    public ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) {
+    public ResponseEntity<Account> getOneModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) с параметром {}", id);
 
-        ResponseEntity<Moderator> responseEntity = ResponseEntity.ok(moderatorService.getOneModerator(id));
+        ResponseEntity<Account> responseEntity = ResponseEntity.ok(moderatorService.getOneModerator(id));
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
@@ -67,9 +68,9 @@ public class ModeratorController {
      */
     @Operation(summary ="Создание нового модератора")
     @PostMapping
-    public ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderatorCreate) {
+    public ResponseEntity<Account> createModerator(@RequestBody @NotNull Account moderatorCreate) {
         log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
-        ResponseEntity<Moderator> responseEntity
+        ResponseEntity<Account> responseEntity
                 = new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
         log.debug("Получили ответ {}", responseEntity);
 
@@ -84,9 +85,9 @@ public class ModeratorController {
      */
     @Operation(summary ="Обновление данных модератора")
     @PatchMapping("/{id}")
-    public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator,@PathVariable("id") Long moderatorId) {
+    public ResponseEntity<Account> updateModerator(@RequestBody @NotNull Account moderator,@PathVariable("id") Long moderatorId) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
-        ResponseEntity<Moderator> responseEntity;
+        ResponseEntity<Account> responseEntity;
         if(moderatorService.moderatorIsExistsById (moderatorId)){
             moderator.setId (moderatorId);
             responseEntity = ResponseEntity.ok(moderatorService.saveModerator (moderator));

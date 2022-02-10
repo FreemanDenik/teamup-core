@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.service.AdminService;
 
@@ -35,10 +36,10 @@ public class AdminController {
      */
     @Operation(summary ="Получение списка всех администраторов")
     @GetMapping
-    public ResponseEntity<List<Admin>> getAllAdmins() {
+    public ResponseEntity<List<Account>> getAllAdmins() {
         log.debug("Старт метода ResponseEntity<List<Admin>> getAllAdmins()");
 
-        ResponseEntity<List<Admin>> responseEntity = ResponseEntity.ok(adminService.getAllAdmins());
+        ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(adminService.getAllAdmins());
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
@@ -51,10 +52,10 @@ public class AdminController {
      */
     @Operation(summary ="Получение администратора по id")
     @GetMapping("/{id}")
-    public ResponseEntity<Admin> getOneAdmin(@PathVariable Long id) {
+    public ResponseEntity<Account> getOneAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Admin> getOneAdmin(@PathVariable Long id) с параметром {}", id);
 
-        ResponseEntity<Admin> responseEntity = ResponseEntity.ok(adminService.getOneAdmin(id));
+        ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.getOneAdmin(id));
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
@@ -67,10 +68,10 @@ public class AdminController {
      */
     @Operation(summary ="Создание нового администратора")
     @PostMapping
-    public ResponseEntity<Admin> createAdmin(@RequestParam String admin, @RequestBody @NotNull Admin adminCreate) {
+    public ResponseEntity<Account> createAdmin(@RequestParam String admin, @RequestBody @NotNull Account adminCreate) {
         log.debug("Старт метода ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) с параметром {}", adminCreate);
 
-        ResponseEntity<Admin> responseEntity = new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
+        ResponseEntity<Account> responseEntity = new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
@@ -83,13 +84,13 @@ public class AdminController {
      */
     @Operation(summary ="Обновление данных администратора")
     @PatchMapping
-    public ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) {
+    public ResponseEntity<Account> updateAdmin(@RequestBody @NotNull Account admin) {
         log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", admin);
 
         log.debug("Проверка наличия обновляемого администратора в БД");
         adminService.getOneAdmin(admin.getId());
 
-        ResponseEntity<Admin> responseEntity = ResponseEntity.ok(adminService.saveAdmin(admin));
+        ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.saveAdmin(admin));
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;

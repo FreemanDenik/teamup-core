@@ -1,6 +1,6 @@
 package ru.team.up.core.service;
 
-import ru.team.up.core.entity.Admin;
+import ru.team.up.core.entity.Account;
 
 import java.util.List;
 
@@ -8,11 +8,12 @@ import java.util.List;
  * @author Alexey Tkachenko
  */
 public interface AdminService {
-    List<Admin> getAllAdmins();
+    List<Account> getAllAdmins();
 
-    Admin getOneAdmin(Long id);
+    Account getOneAdmin(Long id);
 
-    Admin saveAdmin(Admin admin);
+    Account saveAdmin(Account admin);
 
     void deleteAdmin(Long id);
+
 }
