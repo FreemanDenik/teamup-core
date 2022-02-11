@@ -25,4 +25,10 @@ public class ApiExceptionHandler {
     public String handleNoContent(@NotNull Exception e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleOtherException(@NotNull Exception e) {
+        return e.getMessage();
+    }
 }

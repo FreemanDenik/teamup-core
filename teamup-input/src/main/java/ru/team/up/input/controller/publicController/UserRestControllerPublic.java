@@ -8,17 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.core.repositories.AccountRepository;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
@@ -33,10 +30,11 @@ import java.util.Optional;
 @Slf4j
 @Tag(name = "User Public Rest Controller", description = "User API")
 @RestController
-@RequestMapping("api/public/account")
+@RequestMapping("public/user")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
+    private AccountRepository accountRepository;
 
     /**
      * Метод для поиска пользователя по id
@@ -46,19 +44,13 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение пользователя по id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getUserById(@PathVariable("id") Long userId) {
+    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
-
-        return userOptional
-                .map(user -> {
-                    log.debug("Пользователь с id = {} найден", userId);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.error("Пользователь с id = {} не найден", userId);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+        return accountRepository.findById(userId)
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     /**
