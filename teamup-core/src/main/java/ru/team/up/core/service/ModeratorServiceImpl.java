@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
 import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class ModeratorServiceImpl implements ModeratorService {
         log.debug("Старт метода Moderator getOneModerator(Long id) с параметром {}", id);
 
         Account moderator = Optional.of(accountRepository.findById(id)).get()
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
         log.debug("Получили модератора из БД {}", moderator);
 
         return moderator;

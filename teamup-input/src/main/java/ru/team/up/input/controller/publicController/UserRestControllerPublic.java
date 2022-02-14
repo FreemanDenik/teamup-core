@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundEmailException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.repositories.AccountRepository;
 import ru.team.up.input.payload.request.UserRequest;
@@ -34,7 +36,6 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
-    private AccountRepository accountRepository;
 
     /**
      * Метод для поиска пользователя по id
@@ -43,15 +44,19 @@ public class UserRestControllerPublic {
      * @return Ответ поиска и статус
      */
     @Operation(summary = "Получение пользователя по id")
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        return accountRepository.findById(userId)
+
+        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
+
+        return userOptional
                 .map(user -> new ResponseEntity<>(
                         UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
                         HttpStatus.OK))
-                .orElseThrow(() -> new UserNotFoundException(userId));
+                .orElseThrow(() -> new UserNotFoundIDException(userId));
     }
+
 
     /**
      * Метод поиска пользователя по почте
@@ -61,19 +66,34 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск пользователя по email")
     @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getUserByEmail(@PathVariable("email") String userEmail) {
+    public ResponseEntity<UserDtoResponse> getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
         Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserByEmail(userEmail));
 
         return userOptional
-                .map(user -> {
-                    log.debug("Пользователь с почтой {} найден", userEmail);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.debug("Пользователь с почтой {} не найден", userEmail);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundEmailException(userEmail));
+    }
+
+    /**
+     * Метод поиска пользователя по имени
+     *
+     * @param userUsername имя пользователя
+     * @return Ответ поиска и статус проверки
+     */
+    @Operation(summary = "Поиск пользователя по имени")
+    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDtoResponse> getUserByUsername(@PathVariable(value = "username") String userUsername) {
+        log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
+        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserByUsername(userUsername));
+
+        return userOptional
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundUsernameException(userUsername));
     }
 
     /**

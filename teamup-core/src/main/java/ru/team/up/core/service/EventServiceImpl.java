@@ -9,7 +9,7 @@ import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Старт метода получения мероприятия по ID {}", id);
 
         Event event = Optional.of(eventRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
 
         log.debug("Получили мероприятие из БД с ID {}", event.getId());
 
