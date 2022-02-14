@@ -12,4 +12,8 @@ public class UserNotFoundException extends ResponseStatusException {
     public UserNotFoundException(Long id) {
         super(HttpStatus.NOT_FOUND, "Пользователь не найден. ID = " + id);
     }
+
+    public UserNotFoundException(String email) {
+        super(HttpStatus.NOT_FOUND, "Пользователь не найден. ID = " + email);
+    }
 }

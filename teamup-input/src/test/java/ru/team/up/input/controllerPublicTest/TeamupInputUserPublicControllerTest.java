@@ -58,6 +58,11 @@ public class TeamupInputUserPublicControllerTest {
         Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("roshepkina34@gmail.com").getStatusCodeValue());
     }
     @Test
+    public void testGetByUsername() {
+        when(userService.getUserByUsername ("test")).thenReturn(testUser);
+        Assert.assertEquals(200, userRestControllerPublic.getUserByUsername ("test").getStatusCodeValue());
+    }
+    @Test
     public void getAllUsers(){
         when(userService.getAllUsers ()).thenReturn (Collections.singletonList (testUser));
         Assert.assertEquals (200,userRestControllerPublic.getUsersList ().getStatusCodeValue ());

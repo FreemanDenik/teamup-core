@@ -25,15 +25,21 @@ public class UserServiceRestImpl implements UserServiceRest {
     private final AccountRepository accountRepository;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Account getUserById(Long id) {
-        return accountRepository.findById(id).get();
+        return accountRepository.getById(id);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Account getUserByEmail(String email) {
         return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Account getUserByUsername(String username) {
+        return accountRepository.findByUsername(username);
     }
 
     @Override

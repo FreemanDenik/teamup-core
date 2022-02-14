@@ -9,7 +9,7 @@ public interface UserRepository extends AccountRepository {
 
     User getUserById(Long id);
 
-    User findByUsername(String login);;
+    User findByUsername(String login);
 
     Account findByEmail(String email);
 }
