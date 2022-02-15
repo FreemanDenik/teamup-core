@@ -1,5 +1,6 @@
 package ru.team.up.moderator.sheduleds;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -8,7 +9,9 @@ import org.springframework.transaction.annotation.Isolation;
 import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
+
 @Component
+@Slf4j
 public class DeleteModeratorsSessions {
 
     private ModeratorsSessionsRepository moderatorsSessionsRepository;
@@ -31,6 +34,8 @@ public class DeleteModeratorsSessions {
     @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
     @Transcational(isolation = Isolation.REPEATABLE_READ)
     public void removeModeratorSession(Long id) {
+        log.debug("Удаляем неактивного модератора");
         moderatorsSessionsRepository.removeModeratorSession(id);
+        log.debug("Удалили неактивного модератора");
         }
     }

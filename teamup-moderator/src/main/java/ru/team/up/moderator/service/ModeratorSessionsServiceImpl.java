@@ -1,5 +1,6 @@
 package ru.team.up.moderator.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @Transactional
 public class ModeratorSessionsServiceImpl implements ModeratorSessionsService{
 
@@ -77,7 +79,7 @@ public class ModeratorSessionsServiceImpl implements ModeratorSessionsService{
      *
      * @param id
      */
-    @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
+
     public void removeModeratorSession(Long id) {
         ModeratorsSessions moderatorsSessions = null;
         if (!moderatorsSessions.createdSessionTime.isEqual(moderatorsSessions.lastUpdateSessionTime)) {
