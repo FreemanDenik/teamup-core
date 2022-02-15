@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
 import ru.team.up.moderator.service.AssignedEventsService;
 import ru.team.up.moderator.service.AssignedEventsServiceImpl;
@@ -29,7 +30,7 @@ public class AssignEvents {
      * @return Метод возвращает List IDs Ивентов которые находятся на проверке
      */
     @Scheduled(fixedDelayString = "${eventsScan.delay}")
-    @Transaсtional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public List<Integer> assignEvents() {
         log.debug("Получаем List IDs");
         return assignedEventsService.getEventsIds(assignedEventsService.getEventsForChecking());

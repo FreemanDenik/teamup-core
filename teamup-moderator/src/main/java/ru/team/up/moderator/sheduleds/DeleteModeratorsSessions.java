@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
@@ -32,7 +33,7 @@ public class DeleteModeratorsSessions {
      * @param id
      */
     @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
-    @Transcational(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void removeModeratorSession(Long id) {
         log.debug("Удаляем неактивного модератора");
         moderatorsSessionsRepository.removeModeratorSession(id);

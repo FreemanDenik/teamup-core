@@ -26,6 +26,7 @@ public class AssignedEventsServiceImpl implements AssignedEventsService {
         this.assignedEventsRepository = assignedEventsRepository;
     }
 
+    @Transactional(readOnly = true)
     public AssignedEvents getAssignedEvent(Long id) {
         return assignedEventsRepository.getOne(id);
     }
@@ -43,15 +44,4 @@ public class AssignedEventsServiceImpl implements AssignedEventsService {
         }
     }
 
-    @Override
-    public List<Integer> getOtherEvents() {
-        log.debug("Получаем из БД мероприятия находящиеся на проверке");
-        Query query = session.createQuery("SELECT * FROM event AS E WHERE E.status_id = 2");
-        List<Event> resultList = query.list();
-        log.debug("Получаем ID мероприятий находящихся на проверке");
-        Query query2 = session.createQuery("SELECT eventId FROM event WHERE eventId = :eventList");
-        query2.setParameter("eventList", resultList);
-        List<Integer> resultList2 = query.list();
-        return resultList2;
-    }
 }

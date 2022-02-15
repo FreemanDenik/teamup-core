@@ -42,6 +42,7 @@ public class ModeratorSessionsServiceImpl implements ModeratorSessionsService{
      * @param id
      * @return moderatorsSessions
      */
+    @Transactional(readOnly = true)
     @Override
     public ModeratorsSessions getModeratorsSessionByModerator(Long id) {
         ModeratorsSessions moderatorsSessions = null;
