@@ -1,20 +1,15 @@
 package ru.team.up.core.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    User getUserByEmail(String email);
+public interface UserRepository extends AccountRepository {
 
     User getUserById(Long id);
 
-    User findByLogin(String login);;
-
-    Object findUserAndRolesByName(String s);
+    User findByUsername(String login);
 
     Account findByEmail(String email);
 }

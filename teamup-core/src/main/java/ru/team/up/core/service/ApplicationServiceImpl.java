@@ -9,7 +9,7 @@ import ru.team.up.core.entity.Application;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ApplicationRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
@@ -63,7 +63,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 
         log.debug("Получение заявки по id {}", id);
         Application application = Optional.of(applicationRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
 
         log.debug("Получили заявку из БД {}", application);
         return application;
@@ -75,12 +75,12 @@ public class ApplicationServiceImpl implements ApplicationService{
     public Application saveApplication(Application application, User user) {
 
         log.debug("Получаем из БД пользователя создавшего заявку");
-        User userCreatedApplicationDB = userRepository.findById(application.getUser().getId()).get();
+        User userCreatedApplicationDB = (User) userRepository.findById(application.getUser().getId()).get();
 
 
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedApplicationDB)
-                .message("Пользователь " + userCreatedApplicationDB.getName())
+                .message("Пользователь " + userCreatedApplicationDB.getFirstName())
                 .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();
         userMessageRepository.save(message);

@@ -1,5 +1,7 @@
 package ru.team.up.input.service;
 
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.payload.request.UserRequest;
 
@@ -19,7 +21,7 @@ public interface UserServiceRest {
      * @param id идентификатор поиска
      * @return Пользователь с указанным иднтификатором
      */
-    User getUserById(Long id);
+    Account getUserById(Long id);
 
     /**
      * Метод поиска пользователя по почте
@@ -27,21 +29,29 @@ public interface UserServiceRest {
      * @param email почта для поиска
      * @return Пользователь с указанной почтой
      */
-    User getUserByEmail(String email);
+    Account getUserByEmail(String email);
+
+    /**
+     * Метод поиска пользователя по имени
+     *
+     * @param username имя для поиска
+     * @return Пользователь с указанным именем
+     */
+    Account getUserByUsername(String username);
 
     /**
      * Метод получения всех пользователей
      *
      * @return Список пользователей
      */
-    List<User> getAllUsers();
+    List<Account> getAllUsers();
 
     /**
      * Метод обновления пользователя
      *
      * @param user Пользователь для обновления
      */
-    User updateUser(UserRequest user, Long id);
+    Account updateUser(UserRequest user, Long id);
 
     /**
      * Метод для удаления пользователя

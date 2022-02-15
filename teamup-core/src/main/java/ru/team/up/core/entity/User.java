@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Set;
 
 /**
@@ -17,8 +18,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_ACCOUNT")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userInterests"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userInterests", "userMessages", "userEvent"})
 public class User extends Account {
+
 
     /**
      * Город
@@ -29,8 +31,8 @@ public class User extends Account {
     /**
      * Возраст
      */
-    @Column(name = "AGE", nullable = false)
-    private Integer age;
+    @Column(name = "BIRTHDAY", nullable = false)
+    private LocalDate birthday;
 
     /**
      * Информация о пользователе
@@ -81,4 +83,5 @@ public class User extends Account {
     public void addUserMessage(UserMessage userMessage) {
         userMessages.add(userMessage);
     }
+
 }

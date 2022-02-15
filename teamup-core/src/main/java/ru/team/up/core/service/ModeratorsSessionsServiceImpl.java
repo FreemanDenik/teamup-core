@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.team.up.core.entity.ModeratorsSessions;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
 import java.time.LocalDateTime;
@@ -48,7 +48,7 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
         for (var moderatorSession : moderatorsSessionsRepository.findAll()) {
             log.debug("Сравнение ID модератора");
             if (id == moderatorSession.getModeratorId()) {
-                moderatorsSessions = Optional.of(moderatorSession).orElseThrow(() -> new UserNotFoundException(id));
+                moderatorsSessions = Optional.of(moderatorSession).orElseThrow(() -> new UserNotFoundIDException(id));
             }
         }
         log.debug("Получили сессию по ID модератора");

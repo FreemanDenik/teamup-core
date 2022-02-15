@@ -5,11 +5,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.service.UserService;
@@ -48,27 +47,25 @@ public class TeamupInputUserPrivateControllerTest {
             .shortDescription("Like to write programs in java")
             .build();
 
-    User testUser = User.builder()
-            .id(98L)
-            .name("Aleksey")
+    Account testUser = User.builder()
+            .firstName("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
-            .login("alextk")
+            .username("alextk")
             .email("alextk@bk.ru")
             .password("1234")
             .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .city("Moscow")
-            .age(43)
+            .birthday(LocalDate.of (1979, 1, 20))
             .aboutUser("Studying to be a programmer.")
             .userInterests(Collections.singleton(programming))
             .build();
 
-    User emptyUser = User.builder()
-            .id(99L)
+    Account emptyUser = User.builder()
             .build();
 
-    ArrayList<User> listUser = new ArrayList<>();
+    ArrayList<Account> listUser = new ArrayList<>();
 
     @Test
     public void testCreateUser() {
@@ -85,13 +82,13 @@ public class TeamupInputUserPrivateControllerTest {
     @Test
     public void testGetOneById() {
         when(userService.getOneUser(testUser.getId())).thenReturn(testUser);
-        Assert.assertEquals(200, userController.getOneUser(testUser.getId()).getStatusCodeValue());
+        Assert.assertEquals(200, userController.getUserById(testUser.getId()).getStatusCodeValue());
     }
 
     @Test
     public void testGetOneByIdException() {
         when(userService.getOneUser(emptyUser.getId())).thenThrow(new PersistenceException());
-        Assert.assertEquals(400, userController.getOneUser(emptyUser.getId()).getStatusCodeValue());
+        Assert.assertEquals(400, userController.getUserById(emptyUser.getId()).getStatusCodeValue());
     }
 
     @Test

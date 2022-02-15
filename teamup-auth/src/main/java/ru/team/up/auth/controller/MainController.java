@@ -10,14 +10,10 @@ import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
-import ru.team.up.auth.service.UserServiceAuth;
+
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.ModeratorsSessions;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
@@ -34,15 +30,13 @@ import java.util.stream.Collectors;
 @Controller
 public class MainController {
 
-    private final UserServiceAuth userServiceAuth;
     private final UserDetailsImpl userDetails;
 
     @Autowired
     protected AuthenticationManager authenticationManager;
 
     @Autowired
-    public MainController(UserServiceAuth userServiceAuth, UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
-        this.userServiceAuth = userServiceAuth;
+    public MainController(UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
         this.userDetails = userDetails;
     }
 
@@ -137,21 +131,22 @@ public class MainController {
      * с максимальной ролью пользователя,
      * в ином случае - registration.html
      */
-    @PostMapping(value = "/registration")
-    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
-        String password = user.getPassword();
-
-        if(userServiceAuth.checkLogin(user.getLogin())) {
-            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
-            result.addError(error);
-        }
-        if (result.hasErrors()) {
-            return "/registration";
-        }
-        userServiceAuth.saveUser(user);
-        autoLogin(user.getEmail(), password, request);
-        return "redirect:/authority";
-    }
+    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос уже обрабатывается в AuthController
+//    @PostMapping(value = "/registration")
+//    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
+//        String password = user.getPassword();
+//
+//        if(userServiceAuth.checkLogin(user.getUsername())) {
+//            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
+//            result.addError(error);
+//        }
+//        if (result.hasErrors()) {
+//            return "/registration";
+//        }
+//        userServiceAuth.saveUser(user);
+//        autoLogin(user.getEmail(), password, request);
+//        return "redirect:/authority";
+//    }
 
 
     /**
@@ -177,10 +172,11 @@ public class MainController {
         }
     }
 
-    @GetMapping(value = "/login")
-    public String loginPage(Model model) {
-        return "login";
-    }
+    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос не нужен
+//    @GetMapping(value = "/login")
+//    public String loginPage(Model model) {
+//        return "login";
+//    }
 
     /**
      * Метод для подстановки в поля формы регистрации данных полученных от сервера аутентификции (Google)
@@ -195,7 +191,7 @@ public class MainController {
         DefaultOidcUser principal = (DefaultOidcUser) authentication.getPrincipal();
         User user = new User();
         user.setEmail(principal.getEmail());
-        user.setName(principal.getGivenName());
+        user.setFirstName(principal.getGivenName());
         user.setLastName(principal.getFamilyName());
 
 

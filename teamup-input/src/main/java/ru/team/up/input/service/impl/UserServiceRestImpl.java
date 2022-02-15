@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.User;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
+import ru.team.up.core.repositories.AccountRepository;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -20,38 +21,45 @@ import java.util.List;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceRestImpl implements UserServiceRest {
-    private final UserRepository userRepository;
+
+    private final AccountRepository accountRepository;
 
     @Override
-    @Transactional
-    public User getUserById(Long id) {
-        return userRepository.getUserById(id);
+    @Transactional(readOnly = true)
+    public Account getUserById(Long id) {
+        return accountRepository.getById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Account getUserByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Account getUserByUsername(String username) {
+        return accountRepository.findByUsername(username);
     }
 
     @Override
     @Transactional
-    public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+    public List<Account> getAllUsers() {
+        return accountRepository.findAllByRole(Role.ROLE_USER);
     }
 
     @Override
     @Transactional
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    @Transactional
-    public User updateUser(UserRequest user, Long id) {
-        User oldUser = getUserById(id);
+    public Account updateUser(UserRequest user, Long id) {
+        Account oldUser = getUserById(id);
         user.getUser().setId(oldUser.getId());
-        userRepository.saveAndFlush(user.getUser());
+        accountRepository.saveAndFlush(user.getUser());
         return getUserById(id);
     }
 
     @Override
     @Transactional
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+        accountRepository.deleteById(id);
     }
 }

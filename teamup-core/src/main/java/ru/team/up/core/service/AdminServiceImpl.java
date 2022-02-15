@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.Admin;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
-import ru.team.up.core.repositories.AdminRepository;
+import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminServiceImpl implements AdminService {
-    private AdminRepository adminRepository;
+    private AccountRepository accountRepository;
 
     /**
      * @return Возвращает коллекцию Admin.
@@ -30,10 +31,10 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Admin> getAllAdmins() throws NoContentException {
+    public List<Account> getAllAdmins() throws NoContentException {
         log.debug("Старт метода List<Admin> getAllAdmins()");
 
-        List<Admin> admins = adminRepository.findAll();
+        List<Account> admins = accountRepository.findAllByRole(Role.ROLE_ADMIN);
 
         if (admins.isEmpty()){
             throw new NoContentException();
@@ -50,10 +51,10 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Admin getOneAdmin(Long id) throws UserNotFoundException {
+    public Account getOneAdmin(Long id) throws UserNotFoundIDException {
         log.debug("Старт метода Admin getOneAdmin(Long id) с параметром {}", id);
 
-        Admin admin = Optional.of(adminRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id))).get();
+        Account admin = Optional.of(accountRepository.findById(id).orElseThrow(() -> new UserNotFoundIDException(id))).get();
         log.debug("Получили админа из БД {}", admin);
 
         return admin;
@@ -65,10 +66,10 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public Admin saveAdmin(Admin admin) {
+    public Account saveAdmin(Account admin) {
         log.debug("Старт метода Admin saveAdmin(Admin admin) с параметром {}", admin);
 
-        Admin save = adminRepository.save(admin);
+        Account save = accountRepository.save(admin);
         log.debug("Сохранили админа в БД {}", save);
 
         return save;
@@ -80,13 +81,13 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public void deleteAdmin(Long id) throws UserNotFoundException {
+    public void deleteAdmin(Long id) throws UserNotFoundIDException {
         log.debug("Старт метода void deleteAdmin(Admin admin) с параметром {}", id);
 
         log.debug("Проверка существования админа в БД с id {}", id);
-        Optional.of(adminRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id)));
+        Optional.of(accountRepository.findById(id).orElseThrow(() -> new UserNotFoundIDException(id)));
 
-        adminRepository.deleteById(id);
+        accountRepository.deleteById(id);
         log.debug("Удалили админа из БД {}", id);
     }
 }

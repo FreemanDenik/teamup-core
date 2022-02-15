@@ -30,7 +30,7 @@ public class EmailUserMessageNotificatorServiceImpl implements EmailUserMessageN
     public void send() {
         for (UserMessage userMessage : userMessageRepository.findAllByMessageType(UserMessageType.NOT_SENT)) {
             log.debug("Подготовка сообщения id:{} к отправке для пользователя {}",
-                    userMessage.getId(), userMessage.getMessageOwner().getLogin());
+                    userMessage.getId(), userMessage.getMessageOwner().getUsername());
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(userMessage.getMessageOwner().getEmail());
             message.setSubject("Новое сообщение");
@@ -39,13 +39,13 @@ public class EmailUserMessageNotificatorServiceImpl implements EmailUserMessageN
                 emailSender.send(message);
             } catch (MailException e) {
                 log.debug("Ошибка при отправке уведомлений по электронной почте. Сообщение id:{}, пользователь:{}. {}",
-                        userMessage.getId(), userMessage.getMessageOwner().getLogin(), e.toString());
+                        userMessage.getId(), userMessage.getMessageOwner().getUsername(), e.toString());
                 continue;
             }
             userMessage.setMessageType(UserMessageType.SENT);
             userMessageRepository.save(userMessage);
             log.debug("Уведомление по электронной почте о сообщении id:{} для пользователя {} отправлены.",
-                    userMessage.getId(), userMessage.getMessageOwner().getLogin());
+                    userMessage.getId(), userMessage.getMessageOwner().getUsername());
         }
     }
 }

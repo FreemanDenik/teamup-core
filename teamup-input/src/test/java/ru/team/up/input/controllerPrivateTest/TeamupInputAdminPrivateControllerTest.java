@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.service.AdminService;
 import ru.team.up.input.controller.privateController.AdminController;
@@ -34,19 +35,18 @@ public class TeamupInputAdminPrivateControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    Admin admin = Admin.builder()
-            .id(1L)
-            .name("Natalya")
+    Account admin = Admin.builder()
+            .firstName("Natalya")
             .lastName("Tkachenko")
             .middleName("Mihaylovna")
-            .login("natatk")
+            .username("natatk")
             .email("natalyatk@bk.ru")
             .password("12345")
             .accountCreatedTime(LocalDate.now())
             .lastAccountActivity(LocalDateTime.now())
             .build();
 
-    ArrayList<Admin> listAdmin = new ArrayList<>();
+    ArrayList<Account> listAdmin = new ArrayList<>();
 
     @Test
     public void testCreateAdmin() {

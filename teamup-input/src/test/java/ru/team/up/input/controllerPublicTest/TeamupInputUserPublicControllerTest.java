@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.input.controller.publicController.UserRestControllerPublic;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
@@ -33,29 +35,45 @@ public class TeamupInputUserPublicControllerTest {
     @InjectMocks
     private UserRestControllerPublic userRestControllerPublic;
 
-    User testUser = User.builder ()
-            .id(1L)
-            .name("Marina")
+    Account testUser = User.builder ()
+            .firstName("Marina")
             .lastName("Sysenko")
             .middleName("Alexsandrovna")
-            .login("test")
+            .username("test")
             .email("testemail@gmail.com")
             .password("1234")
             .accountCreatedTime(LocalDate.of(2021,11,20))
             .lastAccountActivity(LocalDateTime.of(2021,11,20,19,00))
             .city("Volgograd")
-            .age(54)
+            .birthday(LocalDate.of (1967, 1, 20))
             .aboutUser("I like to cook")
             .build();
     @Test
-    public void testGetById() {
+    public void testGetByIdUserFind() {
         when(userService.getUserById (1L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserById (1L).getStatusCodeValue());
     }
+
+    @Test
+    public void testGetByIdUserNotFind() {
+        when(userService.getUserById (1L)).thenReturn (testUser);
+        Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
+    }
+
+    //TODO Сделать проверку, что в id передали некорректные данные, вместо Long передали например String
+    @Test
+    public void testGetByIdUserBadRequest() {
+    }
+
     @Test
     public void testGetByEmail() {
         when(userService.getUserByEmail ("roshepkina34@gmail.com")).thenReturn(testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("roshepkina34@gmail.com").getStatusCodeValue());
+    }
+    @Test
+    public void testGetByUsername() {
+        when(userService.getUserByUsername ("test")).thenReturn(testUser);
+        Assert.assertEquals(200, userRestControllerPublic.getUserByUsername ("test").getStatusCodeValue());
     }
     @Test
     public void getAllUsers(){
@@ -65,7 +83,7 @@ public class TeamupInputUserPublicControllerTest {
     @Test
     public void updateUser(){
         when(userService.getUserById(1L)).thenReturn (testUser);
-        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest (testUser), 1L).getStatusCodeValue());
+        Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest ((User) testUser), 1L).getStatusCodeValue());
     }
 
     @Test

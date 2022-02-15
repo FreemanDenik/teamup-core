@@ -9,7 +9,7 @@ import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
@@ -61,7 +61,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Старт метода получения мероприятия по ID {}", id);
 
         Event event = Optional.of(eventRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
 
         log.debug("Получили мероприятие из БД с ID {}", event.getId());
 
@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
     public Event saveEvent(Event event) {
         log.debug("Старт метода сохранения мероприятия");
 
-        User userCreatedEventDB = userRepository.findById(event.getAuthorId().getId()).get();
+        User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
         log.debug("Получили из БД пользователя с ID {}, создавшего мероприятие {}", userCreatedEventDB.getId(), event.getEventName());
 
         log.debug("Формируем список подписчиков пользователя");
@@ -86,7 +86,7 @@ public class EventServiceImpl implements EventService {
 
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder().messageOwner(userCreatedEventDB)
-                .message("Пользователь " + userCreatedEventDB.getLogin()
+                .message("Пользователь " + userCreatedEventDB.getUsername()
                         + " создал мероприятие " + event.getEventName()
                         + " с приватностью" + event.getEventPrivacy())
                 .status(statusRepository.getOne(5L))
@@ -130,7 +130,7 @@ public class EventServiceImpl implements EventService {
         log.debug("Создаем и сохраняем сообщение");
         UserMessage message = UserMessage.builder()
                 .messageOwner(user)
-                .message("Пользователь " + user.getLogin()
+                .message("Пользователь " + user.getUsername()
                         + " стал участником мероприятия " + event.getEventName())
                 .status(statusRepository.getOne(5L))
                 .messageCreationTime(LocalDateTime.now()).build();

@@ -3,12 +3,16 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.User;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
-import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.repositories.AdminRepository;
+import ru.team.up.core.repositories.ModeratorRepository;
+import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +27,10 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
+    private PasswordEncoder passwordEncoder;
+    private AdminRepository adminRepository;
+    private ModeratorRepository moderatorRepository;
 
     /**
      * @return Возвращает коллекцию User.
@@ -31,10 +38,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
+    public List<Account> getAllUsers() {
         log.debug("Старт метода List<User> getAllUsers()");
 
-        List<User> users = Optional.of(userRepository.findAll())
+        List<Account> users = Optional.of(accountRepository.findAllByRole(Role.ROLE_USER))
                 .orElseThrow(NoContentException::new);
         log.debug("Получили список всех юзеров из БД {}", users);
 
@@ -48,11 +55,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public User getOneUser(Long id) {
+    public Account getOneUser(Long id) {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
-        User user = Optional.of(userRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+        Account user = Optional.of(accountRepository.findById(id)).get()
+                .orElseThrow(() -> new UserNotFoundIDException(id));
         log.debug("Получили юзера из БД {}", user);
 
         return user;
@@ -64,10 +71,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public User saveUser(User user) {
+    public Account saveUser(Account user) {
         log.debug("Старт метода User saveUser(User user) с параметром {}", user);
 
-        User save = userRepository.save(user);
+        Account save = accountRepository.save(user);
         log.debug("Сохранили юзера в БД {}", save);
 
         return save;
@@ -82,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         log.debug("Старт метода void deleteUser(User user) с параметром {}", id);
 
-        userRepository.deleteById(id);
+        accountRepository.deleteById(id);
         log.debug("Удалили юзера из БД с ID {}", id);
     }
 }

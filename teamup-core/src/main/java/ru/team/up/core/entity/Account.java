@@ -1,9 +1,9 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
@@ -16,10 +16,12 @@ import javax.persistence.*;
  * Родительская сущность для пользователя, админа, модератора
  */
 @NoArgsConstructor
-@MappedSuperclass
 @SuperBuilder
+@Entity
 @Getter
 @Setter
+@Table
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Account implements UserDetails {
     /**
      * Уникальный идентификатор
@@ -32,8 +34,8 @@ public class Account implements UserDetails {
     /**
      * Имя
      */
-    @Column(name = "NAME", nullable = false)
-    private String name;
+    @Column(name = "FIRST_NAME", nullable = false)
+    private String firstName;
 
     /**
      * Фамилия
@@ -50,8 +52,8 @@ public class Account implements UserDetails {
     /**
      * Логин
      */
-    @Column(name = "LOGIN", nullable = false, unique = true)
-    private String login;
+    @Column(name = "USERNAME", nullable = false, unique = true)
+    private String username;
     /**
      * Роль
      */
@@ -88,7 +90,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return username;
     }
 
     @Override

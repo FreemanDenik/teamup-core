@@ -12,7 +12,7 @@
     <form action="#" th:action = "@{/registration}" th:object="${user}" method="post" >
         <div>
             <label for="name">Name &#8432</label>
-            <input type="text" required class="form-control" id="name" th:field = "${user.name}" aria-describedby="nameHelp" placeholder="Name">
+            <input type="text" required class="form-control" id="name" th:field = "${user.firstName}" aria-describedby="nameHelp" placeholder="Name">
             <small id="nameHelp" class="form-text text-muted">&#8432 Required field</small>
         </div>
         <div>
@@ -30,9 +30,9 @@
             <input type="text" class="form-control" id="city" th:field = "${user.city}" placeholder="City">
         </div>
         <div>
-            <label for="age">Age &#8432</label>
-            <input type="number" required class="form-control" id="age" th:field = "${user.age}" aria-describedby="ageHelp" placeholder="Age">
-            <small id="ageHelp" class="form-text text-muted">&#8432 Required field</small>
+            <label for="birthday">Birthday &#8432</label>
+            <input type="number" required class="form-control" id="birthday" th:field = "${user.birthday}" aria-describedby="birthdayHelp" placeholder="Birthday">
+            <small id="birthdayHelp" class="form-text text-muted">&#8432 Required field</small>
         </div>
         <div>
             <label for="aboutUser">About User</label>
@@ -40,7 +40,7 @@
         </div>
         <div>
             <label for="login">NickName &#8432</label>
-            <input type="text" required class="form-control" id="login" th:field = "${user.login}"  aria-describedby="loginHelp">
+            <input type="text" required class="form-control" id="login" th:field = "${user.username}"  aria-describedby="loginHelp">
             <small id="loginHelp" class="form-text text-muted">&#8432 Required field</small>
             <div th:if="${#fields.hasGlobalErrors()}">
                 <p th:text="${'Указанный nickname уже занят'}" class="error" style="color: red"></p>

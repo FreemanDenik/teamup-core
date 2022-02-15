@@ -47,3 +47,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+teamup-external/teamup-external.iml
+teamup-moderator/teamup-moderator.iml
+teamup-sup/teamup-sup.iml

@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.entity.Role;
-import ru.team.up.core.repositories.ModeratorRepository;
+import ru.team.up.core.repositories.AccountRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
@@ -17,21 +17,20 @@ import java.time.LocalDateTime;
 @Transactional
 public class ModeratorsDefaultCreator {
 
-    private final ModeratorRepository moderatorRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public ModeratorsDefaultCreator(ModeratorRepository moderatorRepository) {
-        this.moderatorRepository = moderatorRepository;
+    public ModeratorsDefaultCreator(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
 
     @Bean("ModeratorsDefaultCreator")
     public void moderatorsDefaultCreator() {
-        moderatorRepository.save(Moderator.builder()
-                .id(1L)
-                .name("Moderator")
+        accountRepository.save(Moderator.builder()
+                .firstName("Moderator")
                 .lastName("DefaultModerator")
-                .login("moderator")
+                .username("moderator")
                 .password(BCrypt.hashpw("moderator", BCrypt.gensalt(10)))
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
