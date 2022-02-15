@@ -9,7 +9,7 @@ import ru.team.up.core.entity.Application;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ApplicationRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;

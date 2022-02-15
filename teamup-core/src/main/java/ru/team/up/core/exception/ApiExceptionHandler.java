@@ -4,9 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.team.up.core.exception.notFoundException.UserNotFoundEmailException;
-import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
-import ru.team.up.core.exception.notFoundException.UserNotFoundUsernameException;
 
 import javax.validation.constraints.NotNull;
 

@@ -1,4 +1,4 @@
-package ru.team.up.core.exception.notFoundException;
+package ru.team.up.core.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

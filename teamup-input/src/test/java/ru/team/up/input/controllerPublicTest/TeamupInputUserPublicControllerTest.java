@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.input.controller.publicController.UserRestControllerPublic;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
@@ -48,10 +49,22 @@ public class TeamupInputUserPublicControllerTest {
             .aboutUser("I like to cook")
             .build();
     @Test
-    public void testGetById() {
-        when(userService.getUserById (2L)).thenReturn (testUser);
+    public void testGetByIdUserFind() {
+        when(userService.getUserById (1L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserById (1L).getStatusCodeValue());
     }
+
+    @Test
+    public void testGetByIdUserNotFind() {
+        when(userService.getUserById (1L)).thenReturn (testUser);
+        Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
+    }
+
+    //TODO Сделать проверку, что в id передали некорректные данные, вместо Long передали например String
+    @Test
+    public void testGetByIdUserBadRequest() {
+    }
+
     @Test
     public void testGetByEmail() {
         when(userService.getUserByEmail ("roshepkina34@gmail.com")).thenReturn(testUser);

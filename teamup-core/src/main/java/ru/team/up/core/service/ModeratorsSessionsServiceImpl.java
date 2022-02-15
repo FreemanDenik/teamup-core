@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.team.up.core.entity.ModeratorsSessions;
-import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ModeratorsSessionsRepository;
 
 import java.time.LocalDateTime;
