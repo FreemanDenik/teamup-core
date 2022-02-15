@@ -98,6 +98,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
     <dependencies>
