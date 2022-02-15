@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.AdminRepository;
 import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.core.repositories.AccountRepository;
