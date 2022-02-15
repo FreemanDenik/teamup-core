@@ -32,6 +32,14 @@ public interface UserServiceRest {
     Account getUserByEmail(String email);
 
     /**
+     * Метод поиска пользователя по имени
+     *
+     * @param username имя для поиска
+     * @return Пользователь с указанным именем
+     */
+    Account getUserByUsername(String username);
+
+    /**
      * Метод получения всех пользователей
      *
      * @return Список пользователей

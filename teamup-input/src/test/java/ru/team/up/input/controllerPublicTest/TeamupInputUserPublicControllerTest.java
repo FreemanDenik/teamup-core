@@ -49,13 +49,18 @@ public class TeamupInputUserPublicControllerTest {
             .build();
     @Test
     public void testGetById() {
-        when(userService.getUserById (1L)).thenReturn (testUser);
+        when(userService.getUserById (2L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserById (1L).getStatusCodeValue());
     }
     @Test
     public void testGetByEmail() {
         when(userService.getUserByEmail ("roshepkina34@gmail.com")).thenReturn(testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("roshepkina34@gmail.com").getStatusCodeValue());
+    }
+    @Test
+    public void testGetByUsername() {
+        when(userService.getUserByUsername ("test")).thenReturn(testUser);
+        Assert.assertEquals(200, userRestControllerPublic.getUserByUsername ("test").getStatusCodeValue());
     }
     @Test
     public void getAllUsers(){

@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.team.up.core.exception.notFoundException.UserNotFoundEmailException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundUsernameException;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({UserNotFoundIDException.class, UserNotFoundEmailException.class, UserNotFoundUsernameException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleUserNotFound(@NotNull Exception e) {
         return e.getMessage();
@@ -23,6 +26,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler({NoContentException.class})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public String handleNoContent(@NotNull Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler({Exception.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleOtherException(@NotNull Exception e) {
         return e.getMessage();
     }
 }

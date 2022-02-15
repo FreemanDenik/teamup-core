@@ -8,17 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.notFoundException.UserNotFoundEmailException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.notFoundException.UserNotFoundUsernameException;
+import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.core.repositories.AccountRepository;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
@@ -33,7 +32,7 @@ import java.util.Optional;
 @Slf4j
 @Tag(name = "User Public Rest Controller", description = "User API")
 @RestController
-@RequestMapping("api/public/account")
+@RequestMapping("public/user")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
@@ -45,21 +44,19 @@ public class UserRestControllerPublic {
      * @return Ответ поиска и статус
      */
     @Operation(summary = "Получение пользователя по id")
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getUserById(@PathVariable("id") Long userId) {
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
+
         Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
 
         return userOptional
-                .map(user -> {
-                    log.debug("Пользователь с id = {} найден", userId);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.error("Пользователь с id = {} не найден", userId);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundIDException(userId));
     }
+
 
     /**
      * Метод поиска пользователя по почте
@@ -69,19 +66,34 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск пользователя по email")
     @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getUserByEmail(@PathVariable("email") String userEmail) {
+    public ResponseEntity<UserDtoResponse> getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
         Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserByEmail(userEmail));
 
         return userOptional
-                .map(user -> {
-                    log.debug("Пользователь с почтой {} найден", userEmail);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.debug("Пользователь с почтой {} не найден", userEmail);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundEmailException(userEmail));
+    }
+
+    /**
+     * Метод поиска пользователя по имени
+     *
+     * @param userUsername имя пользователя
+     * @return Ответ поиска и статус проверки
+     */
+    @Operation(summary = "Поиск пользователя по имени")
+    @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDtoResponse> getUserByUsername(@PathVariable(value = "username") String userUsername) {
+        log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
+        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserByUsername(userUsername));
+
+        return userOptional
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundUsernameException(userUsername));
     }
 
     /**

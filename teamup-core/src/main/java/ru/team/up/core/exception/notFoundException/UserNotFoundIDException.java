@@ -1,4 +1,4 @@
-package ru.team.up.core.exception;
+package ru.team.up.core.exception.notFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -7,9 +7,9 @@ import org.springframework.web.server.ResponseStatusException;
  * @author Alexey Tkachenko
  */
 
-public class UserNotFoundException extends ResponseStatusException {
+public class UserNotFoundIDException extends ResponseStatusException {
 
-    public UserNotFoundException(Long id) {
+    public UserNotFoundIDException(Long id) {
         super(HttpStatus.NOT_FOUND, "Пользователь не найден. ID = " + id);
     }
 }
