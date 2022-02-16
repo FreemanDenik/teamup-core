@@ -9,7 +9,7 @@ import ru.team.up.core.entity.Application;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ApplicationRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
@@ -63,7 +63,7 @@ public class ApplicationServiceImpl implements ApplicationService{
 
         log.debug("Получение заявки по id {}", id);
         Application application = Optional.of(applicationRepository.getOne(id))
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
 
         log.debug("Получили заявку из БД {}", application);
         return application;

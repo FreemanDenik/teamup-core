@@ -7,16 +7,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
-import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.AdminRepository;
 import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -61,7 +59,7 @@ public class UserServiceImpl implements UserService {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
         Account user = Optional.of(accountRepository.findById(id)).get()
-                .orElseThrow(() -> new UserNotFoundException(id));
+                .orElseThrow(() -> new UserNotFoundIDException(id));
         log.debug("Получили юзера из БД {}", user);
 
         return user;

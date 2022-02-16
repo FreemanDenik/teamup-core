@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler({UserNotFoundException.class})
+    @ExceptionHandler({UserNotFoundIDException.class, UserNotFoundEmailException.class, UserNotFoundUsernameException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleUserNotFound(@NotNull Exception e) {
         return e.getMessage();

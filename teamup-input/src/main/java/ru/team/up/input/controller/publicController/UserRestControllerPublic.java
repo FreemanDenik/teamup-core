@@ -11,15 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.exception.UserNotFoundException;
+import ru.team.up.core.exception.UserNotFoundEmailException;
+import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.core.repositories.AccountRepository;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.input.response.UserDtoResponse;
-import ru.team.up.core.exception.UserNotFoundException;
-import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.core.repositories.AccountRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,6 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
-    private AccountRepository accountRepository;
 
     /**
      * Метод для поиска пользователя по id
@@ -46,20 +43,17 @@ public class UserRestControllerPublic {
      * @return Ответ поиска и статус
      */
     @Operation(summary = "Получение пользователя по id")
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> getUserById(@PathVariable("id") Long userId) {
+    @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
+
         Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
 
         return userOptional
-                .map(user -> {
-                    log.debug("Пользователь с id = {} найден", userId);
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.error("Пользователь с id = {} не найден", userId);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+                .map(user -> new ResponseEntity<>(
+                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
+                        HttpStatus.OK))
+                .orElseThrow(() -> new UserNotFoundIDException(userId));
     }
 
 
@@ -79,7 +73,7 @@ public class UserRestControllerPublic {
                 .map(user -> new ResponseEntity<>(
                         UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
                         HttpStatus.OK))
-                .orElseThrow(() -> new UserNotFoundException(userEmail));
+                .orElseThrow(() -> new UserNotFoundEmailException(userEmail));
     }
 
     /**
@@ -98,7 +92,7 @@ public class UserRestControllerPublic {
                 .map(user -> new ResponseEntity<>(
                         UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
                         HttpStatus.OK))
-                .orElseThrow(() -> new UserNotFoundException(userUsername));
+                .orElseThrow(() -> new UserNotFoundUsernameException(userUsername));
     }
 
     /**
