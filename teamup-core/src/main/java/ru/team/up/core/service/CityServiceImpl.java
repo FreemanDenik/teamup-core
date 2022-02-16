@@ -45,7 +45,7 @@ public class CityServiceImpl implements  CityService{
     @Override
     @Transactional
     public City findCityByNameAndSubject(String name, String subject) {
-        log.debug("Поиск города по широте {} и долготе {}", name, subject);
+        log.debug("Поиск города по имени {} и субъекту {}", name, subject);
         return cityRepository.getCityByNameAndSubject(name, subject);
     }
 
@@ -58,7 +58,7 @@ public class CityServiceImpl implements  CityService{
 
     @Override
     public List<City> getSomeCitiesByName(String name) {
-        log.debug("Поиск списка всех городов по имени {}", name);
+        log.debug("Поиск списка городов по имени {}", name);
         return cityRepository.getSomeCitiesByName(name).stream().limit(10).collect(Collectors.toList());
     }
 }
