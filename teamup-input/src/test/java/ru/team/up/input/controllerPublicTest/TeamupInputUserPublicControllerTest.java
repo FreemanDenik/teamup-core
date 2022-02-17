@@ -11,7 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.UserNotFoundEmailException;
 import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.input.controller.publicController.UserRestControllerPublic;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
@@ -25,10 +27,12 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class TeamupInputUserPublicControllerTest {
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
+
     @Mock
     private UserServiceRest userService;
 
@@ -66,14 +70,29 @@ public class TeamupInputUserPublicControllerTest {
     }
 
     @Test
+    public void testGetByIdUserNotFind() {
+        when(userService.getUserById (1L)).thenReturn (testUser);
+        Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
+    }
+    @Test
     public void testGetByEmail() {
-        when(userService.getUserByEmail ("roshepkina34@gmail.com")).thenReturn(testUser);
-        Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("roshepkina34@gmail.com").getStatusCodeValue());
+        when(userService.getUserByEmail ("testemail@gmail.com")).thenReturn (testUser);
+        Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("testemail@gmail.com").getStatusCodeValue());
+    }
+    @Test
+    public void testGetByEmailNotFound() {
+        when(userService.getUserByEmail ("testemail@gmail.com")).thenReturn (testUser);
+        Assert.assertThrows(UserNotFoundEmailException.class, () -> userRestControllerPublic.getUserByEmail ("testemail2@gmail.com"));
     }
     @Test
     public void testGetByUsername() {
         when(userService.getUserByUsername ("test")).thenReturn(testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserByUsername ("test").getStatusCodeValue());
+    }
+    @Test
+    public void testGetByUsernameNotFound() {
+        when(userService.getUserByUsername ("test")).thenReturn(testUser);
+        Assert.assertThrows(UserNotFoundUsernameException.class, () -> userRestControllerPublic.getUserByUsername ("tester"));
     }
     @Test
     public void getAllUsers(){
