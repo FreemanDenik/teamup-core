@@ -116,14 +116,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<Account> getTopUsersInCity(String city) {
-        Comparator<User> reverseNameComparator =
-                (u1, u2) -> Integer.compare(u2.getSubscribers().size(), u1.getSubscribers().size());
-
-
-//        return accountRepository.findUsersByCity(city).stream().map(u -> (User) u).sorted((s1, s2) -> Integer.compare(s1.getSubscribers().size(), s2.getSubscribers().size())).collect(Collectors.toList());
-//        return accountRepository.findUsersByCity(city).stream().map(u -> (User) u).sorted((s1, s2) -> Integer.compare(s2.getSubscribers().size(), s1.getSubscribers().size())).collect(Collectors.toList());
-        List<Account> list = accountRepository.findUsersByCity(city).stream().map(u -> (User) u).peek(u -> System.out.println("Юзер: " + u + ". Подписчиков: " + u.getUserInterests().size())).sorted(reverseNameComparator).collect(Collectors.toList());
-        return list;
-
+        return accountRepository.findUsersByCity(city).stream().
+                map(u -> (User) u).
+                filter(u -> u.getSubscribers().size() > 0).
+                sorted((u1, u2) -> Integer.compare(u2.getSubscribers().size(), u1.getSubscribers().size())).
+                limit(10).
+                collect(Collectors.toList());
     }
 }

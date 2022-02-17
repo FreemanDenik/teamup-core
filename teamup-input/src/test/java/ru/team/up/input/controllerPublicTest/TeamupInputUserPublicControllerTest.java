@@ -54,15 +54,20 @@ public class TeamupInputUserPublicControllerTest {
         Assert.assertEquals(200, userRestControllerPublic.getUserById (1L).getStatusCodeValue());
     }
 
+    //TODO Сделать проверку, что когда юзер не найден, то возвращается код 204. Пока не смог это сделать из-за того, что у нас ошибка теперь вываливается на уровке сервис слоя
     @Test
     public void testGetByIdUserNotFind() {
+        //Данный тест не работает из-за того, что у нас ошибка теперь вываливается на уровке сервис слоя
         when(userService.getUserById (1L)).thenReturn (testUser);
         Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
+        //еще один вариант и тоже не рабочий
+        //Assert.assertEquals (204,userRestControllerPublic.getUserById (2L).getStatusCodeValue ());
     }
 
-    //TODO Сделать проверку, что в id передали некорректные данные, вместо Long передали например String
+    //TODO Сделать проверку, что в id передали некорректные данные, вместо Long передали например String. Пока не смог это сделать
     @Test
     public void testGetByIdUserBadRequest() {
+        Assert.assertEquals (400,userRestControllerPublic.getUserById (2L).getStatusCodeValue ());
     }
 
     @Test
@@ -85,11 +90,19 @@ public class TeamupInputUserPublicControllerTest {
         when(userService.getUserById(1L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.updateUser (new UserRequest ((User) testUser), 1L).getStatusCodeValue());
     }
-
     @Test
     public void testDeleteUser() {
         when (userService.getUserById (testUser.getId ())).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.deleteUserById (testUser.getId ()).getStatusCodeValue());
+    }
+    @Test
+    public void getTopUsersListInCity(){
+        when(userService.getTopUsersInCity ("Санкт-Петербург")).thenReturn (Collections.singletonList (testUser));
+        Assert.assertEquals (200,userRestControllerPublic.getTopUsersListInCity("Санкт-Петербург").getStatusCodeValue ());
+    }
+    @Test
+    public void getTopUsersListInCityNotFind(){
+        Assert.assertEquals (204,userRestControllerPublic.getTopUsersListInCity("Санкт-Петербург").getStatusCodeValue ());
     }
 }
 

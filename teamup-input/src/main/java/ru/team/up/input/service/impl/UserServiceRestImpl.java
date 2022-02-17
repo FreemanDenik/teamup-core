@@ -13,6 +13,7 @@ import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для работы с пользователями
@@ -28,6 +29,7 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public User getUserById(Long id) {
+        Optional<Account> user = userService.getOneUser(id);
         return (User) userService.getOneUser(id).orElseThrow(() -> new UserNotFoundIDException(id));
     }
 
@@ -50,7 +52,7 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public User saveUser(User user) {
-        return null;
+        return (User) userService.saveUser(user);
     }
 
     @Override

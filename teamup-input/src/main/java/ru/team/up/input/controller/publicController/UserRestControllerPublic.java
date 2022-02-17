@@ -17,6 +17,7 @@ import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.dto.UserDto;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -166,9 +167,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение списка \"Топ популярных пользователей в городе\"")
     @GetMapping(value = "/top/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDto>> getTopUsersListInCity(@PathVariable(value = "city") String city) {
-        log.debug("Получен запрос на список \"Топ популярных пользователей в городе\"");
-        List<? extends Account> users = userServiceRest.getTopUsersInCity(city);
+    public ResponseEntity<UserDtoListResponse> getTopUsersListInCity(@PathVariable(value = "city") String city) {
+        log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
+        List<User> users = userServiceRest.getTopUsersInCity(city);
 
         if (users.isEmpty()) {
             log.error("Список \"Топ популярных пользователей в городе\" пуст");
@@ -177,7 +178,7 @@ public class UserRestControllerPublic {
 
         log.debug("Список \"Топ популярных пользователей в городе\" получен");
         return new ResponseEntity<>(
-                UserMapper.INSTANCE.mapUserListToUserDtoList((List<User>) users),
+                UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE.mapUserListToUserDtoList(users)).build(),
                 HttpStatus.OK);
     }
 }
