@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.service.CityService;
+import ru.team.up.input.service.UserServiceRest;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,7 @@ import java.util.Optional;
 public class CheckRestControllerPublic {
 
     private final CityService cityService;
+    private final UserServiceRest userService;
 
     @Operation(summary ="Поиск города по названию")
     @GetMapping("/city/one/{name}")
@@ -89,5 +93,41 @@ public class CheckRestControllerPublic {
 
         log.debug("Список городов получен");
         return new ResponseEntity<>(cities, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Проверка доступности username")
+    @GetMapping("/username/{username}")
+    public ResponseEntity<String> isAvailableUsername(@PathVariable("username") String username) {
+        log.debug("Получен запрос на проверку доступности username {}", username);
+
+        Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByUsername(username));
+
+        return optionalUser
+                .map(user -> {
+                    log.debug("Username {} занят другим пользователем, значение недоступно", username);
+                    return new ResponseEntity<>("Username (" + username + ") IS NOT available", HttpStatus.NOT_ACCEPTABLE);
+                })
+                .orElseGet(() -> {
+                    log.debug("Значение username {} доступно", username);
+                    return new ResponseEntity<>("Username (" + username + ") is available", HttpStatus.OK);
+                });
+    }
+
+    @Operation(summary = "Проверка доступности email")
+    @GetMapping("/email/{email}")
+    public ResponseEntity<String> isAvailableEmail(@PathVariable("email") String email) {
+        log.debug("Получен запрос на проверку доступности email {}", email);
+
+        Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByEmail(email));
+
+        return optionalUser
+                .map(user -> {
+                    log.debug("Email {} занят другим пользователем, значение недоступно", email);
+                    return new ResponseEntity<>("Email (" + email + ") IS NOT available", HttpStatus.NOT_ACCEPTABLE);
+                })
+                .orElseGet(() -> {
+                    log.debug("Значение email {} доступно", email);
+                    return new ResponseEntity<>("Email (" + email + ") is available", HttpStatus.OK);
+                });
     }
 }
