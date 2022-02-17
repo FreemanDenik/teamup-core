@@ -14,17 +14,23 @@ import javax.persistence.*;
 @Table(name = "ASSIGNED_EVENTS")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class AssignedEvents {
+    /**
+     * Уникальный идентификатор
+     */
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne
-    @MapsId
-    @JoinColumn(name = "moderator_id")
-    private ModeratorsSessions moderatorsSessions;
+    /**
+     * ID модератора
+     */
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "event_id")
-    private Event event;
+    @Column(name = "moderator_id", nullable = false)
+    private Long moderatorId;
+
+    /**
+     * ID мероприятия
+     */
+    @Column(name = "event_id", nullable = false)
+    private Long eventId;
 }

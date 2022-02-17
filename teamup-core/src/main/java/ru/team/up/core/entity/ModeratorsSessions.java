@@ -1,6 +1,5 @@
 package ru.team.up.core.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
@@ -17,16 +16,35 @@ import java.time.LocalDateTime;
 @Table(name = "MODERATORS_SESSIONS")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class ModeratorsSessions {
+    /**
+     * Уникальный идентификатор
+     */
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * ID модератора
+     */
+    @Column(name = "MODERATOR_ID")
     private long moderatorId;
 
-    private LocalDateTime lastUpdateSessionTime;
+    /**
+     * Время создания сессии
+     */
+    @Column(name = "CREATED_SESSION_TIME")
+    public LocalDateTime createdSessionTime;
 
-    private LocalDateTime createdSessionTime;
+    /**
+     * Время прогрева сессии
+     */
+    @Column(name = "LAST_UPDATED_SESSION_TIME")
+    public LocalDateTime lastUpdateSessionTime;
 
-    private Long countOfModeratorsSessions;
+    /**
+     * Количество обрабатываемых мероприятий у модератора
+     */
+    @Column(name = "AMOUNT_OF_MODERATORS_EVENTS")
+    private Long amountOfModeratorsEvents;
 
-  }
+}

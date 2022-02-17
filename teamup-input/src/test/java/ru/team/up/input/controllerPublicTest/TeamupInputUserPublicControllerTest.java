@@ -53,10 +53,22 @@ public class TeamupInputUserPublicControllerTest {
             .aboutUser("I like to cook")
             .build();
     @Test
-    public void testGetById() {
+    public void testGetByIdUserFind() {
         when(userService.getUserById (1L)).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserById (1L).getStatusCodeValue());
     }
+
+    @Test
+    public void testGetByIdUserNotFind() {
+        when(userService.getUserById (1L)).thenReturn (testUser);
+        Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
+    }
+
+    //TODO Сделать проверку, что в id передали некорректные данные, вместо Long передали например String
+    @Test
+    public void testGetByIdUserBadRequest() {
+    }
+
     @Test
     public void testGetByIdUserNotFind() {
         when(userService.getUserById (1L)).thenReturn (testUser);

@@ -16,7 +16,6 @@ import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.input.payload.request.UserRequest;
-import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.input.response.UserDtoResponse;
 
 import java.util.List;
