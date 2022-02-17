@@ -4,6 +4,7 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Alexey Tkachenko
@@ -11,9 +12,15 @@ import java.util.List;
 public interface UserService {
     List<Account> getAllUsers();
 
-    Account getOneUser(Long id);
+    Optional<Account> getOneUser(Long id);
 
     Account saveUser(Account user);
 
     void deleteUser(Long id);
+
+    Optional<Account> findByEmail(String email);
+
+    Optional<Account> findByUsername(String username);
+
+    List<Account> getTopUsersInCity(String city);
 }

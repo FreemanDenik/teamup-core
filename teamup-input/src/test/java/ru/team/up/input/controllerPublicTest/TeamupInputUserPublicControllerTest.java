@@ -35,7 +35,7 @@ public class TeamupInputUserPublicControllerTest {
     @InjectMocks
     private UserRestControllerPublic userRestControllerPublic;
 
-    Account testUser = User.builder ()
+    User testUser = User.builder ()
             .firstName("Marina")
             .lastName("Sysenko")
             .middleName("Alexsandrovna")

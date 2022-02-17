@@ -3,19 +3,18 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
+import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundIDException;
-import ru.team.up.core.repositories.AdminRepository;
-import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.core.repositories.AccountRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexey Tkachenko
@@ -28,9 +27,6 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private AccountRepository accountRepository;
-    private PasswordEncoder passwordEncoder;
-    private AdminRepository adminRepository;
-    private ModeratorRepository moderatorRepository;
 
     /**
      * @return Возвращает коллекцию User.
@@ -39,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<Account> getAllUsers() {
-        log.debug("Старт метода List<User> getAllUsers()");
+        log.debug("Старт метода List<Account> getAllUsers()");
 
         List<Account> users = Optional.of(accountRepository.findAllByRole(Role.ROLE_USER))
                 .orElseThrow(NoContentException::new);
@@ -55,14 +51,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Account getOneUser(Long id) {
+    public Optional<Account> getOneUser(Long id) {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
-        Account user = Optional.of(accountRepository.findById(id)).get()
-                .orElseThrow(() -> new UserNotFoundIDException(id));
-        log.debug("Получили юзера из БД {}", user);
-
-        return user;
+        return accountRepository.findById(id);
     }
 
     /**
@@ -91,5 +83,47 @@ public class UserServiceImpl implements UserService {
 
         accountRepository.deleteById(id);
         log.debug("Удалили юзера из БД с ID {}", id);
+    }
+
+    /**
+     * @param email электронная почта
+     * @return Возвращает сохраненный в БД объект user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Account> findByEmail(String email) {
+        log.debug("Старт метода findByEmail(String email) с параметром {}", email);
+
+        return Optional.ofNullable(accountRepository.findByEmail(email));
+    }
+
+    /**
+     * @param username логин
+     * @return Возвращает сохраненный в БД объект user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Account> findByUsername(String username) {
+        log.debug("Старт метода findByUsername(String username) с параметром {}", username);
+
+        return Optional.ofNullable(accountRepository.findByUsername(username));
+    }
+
+    /**
+     * @param city наименование города
+     * @return Список "Топ популярных пользователей в городе"
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Account> getTopUsersInCity(String city) {
+        Comparator<User> reverseNameComparator =
+                (u1, u2) -> Integer.compare(u2.getSubscribers().size(), u1.getSubscribers().size());
+
+
+//        return accountRepository.findUsersByCity(city).stream().map(u -> (User) u).sorted((s1, s2) -> Integer.compare(s1.getSubscribers().size(), s2.getSubscribers().size())).collect(Collectors.toList());
+//        return accountRepository.findUsersByCity(city).stream().map(u -> (User) u).sorted((s1, s2) -> Integer.compare(s2.getSubscribers().size(), s1.getSubscribers().size())).collect(Collectors.toList());
+        List<Account> list = accountRepository.findUsersByCity(city).stream().map(u -> (User) u).peek(u -> System.out.println("Юзер: " + u + ". Подписчиков: " + u.getUserInterests().size())).sorted(reverseNameComparator).collect(Collectors.toList());
+        return list;
+
     }
 }
