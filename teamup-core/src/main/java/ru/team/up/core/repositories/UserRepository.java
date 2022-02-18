@@ -19,6 +19,5 @@ public interface UserRepository extends AccountRepository {
 
     List<User> findAllUsersByRole(Role role);
 
-    @Query("FROM Account u where u.city = ?1")
     List<User> findUsersByCity(String city);
 }
