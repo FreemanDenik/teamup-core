@@ -70,11 +70,6 @@ public class TeamupInputUserPublicControllerTest {
     }
 
     @Test
-    public void testGetByIdUserNotFind() {
-        when(userService.getUserById (1L)).thenReturn (testUser);
-        Assert.assertThrows(UserNotFoundIDException.class, () -> userRestControllerPublic.getUserById (2L));
-    }
-    @Test
     public void testGetByEmail() {
         when(userService.getUserByEmail ("testemail@gmail.com")).thenReturn (testUser);
         Assert.assertEquals(200, userRestControllerPublic.getUserByEmail ("testemail@gmail.com").getStatusCodeValue());

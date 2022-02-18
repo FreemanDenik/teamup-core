@@ -8,14 +8,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Table(name = "MODERATORS_SESSIONS")
+@Getter
+@Table(name = "MODERATOR_SESSION")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-public class ModeratorsSessions {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ModeratorSession {
     /**
      * Уникальный идентификатор
      */

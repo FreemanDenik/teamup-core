@@ -1,6 +1,6 @@
 package ru.team.up.core.service;
 
-import ru.team.up.core.entity.ModeratorsSessions;
+import ru.team.up.core.entity.ModeratorSession;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
  * Author Ibraimov Mirseit
  */
 public interface ModeratorsSessionsService {
-    ModeratorsSessions getModeratorsSession(Long id);
-    ModeratorsSessions getModeratorsSessionByModerator(Long id);
-    ModeratorsSessions createModeratorsSession(Long id, LocalDateTime localDateTime);
+    ModeratorSession getModeratorsSession(Long id);
+    ModeratorSession getModeratorsSessionByModerator(Long id);
+    ModeratorSession createModeratorsSession(Long id);
     void removeModeratorSession(Long id);
 }

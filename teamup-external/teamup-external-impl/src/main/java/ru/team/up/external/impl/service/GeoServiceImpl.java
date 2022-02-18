@@ -9,7 +9,6 @@ import ru.team.up.external.api.service.GeoService;
 import ru.team.up.external.impl.model.Location;
 import ru.team.up.external.impl.model.MapEntity;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -57,19 +56,19 @@ public class GeoServiceImpl implements GeoService {
         String urlResult = url + encodedAddress + "&key=" + apiKey;
         log.debug("Формируем URL запроса: {}", urlResult);
         MapEntity mapEntity = null;
-        Response response = client.target(urlResult).request().get();
-
-        log.debug("Получаем ответ от сервера Гугла {}", response);
-        if (response.getStatus() != 200) {
-            log.error("Error response : {}", response.getStatusInfo());
-            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
-        }
-        try {
-            mapEntity = response.readEntity(MapEntity.class);
-            log.debug("Получаем объект MapEntity из Response");
-        } catch (Exception e) {
-            log.error("Ошибка получения entity из response: {}", Arrays.toString(e.getStackTrace()));
-        }
+//        Response response = client.target(urlResult).request().get();
+//
+//        log.debug("Получаем ответ от сервера Гугла {}", response);
+//        if (response.getStatus() != 200) {
+//            log.error("Error response : {}", response.getStatusInfo());
+//            throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());
+//        }
+//        try {
+//            mapEntity = response.readEntity(MapEntity.class);
+//            log.debug("Получаем объект MapEntity из Response");
+//        } catch (Exception e) {
+//            log.error("Ошибка получения entity из response: {}", Arrays.toString(e.getStackTrace()));
+//        }
         return mapEntity;
     }
 }

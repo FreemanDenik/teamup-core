@@ -1,26 +1,28 @@
 package ru.team.up.moderator.sheduleds;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.ModeratorsSessions;
-import ru.team.up.core.repositories.ModeratorsSessionsRepository;
+import ru.team.up.core.entity.AssignedEvents;
+import ru.team.up.core.repositories.AssignedEventsRepository;
+import ru.team.up.core.repositories.ModeratorSessionRepository;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 
 @Component
 @Slf4j
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class DeleteModeratorsSessions {
 
-    private ModeratorsSessionsRepository moderatorsSessionsRepository;
-
-    @Autowired
-    public DeleteModeratorsSessions(ModeratorsSessionsRepository moderatorsSessionsRepository) {
-        this.moderatorsSessionsRepository = moderatorsSessionsRepository;
-    }
+    private ModeratorSessionRepository moderatorSessionRepository;
+    private AssignedEventsRepository assignedEventsRepository;
 
     public DeleteModeratorsSessions() {
     }
@@ -28,15 +30,23 @@ public class DeleteModeratorsSessions {
     /**
      * метод удаления сессии модератора по активности
      * удаляет не активных по полю время прогрева
-     * по id
-     *
-     * @param id
      */
     @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public void removeModeratorSession(Long id) {
+    public void removeModeratorSession() {
+        //TODO добавить логику проверки
         log.debug("Удаляем неактивного модератора");
-        moderatorsSessionsRepository.removeModeratorSession(id);
+        // Удалить все сессии, у которых последнее время обновления больше заданного значения
+        moderatorSessionRepository.getInvalidateSession(LocalDateTime.now().plusHours(1l))
+                .forEach(v -> {
+                    checkAssignEvent(v.getModeratorId()).forEach(a -> assignedEventsRepository.deleteById(a.getId()));
+                    moderatorSessionRepository.deleteById(v.getId());
+                });
+        // moderatorSessionRepository.deleteById(id);
         log.debug("Удалили неактивного модератора");
-        }
     }
+
+    private List<AssignedEvents> checkAssignEvent(Long moderatorId) {
+        return Collections.emptyList();
+    }
+}
