@@ -8,6 +8,8 @@ import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.entity.User;
 import ru.team.up.dto.UserDto;
 
+import java.util.List;
+
 @Mapper(uses = AgeTranslator.class)
 public interface UserMapper {
 
@@ -34,6 +36,11 @@ public interface UserMapper {
      */
     @Mapping(target = "birthday", source = "age")
      User mapUserFromDto(UserDto userDto);
+
+    /**
+     * @return мэппинг List<User> в List<UserDto>
+     */
+    List<UserDto> mapUserListToUserDtoList(List<User> userList);
 
     /**
      * @return мэппинг UserDto в Admin

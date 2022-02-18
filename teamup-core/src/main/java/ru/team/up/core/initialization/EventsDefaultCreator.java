@@ -50,7 +50,7 @@ public class EventsDefaultCreator {
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 80)
                 .eventType(eventTypeRepository.getOne(3L))
-                .authorId(userRepository.getUserById(7L))
+                .authorId(userRepository.findUserById(7L))
                 .status(statusRepository.getOne(3L))
                 .build());
 
@@ -63,7 +63,7 @@ public class EventsDefaultCreator {
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 110)
                 .eventType(eventTypeRepository.getOne(1L))
-                .authorId(userRepository.getUserById(5L))
+                .authorId(userRepository.findUserById(5L))
                 .status(statusRepository.getOne(1L))
                 .build());
 
@@ -77,7 +77,7 @@ public class EventsDefaultCreator {
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 110)
                 .eventType(eventTypeRepository.getOne(2L))
-                .authorId(userRepository.getUserById(2L))
+                .authorId(userRepository.findUserById(2L))
                 .status(statusRepository.getOne(2L))
                 .build());
 
@@ -90,7 +90,7 @@ public class EventsDefaultCreator {
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 20)
                 .eventType(eventTypeRepository.getOne(4L))
-                .authorId(userRepository.getUserById(9L))
+                .authorId(userRepository.findUserById(9L))
                 .status(statusRepository.getOne(2L))
                 .build());
     }

@@ -27,16 +27,16 @@ public class UserInterestsDefaultCreator {
 
     @Bean("UserInterestsDefaultCreator")
     public void userInterestsDefaultCreator() {
-        userRepository.getUserById(2L).setUserInterests(Set.of(interestsRepository.getOne(9L)));
-        userRepository.getUserById(3L).setUserInterests(Set.of(interestsRepository.getOne(2L), interestsRepository.getOne(7L)));
-        userRepository.getUserById(4L).setUserInterests(Set.of(interestsRepository.getOne(10L)));
-        userRepository.getUserById(5L).setUserInterests(Set.of(interestsRepository.getOne(1L)));
-        userRepository.getUserById(6L).setUserInterests(Set.of(interestsRepository.getOne(2L), interestsRepository.getOne(3L),
+        userRepository.findUserById(2L).setUserInterests(Set.of(interestsRepository.getOne(9L)));
+        userRepository.findUserById(3L).setUserInterests(Set.of(interestsRepository.getOne(2L), interestsRepository.getOne(7L)));
+        userRepository.findUserById(4L).setUserInterests(Set.of(interestsRepository.getOne(10L)));
+        userRepository.findUserById(5L).setUserInterests(Set.of(interestsRepository.getOne(1L)));
+        userRepository.findUserById(6L).setUserInterests(Set.of(interestsRepository.getOne(2L), interestsRepository.getOne(3L),
                 interestsRepository.getOne(7L), interestsRepository.getOne(11L)));
-        userRepository.getUserById(7L).setUserInterests(Set.of(interestsRepository.getOne(1L), interestsRepository.getOne(9L),
+        userRepository.findUserById(7L).setUserInterests(Set.of(interestsRepository.getOne(1L), interestsRepository.getOne(9L),
                 interestsRepository.getOne(13L)));
-        userRepository.getUserById(8L).setUserInterests(Set.of(interestsRepository.getOne(8L), interestsRepository.getOne(12L)));
-        userRepository.getUserById(9L).setUserInterests(Set.of(interestsRepository.getOne(6L), interestsRepository.getOne(7L),
+        userRepository.findUserById(8L).setUserInterests(Set.of(interestsRepository.getOne(8L), interestsRepository.getOne(12L)));
+        userRepository.findUserById(9L).setUserInterests(Set.of(interestsRepository.getOne(6L), interestsRepository.getOne(7L),
                 interestsRepository.getOne(11L), interestsRepository.getOne(12L)));
     }
 }

@@ -25,10 +25,10 @@ public class UserEventsDefaultCreator {
 
     @Bean("UserEventsDefaultCreator")
     public void userEventsDefaultCreator() {
-        userRepository.getUserById(3L).setUserEvent(Set.of(eventRepository.getOne(4L)));
-        userRepository.getUserById(5L).setUserEvent(Set.of(eventRepository.getOne(2L)));
-        userRepository.getUserById(6L).setUserEvent(Set.of(eventRepository.getOne(3L), eventRepository.getOne(4L)));
-        userRepository.getUserById(7L).setUserEvent(Set.of(eventRepository.getOne(1L), eventRepository.getOne(2L)));
-        userRepository.getUserById(8L).setUserEvent(Set.of(eventRepository.getOne(4L)));
+        userRepository.findUserById(3L).setUserEvent(Set.of(eventRepository.getOne(4L)));
+        userRepository.findUserById(5L).setUserEvent(Set.of(eventRepository.getOne(2L)));
+        userRepository.findUserById(6L).setUserEvent(Set.of(eventRepository.getOne(3L), eventRepository.getOne(4L)));
+        userRepository.findUserById(7L).setUserEvent(Set.of(eventRepository.getOne(1L), eventRepository.getOne(2L)));
+        userRepository.findUserById(8L).setUserEvent(Set.of(eventRepository.getOne(4L)));
     }
 }

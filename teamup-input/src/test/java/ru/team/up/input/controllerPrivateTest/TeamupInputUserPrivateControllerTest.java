@@ -13,6 +13,7 @@ import ru.team.up.core.entity.Interests;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.service.UserService;
 import ru.team.up.input.controller.privateController.UserController;
+import ru.team.up.input.service.UserServiceRest;
 
 import javax.persistence.PersistenceException;
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class TeamupInputUserPrivateControllerTest {
 
     @Mock
-    private UserService userService;
+    private UserServiceRest userService;
 
 //    @Autowired
     @InjectMocks
@@ -47,7 +48,7 @@ public class TeamupInputUserPrivateControllerTest {
             .shortDescription("Like to write programs in java")
             .build();
 
-    Account testUser = User.builder()
+    User testUser = User.builder()
             .firstName("Aleksey")
             .lastName("Tkachenko")
             .middleName("Petrovich")
@@ -62,10 +63,10 @@ public class TeamupInputUserPrivateControllerTest {
             .userInterests(Collections.singleton(programming))
             .build();
 
-    Account emptyUser = User.builder()
+    User emptyUser = User.builder()
             .build();
 
-    ArrayList<Account> listUser = new ArrayList<>();
+    ArrayList<User> listUser = new ArrayList<>();
 
     @Test
     public void testCreateUser() {
@@ -81,13 +82,13 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testGetOneById() {
-        when(userService.getOneUser(testUser.getId())).thenReturn(testUser);
+        when(userService.getUserById(testUser.getId())).thenReturn(testUser);
         Assert.assertEquals(200, userController.getUserById(testUser.getId()).getStatusCodeValue());
     }
 
     @Test
     public void testGetOneByIdException() {
-        when(userService.getOneUser(emptyUser.getId())).thenThrow(new PersistenceException());
+        when(userService.getUserById(emptyUser.getId())).thenThrow(new PersistenceException());
         Assert.assertEquals(400, userController.getUserById(emptyUser.getId()).getStatusCodeValue());
     }
 
@@ -124,7 +125,7 @@ public class TeamupInputUserPrivateControllerTest {
 
     @Test
     public void testDeleteUserException() {
-        doThrow(new PersistenceException()).when(userService).deleteUser(emptyUser.getId());
+        doThrow(new PersistenceException()).when(userService).deleteUserById(emptyUser.getId());
         Assert.assertEquals(400, userController.deleteUser(emptyUser.getId()).getStatusCodeValue());
     }
 }

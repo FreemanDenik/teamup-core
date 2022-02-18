@@ -21,7 +21,7 @@ public interface UserServiceRest {
      * @param id идентификатор поиска
      * @return Пользователь с указанным иднтификатором
      */
-    Account getUserById(Long id);
+    User getUserById(Long id);
 
     /**
      * Метод поиска пользователя по почте
@@ -29,7 +29,7 @@ public interface UserServiceRest {
      * @param email почта для поиска
      * @return Пользователь с указанной почтой
      */
-    Account getUserByEmail(String email);
+    User getUserByEmail(String email);
 
     /**
      * Метод поиска пользователя по имени
@@ -37,21 +37,28 @@ public interface UserServiceRest {
      * @param username имя для поиска
      * @return Пользователь с указанным именем
      */
-    Account getUserByUsername(String username);
+    User getUserByUsername(String username);
 
     /**
      * Метод получения всех пользователей
      *
      * @return Список пользователей
      */
-    List<Account> getAllUsers();
+    List<User> getAllUsers();
+
+    /**
+     * Метод сохранения пользователя
+     *
+     * @return Список пользователей
+     */
+    User saveUser(User user);
 
     /**
      * Метод обновления пользователя
      *
      * @param user Пользователь для обновления
      */
-    Account updateUser(UserRequest user, Long id);
+    User updateUser(UserRequest user, Long id);
 
     /**
      * Метод для удаления пользователя
@@ -59,4 +66,12 @@ public interface UserServiceRest {
      * @param id идентификатор поиска
      */
     void deleteUserById(Long id);
+
+    /**
+     * Метод поиска пользователя по id
+     *
+     * @param city название города
+     * @return Список "Топ популярных пользователей в городе"
+     */
+    List<User> getTopUsersInCity(String city);
 }

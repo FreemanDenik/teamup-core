@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.UserNotFoundEmailException;
-import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -47,13 +47,9 @@ public class UserRestControllerPublic {
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
 
-        Optional<Account> userOptional = Optional.ofNullable(userServiceRest.getUserById(userId));
-
-        return userOptional
-                .map(user -> new ResponseEntity<>(
-                        UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto((User) user)).build(),
-                        HttpStatus.OK))
-                .orElseThrow(() -> new UserNotFoundIDException(userId));
+        return new ResponseEntity<>(
+                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(userId))).build(),
+                HttpStatus.OK);
     }
 
 
@@ -102,9 +98,9 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение списка всех пользователей")
     @GetMapping("/")
-    public ResponseEntity<List<Account>> getUsersList() {
+    public ResponseEntity<List<User>> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
-        List<Account> users = userServiceRest.getAllUsers();
+        List<User> users = userServiceRest.getAllUsers();
 
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
@@ -159,5 +155,20 @@ public class UserRestControllerPublic {
 
         log.debug("Пользователь с id = {} успешно удален", userId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Метод поиска топ популярных пользователей в городе
+     * @param city название города
+     * @return Список UserDto
+     */
+    @Operation(summary = "Получение списка \"Топ популярных пользователей в городе\"")
+    @GetMapping(value = "/top/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDtoListResponse> getTopUsersListInCity(@PathVariable(value = "city") String city) {
+        log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
+
+        return new ResponseEntity<>(
+                UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city))).build(),
+                HttpStatus.OK);
     }
 }

@@ -11,7 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.service.UserService;
+import ru.team.up.input.response.UserDtoResponse;
+import ru.team.up.input.service.UserServiceRest;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
@@ -31,7 +34,9 @@ import java.util.List;
 @Tag(name = "User Private Controller", description = "User API")
 @RequestMapping(value = "/private/account/user")
 public class UserController {
+    //TODO По правильному нужно перевести все на UserServiceRest! Это нужно сделать при подкручивании приватных контроллеров
     private UserService userService;
+    private UserServiceRest userServiceRest;
 
     /**
      * @return Результат работы метода userService.getAllUsers() в виде коллекции юзеров
@@ -39,10 +44,10 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary ="Получение списка всех юзеров")
-    public ResponseEntity<List<Account>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
 
-        ResponseEntity<List<Account>> responseEntity;
+        ResponseEntity<List<User>> responseEntity;
         try {
             responseEntity = ResponseEntity.ok(userService.getAllUsers());
         } catch (PersistenceException e) {
@@ -60,18 +65,12 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @Operation(summary ="Получение юзера по id")
-    public ResponseEntity<Account> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
 
-        ResponseEntity<Account> responseEntity;
-        try {
-            responseEntity = ResponseEntity.ok(userService.getOneUser(id));
-        } catch (PersistenceException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        log.debug("Получили ответ {}", responseEntity);
-
-        return responseEntity;
+        return new ResponseEntity<>(
+                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(id))).build(),
+                HttpStatus.OK);
     }
 
     /**
@@ -81,7 +80,7 @@ public class UserController {
      */
     @PostMapping
     @Operation(summary ="Создание юзера")
-    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull Account userCreate) {
+    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
@@ -102,7 +101,7 @@ public class UserController {
      */
     @PatchMapping
     @Operation(summary ="Обновление юзера")
-    public ResponseEntity<Account> updateUser(@RequestBody @NotNull Account user) {
+    public ResponseEntity<Account> updateUser(@RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
 
         ResponseEntity<Account> responseEntity;
