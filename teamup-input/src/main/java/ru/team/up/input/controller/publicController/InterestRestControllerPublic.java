@@ -53,24 +53,6 @@ public class InterestRestControllerPublic {
     @Operation(summary = "Получить список интересов по id")
     @GetMapping("/user/interest/{id}")
     public ResponseEntity<List<InterestsDtoResponse>> getInterestsUserById(@PathVariable("id") Long interestsId) {
-//        log.debug("Получен запрос на список интересов пользователя по id");
-//        List<Interests> interestsListById = interestsServiceRest.getInterestById(interestsId);
-//        if (interestsListById.isEmpty()) {
-//                throw new UserNotFoundIDException(interestsId);
-//        }
-//        List<InterestsDtoResponse> listInterestsUserById = new ArrayList<>();
-//        for (Interests interests : interestsListById) {
-//            InterestsDtoResponse interestsDtoResponse = InterestsDtoResponse.builder().interestsDto(
-//                    InterestsMapper.INSTANCE.mapInterestsToDto((Interests) interests)).build();
-//            listInterestsUserById.add(interestsDtoResponse);
-//        }
-//        if (listInterestsUserById.isEmpty()) {
-//            log.debug("Список интересов пуст");
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        log.debug("Список интересов получен");
-//        return new ResponseEntity<>(listInterestsUserById, HttpStatus.OK);
-//    }
         log.debug("Получен запрос на список интересов пользователя по id");
         List<Interests> interestsListById = interestsServiceRest.getInterestById(interestsId);
         List<InterestsDtoResponse> interestsDtoResponseListById =
