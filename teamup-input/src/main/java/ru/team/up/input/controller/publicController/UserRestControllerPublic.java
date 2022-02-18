@@ -4,22 +4,32 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.config.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.EventsNotFoundIdException;
 import ru.team.up.core.exception.UserNotFoundEmailException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
+import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.dto.EventDto;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.EventDtoResponse;
+import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.input.response.UserDtoResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST-контроллер для пользователей
@@ -34,6 +44,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
+
 
     /**
      * Метод для поиска пользователя по id
@@ -112,6 +123,22 @@ public class UserRestControllerPublic {
 
         log.debug("Список пользователей получен");
         return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    /**
+     * Метод поиска мероприятий пользователя
+     *
+     * @param id id пользователя
+     * @return Ответ поиска и статус проверки
+     */
+    @Operation(summary = "Поиск мероприятий по id пользователя")
+    @GetMapping(value = "/event/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDtoResponse> getAllEventsByUserId(@PathVariable Long id) {
+        log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
+        List<Event> events = new ArrayList<>(userServiceRest.getAllEventsByAuthorId(id));
+
+        return new ResponseEntity<>(EventDtoResponse.builder().eventDto(EventMapper.INSTANCE.mapEventsToDtoEventList(events)).build(),
+                        HttpStatus.OK);
     }
 
     /**

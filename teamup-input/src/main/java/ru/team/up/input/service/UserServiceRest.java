@@ -1,6 +1,7 @@
 package ru.team.up.input.service;
 
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.payload.request.UserRequest;
@@ -45,6 +46,13 @@ public interface UserServiceRest {
      * @return Список пользователей
      */
     List<Account> getAllUsers();
+
+    /**
+     * Метод получения всех мероприятий пользователя
+     *
+     * @return Список мероприятий
+     */
+    List<Event> getAllEventsByAuthorId(Long id);
 
     /**
      * Метод обновления пользователя
