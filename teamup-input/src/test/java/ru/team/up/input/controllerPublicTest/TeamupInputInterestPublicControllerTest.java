@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.entity.User;
 import ru.team.up.input.controller.publicController.InterestRestControllerPublic;
