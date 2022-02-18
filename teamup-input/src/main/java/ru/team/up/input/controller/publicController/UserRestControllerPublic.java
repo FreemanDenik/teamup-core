@@ -17,6 +17,7 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
+import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
 import java.util.Optional;
