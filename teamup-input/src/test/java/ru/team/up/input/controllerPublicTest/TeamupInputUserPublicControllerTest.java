@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.input.controller.publicController.UserRestControllerPublic;
@@ -99,10 +98,6 @@ public class TeamupInputUserPublicControllerTest {
     public void getTopUsersListInCity(){
         when(userService.getTopUsersInCity ("Санкт-Петербург")).thenReturn (Collections.singletonList (testUser));
         Assert.assertEquals (200,userRestControllerPublic.getTopUsersListInCity("Санкт-Петербург").getStatusCodeValue ());
-    }
-    @Test
-    public void getTopUsersListInCityNotFind(){
-        Assert.assertEquals (204,userRestControllerPublic.getTopUsersListInCity("Санкт-Петербург").getStatusCodeValue ());
     }
 }
 

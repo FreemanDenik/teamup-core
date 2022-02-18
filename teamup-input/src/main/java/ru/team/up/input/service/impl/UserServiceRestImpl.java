@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundEmailException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
@@ -71,6 +72,10 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     public List<User> getTopUsersInCity(String city) {
         List<? extends Account> users = userService.getTopUsersInCity(city);
+        if (users.isEmpty()) {
+            throw new NoContentException();
+        }
+
         return (List<User>) users;
     }
 }
