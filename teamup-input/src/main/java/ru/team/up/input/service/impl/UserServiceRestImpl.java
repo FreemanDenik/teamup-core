@@ -30,38 +30,35 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public User getUserById(Long id) {
-        Optional<Account> user = userService.getOneUser(id);
-        return (User) userService.getOneUser(id).orElseThrow(() -> new UserNotFoundIDException(id));
+        return userService.getOneUser(id).orElseThrow(() -> new UserNotFoundIDException(id));
     }
 
     @Override
     public User getUserByEmail(String email) {
-        return (User) userService.findByEmail(email).orElseThrow(() -> new UserNotFoundEmailException(email));
+        return userService.findByEmail(email).orElseThrow(() -> new UserNotFoundEmailException(email));
     }
 
     @Override
     public User getUserByUsername(String username) {
-        return (User) userService.findByUsername(username).orElseThrow(() -> new UserNotFoundUsernameException(username));
+        return userService.findByUsername(username).orElseThrow(() -> new UserNotFoundUsernameException(username));
     }
 
     @Override
     public List<User> getAllUsers() {
-        List<? extends Account> users = userService.getAllUsers();
-
-        return (List<User>) users;
+        return userService.getAllUsers();
     }
 
     @Override
     public User saveUser(User user) {
-        return (User) userService.saveUser(user);
+        return userService.saveUser(user);
     }
 
     @Override
-    public User updateUser(UserRequest user, Long id) {
+    public User updateUser(UserRequest userRequest, Long id) {
         User oldUser = getUserById(id);
-        User newUser = user.getUser();
+        User newUser = userRequest.getUser();
         newUser.setId(oldUser.getId());
-        return (User) userService.saveUser(newUser);
+        return userService.saveUser(newUser);
     }
 
     @Override
@@ -71,11 +68,11 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public List<User> getTopUsersInCity(String city) {
-        List<? extends Account> users = userService.getTopUsersInCity(city);
+        List<User> users = userService.getTopUsersInCity(city);
         if (users.isEmpty()) {
             throw new NoContentException();
         }
 
-        return (List<User>) users;
+        return users;
     }
 }

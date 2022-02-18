@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.repositories.AccountRepository;
+import ru.team.up.core.repositories.UserRepository;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     /**
      * @return Возвращает коллекцию User.
@@ -34,10 +32,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Account> getAllUsers() {
+    public List<User> getAllUsers() {
         log.debug("Старт метода List<Account> getAllUsers()");
 
-        List<Account> users = Optional.of(accountRepository.findAllByRole(Role.ROLE_USER))
+        List<User> users = Optional.of(userRepository.findAllUsersByRole(Role.ROLE_USER))
                 .orElseThrow(NoContentException::new);
         log.debug("Получили список всех юзеров из БД {}", users);
 
@@ -51,10 +49,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Optional<Account> getOneUser(Long id) {
+    public Optional<User> getOneUser(Long id) {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
-        return accountRepository.findById(id);
+        return Optional.ofNullable(userRepository.findUserById(id));
     }
 
     /**
@@ -63,10 +61,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public Account saveUser(Account user) {
+    public User saveUser(User user) {
         log.debug("Старт метода User saveUser(User user) с параметром {}", user);
 
-        Account save = accountRepository.save(user);
+        User save = userRepository.save(user);
         log.debug("Сохранили юзера в БД {}", save);
 
         return save;
@@ -81,7 +79,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         log.debug("Старт метода void deleteUser(User user) с параметром {}", id);
 
-        accountRepository.deleteById(id);
+        userRepository.deleteById(id);
         log.debug("Удалили юзера из БД с ID {}", id);
     }
 
@@ -91,10 +89,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Optional<Account> findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         log.debug("Старт метода findByEmail(String email) с параметром {}", email);
 
-        return Optional.ofNullable(accountRepository.findByEmail(email));
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 
     /**
@@ -103,10 +101,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Optional<Account> findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         log.debug("Старт метода findByUsername(String username) с параметром {}", username);
 
-        return Optional.ofNullable(accountRepository.findByUsername(username));
+        return Optional.ofNullable(userRepository.findByUsername(username));
     }
 
     /**
@@ -115,9 +113,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Account> getTopUsersInCity(String city) {
-        return accountRepository.findUsersByCity(city).stream().
-                map(u -> (User) u).
+    public List<User> getTopUsersInCity(String city) {
+        return userRepository.findUsersByCity(city).stream().
                 filter(u -> u.getSubscribers().size() > 0).
                 sorted((u1, u2) -> Integer.compare(u2.getSubscribers().size(), u1.getSubscribers().size())).
                 limit(10).

@@ -44,10 +44,10 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary ="Получение списка всех юзеров")
-    public ResponseEntity<List<Account>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
 
-        ResponseEntity<List<Account>> responseEntity;
+        ResponseEntity<List<User>> responseEntity;
         try {
             responseEntity = ResponseEntity.ok(userService.getAllUsers());
         } catch (PersistenceException e) {
@@ -80,7 +80,7 @@ public class UserController {
      */
     @PostMapping
     @Operation(summary ="Создание юзера")
-    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull Account userCreate) {
+    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
@@ -101,7 +101,7 @@ public class UserController {
      */
     @PatchMapping
     @Operation(summary ="Обновление юзера")
-    public ResponseEntity<Account> updateUser(@RequestBody @NotNull Account user) {
+    public ResponseEntity<Account> updateUser(@RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
 
         ResponseEntity<Account> responseEntity;

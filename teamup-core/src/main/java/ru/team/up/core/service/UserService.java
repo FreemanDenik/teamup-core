@@ -10,17 +10,17 @@ import java.util.Optional;
  * @author Alexey Tkachenko
  */
 public interface UserService {
-    List<Account> getAllUsers();
+    List<User> getAllUsers();
 
-    Optional<Account> getOneUser(Long id);
+    Optional<User> getOneUser(Long id);
 
-    Account saveUser(Account user);
+    User saveUser(User user);
 
     void deleteUser(Long id);
 
-    Optional<Account> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    Optional<Account> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
-    List<Account> getTopUsersInCity(String city);
+    List<User> getTopUsersInCity(String city);
 }
