@@ -12,6 +12,4 @@ public class AgeTranslator {
     public LocalDate ageToBirthday(long age) {
         return LocalDate.now().minusYears(age);
     }
-
-
 }
