@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.notFoundException.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.mappers.InterestsMapper;
 import ru.team.up.input.response.InterestsDtoResponse;
 import ru.team.up.input.service.InterestServiceRest;
