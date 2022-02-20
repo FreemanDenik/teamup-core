@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.auth.config.jwt.JwtProvider;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.core.service.UserServiceImpl;
+import ru.team.up.core.service.UserService;
 import ru.team.up.dto.UserDto;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ public class AuthController {
     private UserDetailsService userDetailsService;
     private JwtProvider jwtProvider;
     private PasswordEncoder passwordEncoder;
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @PostMapping("/registration")
     public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {

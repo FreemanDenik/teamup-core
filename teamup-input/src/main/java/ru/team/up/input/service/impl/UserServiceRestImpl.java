@@ -3,14 +3,18 @@ package ru.team.up.input.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.*;
-import ru.team.up.core.repositories.AccountRepository;
-import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.NoContentException;
+import ru.team.up.core.exception.UserNotFoundEmailException;
+import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.exception.UserNotFoundUsernameException;
+import ru.team.up.core.service.UserService;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Сервис для работы с пользователями
@@ -22,51 +26,53 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceRestImpl implements UserServiceRest {
 
-    private final AccountRepository accountRepository;
-    private final EventRepository eventRepository;
+    private UserService userService;
 
     @Override
-    @Transactional(readOnly = true)
-    public Account getUserById(Long id) {
-        return accountRepository.getById(id);
+    public User getUserById(Long id) {
+        return userService.getOneUser(id).orElseThrow(() -> new UserNotFoundIDException(id));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Account getUserByEmail(String email) {
-        return accountRepository.findByEmail(email);
+    public User getUserByEmail(String email) {
+        return userService.findByEmail(email).orElseThrow(() -> new UserNotFoundEmailException(email));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Account getUserByUsername(String username) {
-        return accountRepository.findByUsername(username);
+    public User getUserByUsername(String username) {
+        return userService.findByUsername(username).orElseThrow(() -> new UserNotFoundUsernameException(username));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Event> getAllEventsByAuthorId(Long id) {
-        return eventRepository.findAllByAuthorId((User) accountRepository.getById(id));
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @Override
-    @Transactional
-    public List<Account> getAllUsers() {
-        return accountRepository.findAllByRole(Role.ROLE_USER);
+    public User saveUser(User user) {
+        return userService.saveUser(user);
     }
 
     @Override
-    @Transactional
-    public Account updateUser(UserRequest user, Long id) {
-        Account oldUser = getUserById(id);
-        user.getUser().setId(oldUser.getId());
-        accountRepository.saveAndFlush(user.getUser());
-        return getUserById(id);
+    public User updateUser(UserRequest userRequest, Long id) {
+        User oldUser = getUserById(id);
+        User newUser = userRequest.getUser();
+        newUser.setId(oldUser.getId());
+        return userService.saveUser(newUser);
     }
 
     @Override
-    @Transactional
     public void deleteUserById(Long id) {
-        accountRepository.deleteById(id);
+        userService.deleteUser(id);
+    }
+
+    @Override
+    public List<User> getTopUsersInCity(String city) {
+        List<User> users = userService.getTopUsersInCity(city);
+        if (users.isEmpty()) {
+            throw new NoContentException();
+        }
+
+        return users;
     }
 }

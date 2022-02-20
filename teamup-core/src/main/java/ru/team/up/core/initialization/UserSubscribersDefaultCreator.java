@@ -21,9 +21,10 @@ public class UserSubscribersDefaultCreator {
     }
 
 
-//    @Bean("UserSubscribersDefaultCreator")
-//    public void userSubscribersDefaultCreator() {
-//        userRepository.getUserById(9L).setSubscribers(Set.of(userRepository.getOne(3L)));
-//        userRepository.getUserById(7L).setSubscribers(Set.of(userRepository.getOne(5L)));
-//    }
+    @Bean("UserSubscribersDefaultCreator")
+    public void userSubscribersDefaultCreator() {
+        userRepository.findUserById(4L).setSubscribers(Set.of(userRepository.findUserById(3L)));
+        userRepository.findUserById(7L).setSubscribers(Set.of(userRepository.findUserById(5L), userRepository.findUserById(6L), userRepository.findUserById(3L)));
+        userRepository.findUserById(10L).setSubscribers(Set.of(userRepository.findUserById(5L), userRepository.findUserById(6L), userRepository.findUserById(3L), userRepository.findUserById(9L)));
+    }
 }

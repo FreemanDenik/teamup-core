@@ -1,20 +1,20 @@
 package ru.team.up.core.initialization;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.entity.CityForParse;
 import ru.team.up.core.repositories.CityRepository;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @Component
 @Transactional
@@ -27,20 +27,23 @@ public class CitiesDefaultCreator {
         this.cityRepository = cityRepository;
     }
 
-    @Bean("CitiesDefaultCreator")
+    @Bean("cityDefaultCreator")
+    @Async //не уверен, работает ли эта аннотация (@EnableAsync навешана в SchedulingConfig)
     public void citiesDefaultCreator() throws IOException {
         List <CityForParse> cities = new ObjectMapper().readValue(
                 new File("teamup-core/src/main/resources/database/cities.json"),
-                new TypeReference<List<CityForParse>>(){}
+                new TypeReference<>(){}
         );
-        for (int id = 0; id < cities.size(); id++) {
+
+        AtomicLong i = new AtomicLong(1);
+        cities.forEach(city -> {
             cityRepository.save(City.builder()
-                    .id((long) id + 1)
-                    .name(cities.get(id).name)
-                    .subject(cities.get(id).subject)
-                    .lat(cities.get(id).coords.lat)
-                    .lon(cities.get(id).coords.lon)
-                    .build());
-        }
+                            .id(i.getAndIncrement())
+                            .name(city.name)
+                            .subject(city.subject)
+                            .lat(city.coords.lat)
+                            .lon(city.coords.lon)
+                            .build());
+        });
     }
 }

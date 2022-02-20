@@ -37,7 +37,7 @@ public class EventsReviewDefaultCreator {
     public void eventsReviewDefaultCreator() {
 
         eventReviewRepository.save(EventReview.builder()
-                .reviewer(userRepository.getUserById(7L))
+                .reviewer(userRepository.findUserById(7L))
                 .reviewMessage("Для многоих Хакатон это отличный старт, своего рода навигатор дальнейшего профессионального развития.")
                 .reviewForEvent(eventRepository.getOne(1L))
                 .reviewTime(LocalDateTime.of(2021,9,26,18,0))

@@ -3,19 +3,16 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
+import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
-import ru.team.up.core.exception.UserNotFoundIDException;
-import ru.team.up.core.repositories.AdminRepository;
-import ru.team.up.core.repositories.ModeratorRepository;
-import ru.team.up.core.repositories.AccountRepository;
+import ru.team.up.core.repositories.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexey Tkachenko
@@ -27,10 +24,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
-    private AccountRepository accountRepository;
-    private PasswordEncoder passwordEncoder;
-    private AdminRepository adminRepository;
-    private ModeratorRepository moderatorRepository;
+    private UserRepository userRepository;
 
     /**
      * @return Возвращает коллекцию User.
@@ -38,10 +32,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Account> getAllUsers() {
-        log.debug("Старт метода List<User> getAllUsers()");
+    public List<User> getAllUsers() {
+        log.debug("Старт метода List<Account> getAllUsers()");
 
-        List<Account> users = Optional.of(accountRepository.findAllByRole(Role.ROLE_USER))
+        List<User> users = Optional.of(userRepository.findAllUsersByRole(Role.ROLE_USER))
                 .orElseThrow(NoContentException::new);
         log.debug("Получили список всех юзеров из БД {}", users);
 
@@ -55,14 +49,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Account getOneUser(Long id) {
+    public Optional<User> getOneUser(Long id) {
         log.debug("Старт метода User getOneUser(Long id) с параметром {}", id);
 
-        Account user = Optional.of(accountRepository.findById(id)).get()
-                .orElseThrow(() -> new UserNotFoundIDException(id));
-        log.debug("Получили юзера из БД {}", user);
-
-        return user;
+        return Optional.ofNullable(userRepository.findUserById(id));
     }
 
     /**
@@ -71,10 +61,10 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public Account saveUser(Account user) {
+    public User saveUser(User user) {
         log.debug("Старт метода User saveUser(User user) с параметром {}", user);
 
-        Account save = accountRepository.save(user);
+        User save = userRepository.save(user);
         log.debug("Сохранили юзера в БД {}", save);
 
         return save;
@@ -89,7 +79,45 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         log.debug("Старт метода void deleteUser(User user) с параметром {}", id);
 
-        accountRepository.deleteById(id);
+        userRepository.deleteById(id);
         log.debug("Удалили юзера из БД с ID {}", id);
+    }
+
+    /**
+     * @param email электронная почта
+     * @return Возвращает сохраненный в БД объект user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> findByEmail(String email) {
+        log.debug("Старт метода findByEmail(String email) с параметром {}", email);
+
+        return Optional.ofNullable(userRepository.findByEmail(email));
+    }
+
+    /**
+     * @param username логин
+     * @return Возвращает сохраненный в БД объект user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<User> findByUsername(String username) {
+        log.debug("Старт метода findByUsername(String username) с параметром {}", username);
+
+        return Optional.ofNullable(userRepository.findByUsername(username));
+    }
+
+    /**
+     * @param city наименование города
+     * @return Список "Топ популярных пользователей в городе"
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getTopUsersInCity(String city) {
+        return userRepository.findUsersByCity(city).stream().
+                filter(u -> u.getSubscribers().size() > 0).
+                sorted((u1, u2) -> Integer.compare(u2.getSubscribers().size(), u1.getSubscribers().size())).
+                limit(10).
+                collect(Collectors.toList());
     }
 }
