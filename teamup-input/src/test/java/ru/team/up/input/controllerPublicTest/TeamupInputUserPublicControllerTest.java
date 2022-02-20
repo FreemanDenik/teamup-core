@@ -113,5 +113,7 @@ public class TeamupInputUserPublicControllerTest {
         when(userService.getTopUsersInCity ("Санкт-Петербург")).thenReturn (Collections.singletonList (testUser));
         Assert.assertEquals (200,userRestControllerPublic.getTopUsersListInCity("Санкт-Петербург").getStatusCodeValue ());
     }
+
+
 }
 

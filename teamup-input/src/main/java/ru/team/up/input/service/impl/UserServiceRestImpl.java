@@ -4,15 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundEmailException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
+import ru.team.up.core.repositories.EventRepository;
+import ru.team.up.core.service.EventService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.service.UserServiceRest;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +31,7 @@ import java.util.Optional;
 public class UserServiceRestImpl implements UserServiceRest {
 
     private UserService userService;
+    private EventService eventService;
 
     @Override
     public User getUserById(Long id) {
@@ -46,6 +51,16 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     public List<User> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @Override
+    public List<Event> getAllEventsByAuthorId(Long id) {
+        List<Event> events = eventService.getAllByAuthorId(userService.getOneUser(id)
+                .orElseThrow(() -> new UserNotFoundIDException(id)));
+        if (events.isEmpty()) {
+            throw new NoContentException();
+        }
+        return events;
     }
 
     @Override

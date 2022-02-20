@@ -51,6 +51,18 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     *
+     * @param author Id пользователя
+     * @return Получение всех мероприятий пользователя
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getAllByAuthorId(User author) {
+        log.debug("Старт метода получения всех мероприятий пользователя");
+        return eventRepository.findAllByAuthorId(author);
+    }
+
+    /**
      * @param id Уникальный ключ ID мероприятия
      * @return Находит в БД мероприятие по ID и возвращает его.
      * Если мероприятие с переданным ID не найдено в базе, генерирует исключение со статусом HttpStatus.NOT_FOUND

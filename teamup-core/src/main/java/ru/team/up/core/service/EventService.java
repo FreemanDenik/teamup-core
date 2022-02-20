@@ -11,6 +11,8 @@ import java.util.List;
 public interface EventService {
     List<Event> getAllEvents();
 
+    List<Event> getAllByAuthorId(User author);
+
     Event getOneEvent(Long id);
 
     Event saveEvent(Event event);

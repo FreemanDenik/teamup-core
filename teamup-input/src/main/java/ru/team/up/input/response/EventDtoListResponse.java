@@ -12,6 +12,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDtoResponse {
-    private List<EventDto> eventDto;
+public class EventDtoListResponse {
+    private List<EventDto> eventDtoList;
 }
