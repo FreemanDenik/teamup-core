@@ -42,14 +42,16 @@ public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/registration", "/login", "/oauth2reg", "/oauth2/authorization/google", "/authority").permitAll()
+                .antMatchers("/registration", "/login", "/oauth2reg", "/oauth2/authorization/google",
+                        "/authority","/api/public/**", "/public/**").permitAll()
                 .antMatchers("/admin/**", "/private/**").hasRole("ADMIN")
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/moderator").hasRole("MODERATOR")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы без POST, изменив конфигурацию Java
+        http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы
+                // без POST, изменив конфигурацию Java
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//выход из системы гет запрос на /logout
                 .logoutSuccessUrl("/")//успешный выход из системы
                 .and().csrf().disable();

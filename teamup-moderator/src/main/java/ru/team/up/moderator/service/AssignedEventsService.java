@@ -5,8 +5,15 @@ import ru.team.up.core.repositories.AssignedEventsRepository;
 
 import java.util.List;
 
-public interface AssignedEventsService  extends AssignedEventsRepository {
+public interface AssignedEventsService {
+    /**
+     *
+     * @param id
+     * @return
+     */
     AssignedEvents getAssignedEvent(Long id);
+
     AssignedEvents saveAssignedEvent(AssignedEvents assignedEvents);
+
     void removeAssignedEvent(Long id);
 }

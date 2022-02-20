@@ -16,7 +16,7 @@ import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
-import ru.team.up.core.repositories.ModeratorsSessionsRepository;
+import ru.team.up.core.repositories.ModeratorSessionRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
@@ -36,7 +36,7 @@ public class MainController {
     protected AuthenticationManager authenticationManager;
 
     @Autowired
-    public MainController(UserDetailsImpl userDetails, ModeratorsSessionsRepository moderatorsSessionsRepository) {
+    public MainController(UserDetailsImpl userDetails, ModeratorSessionRepository moderatorSessionRepository) {
         this.userDetails = userDetails;
     }
 

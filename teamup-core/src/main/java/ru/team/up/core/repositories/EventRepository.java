@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-    @Query("select e from Event e where e.authorId = ?1")
     List<Event> findAllByAuthorId(User author);
 
     List<Event> findAllByEventType(EventType eventType);

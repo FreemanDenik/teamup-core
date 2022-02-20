@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,22 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.exception.EventsNotFoundIdException;
 import ru.team.up.core.exception.UserNotFoundEmailException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.exception.UserNotFoundUsernameException;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.dto.EventDto;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoResponse;
-import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.input.response.UserDtoResponse;
+import ru.team.up.input.service.UserServiceRest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST-контроллер для пользователей

@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.team.up.core.entity.ModeratorsSessions;
+import ru.team.up.core.entity.ModeratorSession;
 import ru.team.up.core.exception.UserNotFoundIDException;
-import ru.team.up.core.repositories.ModeratorsSessionsRepository;
+import ru.team.up.core.repositories.ModeratorSessionRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,7 +21,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
 
-    ModeratorsSessionsRepository moderatorsSessionsRepository;
+    ModeratorSessionRepository moderatorSessionRepository;
 
     public ModeratorsSessionsServiceImpl() {
     }
@@ -31,9 +31,9 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
      * @param id
      * @return moderatorSession
      */
-    public ModeratorsSessions getModeratorsSession(Long id) {
+    public ModeratorSession getModeratorsSession(Long id) {
         log.debug("Получение сессию по ID сессии {}", id);
-        return moderatorsSessionsRepository.getOne(id);
+        return moderatorSessionRepository.getOne(id);
     }
 
     /**
@@ -42,10 +42,10 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
      * @return moderatorsSessions
      */
     @Override
-    public ModeratorsSessions getModeratorsSessionByModerator(Long id) {
-        ModeratorsSessions moderatorsSessions = null;
+    public ModeratorSession getModeratorsSessionByModerator(Long id) {
+        ModeratorSession moderatorsSessions = null;
         log.debug("Получение всех сессий");
-        for (var moderatorSession : moderatorsSessionsRepository.findAll()) {
+        for (var moderatorSession : moderatorSessionRepository.findAll()) {
             log.debug("Сравнение ID модератора");
             if (id == moderatorSession.getModeratorId()) {
                 moderatorsSessions = Optional.of(moderatorSession).orElseThrow(() -> new UserNotFoundIDException(id));
@@ -58,17 +58,17 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
     /**
      * метод создания новой сессии
      * @param id
-     * @param localDateTime
      * @return
      */
-    public ModeratorsSessions createModeratorsSession(Long id, LocalDateTime localDateTime) {
+    public ModeratorSession createModeratorsSession(Long id) {
         log.debug("Создание новой сессии c id {}", id);
-        ModeratorsSessions moderatorsSessions = new ModeratorsSessions();
-        moderatorsSessions.setModeratorId(id);
-        moderatorsSessions.setLastUpdateSessionTime(localDateTime);
-        moderatorsSessions.setCreatedSessionTime(localDateTime);
+        ModeratorSession moderatorSession = ModeratorSession.builder()
+                .id(id)
+                .lastUpdateSessionTime(LocalDateTime.now())
+                .createdSessionTime(LocalDateTime.now())
+                .build();
         log.debug("Получили новую сессию с id {}", id);
-        return moderatorsSessionsRepository.saveAndFlush(moderatorsSessions);
+        return moderatorSessionRepository.saveAndFlush(moderatorSession);
     }
 
     /**
@@ -77,6 +77,6 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
      */
     public void removeModeratorSession(Long id) {
         log.debug("Удаление сессии по ID сессии {}", id);
-        moderatorsSessionsRepository.deleteById(id);
+        moderatorSessionRepository.deleteById(id);
     }
 }

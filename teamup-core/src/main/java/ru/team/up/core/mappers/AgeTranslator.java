@@ -6,7 +6,7 @@ import java.time.Period;
 public class AgeTranslator {
 
     public long birthdayToAge(LocalDate birthday) {
-        return  Period.between(birthday, LocalDate.now()).getYears();
+        return (long) Period.between(birthday, LocalDate.now()).getYears();
     }
 
     public LocalDate ageToBirthday(long age) {

@@ -22,12 +22,10 @@ public interface EventMapper {
     /**
      * @return мэппинг Event в DTO
      */
-//    @Mapping(target = "authorId", source = "authorId")
     EventDto  mapEventToEventDto(Event event);
 
     /**
      * @return мэппинг Dto Event в Event
      */
-//    @Mapping(target = "authorId", source = "authorId")
     Event mapEventsToDtoEventList(EventDto eventDto);
 }
