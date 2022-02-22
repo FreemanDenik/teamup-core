@@ -63,6 +63,17 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
+     *
+     * @param city город проведения мероприятий
+     * @return Получение всех мероприятий в городе
+     */
+    @Override
+    public List<Event> getAllEventsByCity(String city) {
+        log.debug("Старт метода получения всех мероприятий в городе");
+        return eventRepository.findAllByCity(city);
+    }
+
+    /**
      * @param id Уникальный ключ ID мероприятия
      * @return Находит в БД мероприятие по ID и возвращает его.
      * Если мероприятие с переданным ID не найдено в базе, генерирует исключение со статусом HttpStatus.NOT_FOUND

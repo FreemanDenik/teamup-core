@@ -86,4 +86,9 @@ public class EventServiceRestImpl implements EventServiceRest {
         event.setParticipantsEvent(participants);
         return updateEvent(eventId, event);
     }
+
+    @Override
+    public List<Event> getAllEventsByCity(String city) {
+        return eventRepository.findAllByCity(city);
+    }
 }

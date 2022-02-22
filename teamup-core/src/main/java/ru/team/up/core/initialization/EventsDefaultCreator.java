@@ -46,6 +46,7 @@ public class EventsDefaultCreator {
                 .descriptionEvent("Хакатоны и лекции по искусственному интеллекту – первый и самый" +
                         "масштабный проект по ИИ в России")
                 .placeEvent("пр. Михаила Нагибина, 3а, Ростов-на-Дону, Ростовская обл., 344018")
+                .city("Ростов-на-Дону")
                 .timeEvent(LocalDateTime.of(2021, 9, 24, 10,0))
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 80)
@@ -59,6 +60,7 @@ public class EventsDefaultCreator {
                 .eventName("Встреча выпускников KATA")
                 .descriptionEvent("Приглашаем всех выпускников КАТА Академии")
                 .placeEvent("набережная Обводного канала, 74Д, Санкт-Петербург, 190013")
+                .city("Санкт-Петербург")
                 .timeEvent(LocalDateTime.of(2022, 2, 22, 12,0))
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 110)
@@ -73,6 +75,7 @@ public class EventsDefaultCreator {
                 .descriptionEvent("«Люмьер-Холл» представляет мультимедийный проект, посвящённый творчеству четырёх " +
                         "совершенно разных художников")
                 .placeEvent("ул. Косыгина, 28, Москва, 119270")
+                .city("Москва")
                 .timeEvent(LocalDateTime.of(2022, 3, 10, 11,0))
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 110)
@@ -86,6 +89,7 @@ public class EventsDefaultCreator {
                 .eventName("Семинар по Йоге")
                 .descriptionEvent("Недельный йога марафон")
                 .placeEvent("yлица Виноградная, 33, Сочи, Краснодарский край, 354008")
+                .city("Сочи")
                 .timeEvent(LocalDateTime.of(2022, 6, 7, 9,0))
                 .eventUpdateDate(LocalDate.now())
                 .eventNumberOfParticipant((byte) 20)

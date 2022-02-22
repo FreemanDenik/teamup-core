@@ -13,6 +13,8 @@ public interface EventService {
 
     List<Event> getAllByAuthorId(User author);
 
+    List<Event> getAllEventsByCity(String city);
+
     Event getOneEvent(Long id);
 
     Event saveEvent(Event event);

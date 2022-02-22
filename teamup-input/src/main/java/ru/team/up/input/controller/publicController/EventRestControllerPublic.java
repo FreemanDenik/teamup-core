@@ -6,15 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
+import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
@@ -35,7 +38,7 @@ import java.util.Optional;
 @Slf4j
 @Tag(name = "Event Public Controller",description = "Event API")
 @RestController
-@RequestMapping(value = "api/public/event")
+@RequestMapping(value = "public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
@@ -82,6 +85,23 @@ public class EventRestControllerPublic {
                     log.error("Мероприятие с id: {} не найдено", eventId);
                     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 });
+    }
+
+    /**
+     * Метод поиска мероприятий по городу
+     *
+     * @param city название города
+     * @return список мероприятий в городе
+     */
+    @Operation(summary = "Поиск мероприятий по city")
+    @GetMapping(value = "/city/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDtoListResponse> getAllEventByCity(@PathVariable String city) {
+        log.debug("Запрос на поиск мероприятий по городу city: {}", city);
+
+        return new ResponseEntity<>(
+                EventDtoListResponse.builder()
+                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEventsByCity(city)))
+                        .build(), HttpStatus.OK);
     }
 
     /**

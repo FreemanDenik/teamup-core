@@ -52,6 +52,12 @@ public class Event {
     private String placeEvent;
 
     /**
+     * Город проведения мероприятия
+     */
+    @Column(name = "CITY_EVENT", nullable = false)
+    private String city;
+
+    /**
      * Время проведения мероприятия
      */
     @Column(name = "TIME_EVENT", nullable = false)

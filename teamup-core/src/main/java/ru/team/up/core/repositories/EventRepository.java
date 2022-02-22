@@ -20,4 +20,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query(value = "UPDATE Event SET eventNumberOfParticipant = eventNumberOfParticipant + 1 WHERE id = :id")
     void updateNumberOfViews(Long id);
+
+    List<Event> findAllByCity(String city);
 }

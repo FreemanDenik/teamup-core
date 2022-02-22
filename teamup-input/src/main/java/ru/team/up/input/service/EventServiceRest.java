@@ -93,4 +93,11 @@ public interface EventServiceRest {
      * @return Обновленное мероприятие
      */
     Event deleteParticipant(Long eventId, Long userId);
+
+    /**
+     *
+     * @param city город проведения мероприятий
+     * @return Получение всех мероприятий в городе
+     */
+    List<Event> getAllEventsByCity(String city);
 }
