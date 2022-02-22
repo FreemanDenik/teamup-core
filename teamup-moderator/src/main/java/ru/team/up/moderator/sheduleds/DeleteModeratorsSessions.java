@@ -37,9 +37,14 @@ public class DeleteModeratorsSessions {
         //TODO добавить логику проверки
         log.debug("Удаляем неактивного модератора");
         // Удалить все сессии, у которых последнее время обновления больше заданного значения
-        moderatorSessionRepository.getInvalidateSession(LocalDateTime.now().plusHours(1l))
+        moderatorSessionRepository.getInvalidateSession(LocalDateTime.now().minusMinutes(30L),
+                                                        LocalDateTime.now().plusMinutes(30L))
                 .forEach(v -> {
-                    checkAssignEvent(v.getModeratorId()).forEach(a -> assignedEventsRepository.deleteById(a.getId()));
+                    checkAssignEvent(v.getModeratorId())
+                            .forEach(a -> {
+                                assignedEventsRepository.updateEventIdBeforeDeleting(1L, a.getEventId());
+                                assignedEventsRepository.deleteById(a.getId());
+                            });
                     moderatorSessionRepository.deleteById(v.getId());
                 });
         // moderatorSessionRepository.deleteById(id);
@@ -47,6 +52,6 @@ public class DeleteModeratorsSessions {
     }
 
     private List<AssignedEvents> checkAssignEvent(Long moderatorId) {
-        return Collections.emptyList();
+        return assignedEventsRepository.getAllEventsByModeratorId(moderatorId);
     }
 }
