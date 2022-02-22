@@ -59,7 +59,7 @@ public class UserRestControllerPublic {
      * @return Ответ поиска и статус проверки
      */
     @Operation(summary = "Поиск пользователя по email")
-    @GetMapping(value = "/email/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/email/{email:.+}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDtoResponse> getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
 
