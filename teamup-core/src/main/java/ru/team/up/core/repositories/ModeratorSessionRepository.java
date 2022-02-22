@@ -14,7 +14,14 @@ public interface ModeratorSessionRepository extends JpaRepository<ModeratorSessi
 
     Optional<ModeratorSession> findModeratorSessionByModeratorId(Long id);
 
-    @Query("select m from ModeratorSession m where m.lastUpdateSessionTime > :date")
-    List<ModeratorSession> getInvalidateSession(@Param("date") LocalDateTime date);
+    /**
+     * Метод получает лист сессий модератора, которые нужно удалить из-за неактивности модератора
+     * @param date - -30 минут от текущего времени
+     * @param date1 - +30 минут от текущего времени
+     * @return лист сессий модераторов, которые нужно удалить
+     */
+    @Query("select m from ModeratorSession m where m.lastUpdateSessionTime between :date and :date1")
+    List<ModeratorSession> getInvalidateSession(@Param("date") LocalDateTime date,
+                                                @Param("date1") LocalDateTime date1);
 
 }
