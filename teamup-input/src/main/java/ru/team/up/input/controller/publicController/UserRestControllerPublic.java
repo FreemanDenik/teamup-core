@@ -121,6 +121,7 @@ public class UserRestControllerPublic {
                         .build(), HttpStatus.OK);
     }
 
+
     /**
      * Метод обновления пользователя
      *
