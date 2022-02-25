@@ -135,7 +135,7 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/author")
     public ResponseEntity<List<Event>> findEventsByAuthor(@RequestBody UserRequest author) {
         log.debug("Получен запрос на поиск мероприятий по автору {}", author);
-        List<Event> events = eventServiceRest.getAllEventsByAuthor(author.getUser());
+        List<Event> events = eventServiceRest.getAllEventsByAuthor(author.getUser().getId());
 
         if (events.isEmpty()) {
             log.error("Мероприятия по указанному автору {} не найдены", author);

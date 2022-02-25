@@ -39,10 +39,10 @@ public interface EventServiceRest {
     /**
      * Метод получения мероприятий по автору
      *
-     * @param author Автор(создатель) мероприятия
+     * @param authorId ID Автора(создателя) мероприятия
      * @return Список мероприятий по автору
      */
-    List<Event> getAllEventsByAuthor(User author);
+    List<Event> getAllEventsByAuthor(Long authorId);
 
     /**
      * Метод получения мероприятий по типу

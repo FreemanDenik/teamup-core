@@ -54,13 +54,13 @@ public class UserServiceRestImpl implements UserServiceRest {
     }
 
     @Override
-    public List<Event> getAllEventsByAuthorId(Long id) {
-        List<Event> events = eventService.getAllByAuthorId(userService.getOneUser(id)
-                .orElseThrow(() -> new UserNotFoundIDException(id)));
-        if (events.isEmpty()) {
-            throw new NoContentException();
-        }
-        return events;
+    public List<Event> getEventsByOwnerId(Long id) {
+        return eventService.getAllByAuthorId(id);
+    }
+
+    @Override
+    public List<Event> getEventsBySubscriberId(Long id) {
+        return eventService.getAllEventsBySubscriberId(id);
     }
 
     @Override
@@ -83,11 +83,6 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public List<User> getTopUsersInCity(String city) {
-        List<User> users = userService.getTopUsersInCity(city);
-        if (users.isEmpty()) {
-            throw new NoContentException();
-        }
-
-        return users;
+        return userService.getTopUsersInCity(city);
     }
 }

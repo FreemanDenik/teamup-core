@@ -111,13 +111,30 @@ public class UserRestControllerPublic {
      * @return Ответ поиска и статус проверки
      */
     @Operation(summary = "Поиск мероприятий по id пользователя")
-    @GetMapping(value = "/event/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDtoListResponse> getAllEventsByUserId(@PathVariable Long id) {
+    @GetMapping(value = "/event/{id}/owner", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDtoListResponse> getEventsByOwnerId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
 
         return new ResponseEntity<>(
                 EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(userServiceRest.getAllEventsByAuthorId(id)))
+                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(userServiceRest.getEventsByOwnerId(id)))
+                        .build(), HttpStatus.OK);
+    }
+
+    /**
+     * Метод поиска мероприятий на которые подписан пользователь
+     *
+     * @param id id пользователя
+     * @return Ответ поиска и статус проверки
+     */
+    @Operation(summary = "Поиск мероприятий на которые подписан пользователь")
+    @GetMapping(value = "/event/{id}/subscriber", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDtoListResponse> getEventsBySubscriberId(@PathVariable Long id) {
+        log.debug("Запрос на поиск мероприятий на которые подписан пользователь с id: {}", id);
+
+        return new ResponseEntity<>(
+                EventDtoListResponse.builder()
+                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(userServiceRest.getEventsBySubscriberId(id)))
                         .build(), HttpStatus.OK);
     }
 

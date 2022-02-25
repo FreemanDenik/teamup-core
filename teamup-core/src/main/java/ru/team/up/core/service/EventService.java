@@ -1,5 +1,6 @@
 package ru.team.up.core.service;
 
+import org.springframework.data.jpa.repository.Query;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface EventService {
     List<Event> getAllEvents();
 
-    List<Event> getAllByAuthorId(User author);
+    List<Event> getAllByAuthorId(Long authorId);
 
     List<Event> getAllEventsByCity(String city);
 
@@ -36,4 +37,6 @@ public interface EventService {
     void eventClosedByModerator(Long eventId);
 
     void updateNumberOfViews(Long id);
+
+    List<Event> getAllEventsBySubscriberId(Long subscriberId);
 }

@@ -43,8 +43,8 @@ public class EventServiceRestImpl implements EventServiceRest {
     }
 
     @Override
-    public List<Event> getAllEventsByAuthor(User author) {
-        return eventRepository.findAllByAuthorId(author);
+    public List<Event> getAllEventsByAuthor(Long authorId) {
+        return eventRepository.findAllByAuthorId(authorId);
     }
 
     @Override
