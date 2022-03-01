@@ -52,14 +52,14 @@ public class EventServiceImpl implements EventService {
 
     /**
      *
-     * @param author Id пользователя
+     * @param authorId Id пользователя
      * @return Получение всех мероприятий пользователя
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Event> getAllByAuthorId(User author) {
+    public List<Event> getAllByAuthorId(Long authorId) {
         log.debug("Старт метода получения всех мероприятий пользователя");
-        return eventRepository.findAllByAuthorId(author);
+        return eventRepository.findAllByAuthorId(authorId);
     }
 
     /**
@@ -226,5 +226,17 @@ public class EventServiceImpl implements EventService {
         log.debug("Обновляем количество просмотров мероприятия {} по ID", id);
         eventRepository.updateNumberOfViews(id);
         log.debug("Обновили количество просмотров мероприятия {} по ID", id);
+    }
+
+    /**
+     *
+     * @param subscriberId Id пользователя
+     * @return Поиск мероприятий на которые подписан пользователь
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Event> getAllEventsBySubscriberId(Long subscriberId) {
+        log.debug("Старт метода Поиск мероприятий на которые подписан пользователь");
+        return eventRepository.getAllEventsBySubscriberId(subscriberId);
     }
 }

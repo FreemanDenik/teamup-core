@@ -158,7 +158,7 @@ public class TeamupInputEventPublicControllerTest {
     @Test
     public void testFindEventsByAuthor() {
         events.add(event2);
-        when(eventService.getAllEventsByAuthor(testUser)).thenReturn(events);
+        when(eventService.getAllEventsByAuthor(testUser.getId())).thenReturn(events);
         Assert.assertEquals(200, eventRestControllerPublic.findEventsByAuthor(userRequest).getStatusCodeValue());
     }
 

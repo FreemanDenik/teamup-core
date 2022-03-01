@@ -59,7 +59,14 @@ public interface UserServiceRest {
      *
      * @return Список мероприятий
      */
-    List<Event> getAllEventsByAuthorId(Long id);
+    List<Event> getEventsByOwnerId(Long id);
+
+    /**
+     * Метод получения всех мероприятий на которые подписан пользователь
+     *
+     * @return Список мероприятий
+     */
+    List<Event> getEventsBySubscriberId(Long id);
 
     /**
      * Метод обновления пользователя
