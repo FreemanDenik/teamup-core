@@ -100,21 +100,21 @@ public class Event {
     /**
      * Тип мероприятия
      */
-    @ManyToOne(optional=false, cascade=CascadeType.MERGE)
+    @ManyToOne(optional=false, cascade=CascadeType.MERGE, fetch =FetchType.LAZY)
     @JoinColumn(name = "EVENT_TYPE_ID")
     private EventType eventType;
 
     /**
      * Создатель мероприятия
      */
-    @ManyToOne(optional=false,cascade=CascadeType.MERGE)
+    @ManyToOne(optional=false,cascade=CascadeType.MERGE, fetch =FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User authorId;
 
     /**
      * С какими интересами связано мероприятие
      */
-    @ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @ManyToMany(cascade=CascadeType.MERGE, fetch =FetchType.LAZY)
     @JoinTable(name="INTERESTS_EVENT",
             joinColumns=@JoinColumn(name="EVENT_ID", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "INTERESTS_ID"))
@@ -124,7 +124,7 @@ public class Event {
     /**
      * Статус мероприятия (модерация, доступно и т.д.)
      */
-    @ManyToOne(cascade=CascadeType.MERGE)
+    @ManyToOne(cascade=CascadeType.MERGE, fetch =FetchType.LAZY)
     @JoinColumn(name = "STATUS_ID")
     private Status status;
 
