@@ -50,7 +50,6 @@ public class Interests {
     /**
      * ID мероприятия
      */
-    @ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
-    @JoinColumn(name="EVENT_ID")
+    @ManyToMany(mappedBy = "eventInterests", cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     private Set<Event> event;
 }
