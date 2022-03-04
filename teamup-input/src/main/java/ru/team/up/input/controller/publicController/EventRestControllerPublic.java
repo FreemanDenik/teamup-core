@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
+import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
 import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
+import ru.team.up.input.response.EventDtoResponse;
+import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
 
@@ -71,20 +74,14 @@ public class EventRestControllerPublic {
      * @return Ответ запроса и статус проверки
      */
     @Operation(summary ="Получение мероприятия по идентификатору")
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Event> findEventById(@PathVariable("id") Long eventId) {
+    @GetMapping(value = "/id/{id}")
+    public ResponseEntity<EventDtoResponse> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
-        Optional<Event> eventOptional = Optional.ofNullable(eventServiceRest.getEventById(eventId));
 
-        return eventOptional
-                .map(event -> {
-                    log.debug("Мероприятие с id: {} найдено", eventId);
-                    return new ResponseEntity<>(event, HttpStatus.OK);
-                })
-                .orElseGet(() -> {
-                    log.error("Мероприятие с id: {} не найдено", eventId);
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                });
+        return new ResponseEntity<>(
+                EventDtoResponse.builder().eventDto(EventMapper.INSTANCE
+                        .mapEventToEventDto(eventServiceRest.getEventById(eventId))).build(),
+                HttpStatus.OK);
     }
 
     /**
