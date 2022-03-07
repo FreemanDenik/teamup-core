@@ -74,7 +74,7 @@ public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
         return authenticationManager();
     }
 
-    @Bean
+    /*@Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins
@@ -83,6 +83,6 @@ public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
+    }*/
 }
 
