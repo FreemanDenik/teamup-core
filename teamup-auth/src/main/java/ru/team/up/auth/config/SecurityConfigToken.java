@@ -17,8 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
 import ru.team.up.auth.config.jwt.JwtFilter;
 
 import java.util.Arrays;
@@ -74,15 +76,14 @@ public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
         return authenticationManager();
     }
 
-    /*@Bean
+    @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins
-                (Arrays.asList("http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/"));
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }*/
+    }
 }
 
