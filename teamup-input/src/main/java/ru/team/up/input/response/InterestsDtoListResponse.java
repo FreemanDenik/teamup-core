@@ -1,4 +1,3 @@
-
 package ru.team.up.input.response;
 
 import lombok.AllArgsConstructor;
@@ -7,13 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.team.up.dto.InterestsDto;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class InterestsDtoResponse {
+public class InterestsDtoListResponse {
 
-    private InterestsDto interestsDto;
-
-
+    private List<InterestsDto> interestsDtoList;
 }

@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface InterestsRepository extends JpaRepository<Interests, Long> {
-    List<Interests> getInterestsById(Long id);
+
+    Interests getInterestsById(Long id);
 }

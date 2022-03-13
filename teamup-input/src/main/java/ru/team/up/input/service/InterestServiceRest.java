@@ -5,8 +5,22 @@ import ru.team.up.core.entity.Interests;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * Сервис для поиска интересов
+ */
 public interface InterestServiceRest {
+
+    /**
+     * Метод получения всех интересов
+     *
+     * @return Список интересов
+     */
     List<Interests> getAllInterests();
 
-    List<Interests> getInterestById(Long id);
+    /**
+     * Метод получения интереса по Id
+     * @param id Идентификатор интереса
+     * @return Интерес по заданному Id
+     */
+    Interests getInterestById(Long id);
 }

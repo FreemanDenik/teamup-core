@@ -67,7 +67,7 @@ public class TeamupInputInterestPublicControllerTest {
     @Test
     public void testGetInterestsUserById() {
         interests.add(art);
-        when(interestServiceRest.getInterestById(1L)).thenReturn(interests);
+        when(interestServiceRest.getInterestById(1L)).thenReturn(art);
         Assert.assertEquals(200, interestRestControllerPublic.getInterestsUserById(1L).getStatusCodeValue());
 
     }

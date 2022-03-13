@@ -33,13 +33,12 @@ import java.util.Optional;
  * REST-контроллер для мероприятий
  *
  * @author Pavel Kondrashov
- *
  * @link localhost:8080/swagger-ui.html
  * Документация API
  */
 
 @Slf4j
-@Tag(name = "Event Public Controller",description = "Event API")
+@Tag(name = "Event Public Controller", description = "Event API")
 @RestController
 @RequestMapping(value = "public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -52,19 +51,15 @@ public class EventRestControllerPublic {
      *
      * @return Список мероприятий и статус ответа
      */
-    @Operation(summary ="Получение списка всех мероприятий")
+    @Operation(summary = "Получение списка всех мероприятий")
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
+    public ResponseEntity<EventDtoListResponse> getAllEvents() {
         log.debug("Получен запрос на список мероприятий");
-        List<Event> events = eventServiceRest.getAllEvents();
+        return new ResponseEntity<>(
+                EventDtoListResponse.builder().eventDtoList(
+                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEvents()))
+                        .build(), HttpStatus.OK);
 
-        if (events.isEmpty()) {
-            log.error("Список мероприятий пуст");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        log.debug("Список мероприятий получен");
-        return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
     /**
@@ -73,15 +68,15 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Получение мероприятия по идентификатору")
+    @Operation(summary = "Получение мероприятия по идентификатору")
     @GetMapping(value = "/id/{id}")
     public ResponseEntity<EventDtoResponse> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
 
         return new ResponseEntity<>(
-                EventDtoResponse.builder().eventDto(EventMapper.INSTANCE
-                        .mapEventToEventDto(eventServiceRest.getEventById(eventId))).build(),
-                HttpStatus.OK);
+                EventDtoResponse.builder().eventDto(
+                        EventMapper.INSTANCE.mapEventToEventDto(eventServiceRest.getEventById(eventId))).build(),
+                        HttpStatus.OK);
     }
 
     /**
@@ -91,13 +86,13 @@ public class EventRestControllerPublic {
      * @return список мероприятий в городе
      */
     @Operation(summary = "Поиск мероприятий по city")
-    @GetMapping(value = "/city/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/city/{city}")
     public ResponseEntity<EventDtoListResponse> getAllEventByCity(@PathVariable String city) {
         log.debug("Запрос на поиск мероприятий по городу city: {}", city);
 
         return new ResponseEntity<>(
-                EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEventsByCity(city)))
+                EventDtoListResponse.builder().eventDtoList(
+                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEventsByCity(city)))
                         .build(), HttpStatus.OK);
     }
 
@@ -107,19 +102,15 @@ public class EventRestControllerPublic {
      * @param eventName Название мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Получение мероприятий по названию")
+    @Operation(summary = "Получение мероприятий по названию")
     @GetMapping(value = "/name/{eventName}")
-    public ResponseEntity<List<Event>> findEventsByName(@PathVariable("eventName") String eventName) {
+    public ResponseEntity<EventDtoListResponse> findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
-        List<Event> events = eventServiceRest.getEventByName(eventName);
 
-        if (events.isEmpty()) {
-            log.error("Мероприятия не найдены");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        log.debug("Мероприятие с названием {} найдено", eventName);
-        return new ResponseEntity<>(events, HttpStatus.OK);
+        return new ResponseEntity<>(
+                EventDtoListResponse.builder().eventDtoList(
+                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getEventByName(eventName)))
+                        .build(), HttpStatus.OK);
     }
 
     /**
@@ -128,7 +119,7 @@ public class EventRestControllerPublic {
      * @param author Автор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Получение мероприятий по автору")
+    @Operation(summary = "Получение мероприятий по автору")
     @GetMapping(value = "/author")
     public ResponseEntity<List<Event>> findEventsByAuthor(@RequestBody UserRequest author) {
         log.debug("Получен запрос на поиск мероприятий по автору {}", author);
@@ -164,13 +155,14 @@ public class EventRestControllerPublic {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+
     /**
      * Метод создания мероприятия
      *
      * @param event Данные мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Создание нового мероприятия")
+    @Operation(summary = "Создание нового мероприятия")
     @PostMapping(value = "/")
     public ResponseEntity<Event> createEvent(@RequestBody EventRequest event) {
         log.debug("Получен запрос на создание мероприятия:\n {}", event);
@@ -190,7 +182,7 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Обновление мероприятия")
+    @Operation(summary = "Обновление мероприятия")
     @PutMapping(value = "/{id}")
     public ResponseEntity<Event> updateEvent(@RequestBody EventRequest event, @PathVariable("id") Long eventId) {
         log.debug("Получен запрос на обновление мероприятия {}", event);
@@ -209,7 +201,7 @@ public class EventRestControllerPublic {
      * @param eventId Идентификатор мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Удаление мероприятия по идентификатору")
+    @Operation(summary = "Удаление мероприятия по идентификатору")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Event> deleteEvent(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на удаление мероприятия с id: {}", eventId);
@@ -232,7 +224,7 @@ public class EventRestControllerPublic {
      * @param joinRequest Данные запроса для добавление участника
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Добавление участника мероприятия")
+    @Operation(summary = "Добавление участника мероприятия")
     @PostMapping(value = "/join")
     public ResponseEntity<Event> addEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на добавление участника мероприятия");
@@ -248,7 +240,7 @@ public class EventRestControllerPublic {
      * @param joinRequest Данные запроса для удаления участника
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Удаление участника мероприятия")
+    @Operation(summary = "Удаление участника мероприятия")
     @PostMapping("/unjoin")
     public ResponseEntity<Event> deleteEventParticipant(@RequestBody JoinRequest joinRequest) {
         log.debug("Получен запрос на удаление участника мероприятия");
