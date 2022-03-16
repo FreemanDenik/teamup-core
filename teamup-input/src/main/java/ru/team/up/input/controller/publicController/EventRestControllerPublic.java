@@ -6,13 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
-import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -20,14 +18,12 @@ import ru.team.up.input.payload.request.JoinRequest;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.EventDtoResponse;
-import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST-контроллер для мероприятий
@@ -36,7 +32,6 @@ import java.util.Optional;
  * @link localhost:8080/swagger-ui.html
  * Документация API
  */
-
 @Slf4j
 @Tag(name = "Event Public Controller", description = "Event API")
 @RestController
@@ -53,13 +48,12 @@ public class EventRestControllerPublic {
      */
     @Operation(summary = "Получение списка всех мероприятий")
     @GetMapping
-    public ResponseEntity<EventDtoListResponse> getAllEvents() {
-        log.debug("Получен запрос на список мероприятий");
-        return new ResponseEntity<>(
-                EventDtoListResponse.builder().eventDtoList(
-                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEvents()))
-                        .build(), HttpStatus.OK);
+    public EventDtoListResponse getAllEvents() {
+        log.debug("Получение запроса на список мероприятий");
 
+        return EventDtoListResponse.builder().eventDtoList(
+                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
+                .build();
     }
 
     /**
@@ -70,13 +64,12 @@ public class EventRestControllerPublic {
      */
     @Operation(summary = "Получение мероприятия по идентификатору")
     @GetMapping(value = "/id/{id}")
-    public ResponseEntity<EventDtoResponse> findEventById(@PathVariable("id") Long eventId) {
+    public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
 
-        return new ResponseEntity<>(
-                EventDtoResponse.builder().eventDto(
-                        EventMapper.INSTANCE.mapEventToEventDto(eventServiceRest.getEventById(eventId))).build(),
-                        HttpStatus.OK);
+        return EventDtoResponse.builder().eventDto(
+                EventMapper.INSTANCE.mapEventToDto(
+                        eventServiceRest.getEventById(eventId))).build();
     }
 
     /**
@@ -87,13 +80,12 @@ public class EventRestControllerPublic {
      */
     @Operation(summary = "Поиск мероприятий по city")
     @GetMapping(value = "/city/{city}")
-    public ResponseEntity<EventDtoListResponse> getAllEventByCity(@PathVariable String city) {
+    public EventDtoListResponse getAllEventByCity(@PathVariable String city) {
         log.debug("Запрос на поиск мероприятий по городу city: {}", city);
 
-        return new ResponseEntity<>(
-                EventDtoListResponse.builder().eventDtoList(
-                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getAllEventsByCity(city)))
-                        .build(), HttpStatus.OK);
+        return EventDtoListResponse.builder().eventDtoList(
+                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCity(city)))
+                        .build();
     }
 
     /**
@@ -104,13 +96,12 @@ public class EventRestControllerPublic {
      */
     @Operation(summary = "Получение мероприятий по названию")
     @GetMapping(value = "/name/{eventName}")
-    public ResponseEntity<EventDtoListResponse> findEventsByName(@PathVariable("eventName") String eventName) {
+    public EventDtoListResponse findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
 
-        return new ResponseEntity<>(
-                EventDtoListResponse.builder().eventDtoList(
-                        EventMapper.INSTANCE.mapEventsToDtoEventList(eventServiceRest.getEventByName(eventName)))
-                        .build(), HttpStatus.OK);
+        return EventDtoListResponse.builder().eventDtoList(
+                                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getEventByName(eventName)))
+                        .build();
     }
 
     /**
@@ -140,7 +131,7 @@ public class EventRestControllerPublic {
      * @param eventType Тип мероприятия
      * @return Ответ запроса и статус проверки
      */
-    @Operation(summary ="Получение мероприятий по типу")
+    @Operation(summary = "Получение мероприятий по типу")
     @GetMapping(value = "/type")
     public ResponseEntity<List<Event>> findEventsByType(@RequestBody EventType eventType) {
         log.debug("Получен запрос на поиск мероприятий по типу: {}", eventType);
@@ -154,7 +145,6 @@ public class EventRestControllerPublic {
         log.debug("Мероприятия с типом: {} найдены", eventType);
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
-
 
     /**
      * Метод создания мероприятия

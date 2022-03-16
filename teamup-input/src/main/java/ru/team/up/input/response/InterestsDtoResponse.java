@@ -14,6 +14,4 @@ import ru.team.up.dto.InterestsDto;
 public class InterestsDtoResponse {
 
     private InterestsDto interestsDto;
-
-
 }

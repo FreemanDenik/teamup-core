@@ -15,10 +15,10 @@ public interface InterestsMapper {
     /**
      * @return мэппинг Interests в DTO
      */
-    List<InterestsDto> mapInterestsToDto(List<Interests> interests);
+    List<InterestsDto> mapInterestsToDtoList(List<Interests> interests);
 
     /**
      * @return мэппинг Interests в DTO
      */
-    InterestsDto mapInterestToInterestDto(Interests interest);
+    InterestsDto mapInterestToDto(Interests interest);
 }

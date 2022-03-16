@@ -2,7 +2,6 @@ package ru.team.up.input.service;
 
 import ru.team.up.core.entity.Interests;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -19,6 +18,7 @@ public interface InterestServiceRest {
 
     /**
      * Метод получения интереса по Id
+     *
      * @param id Идентификатор интереса
      * @return Интерес по заданному Id
      */
