@@ -5,6 +5,8 @@ import org.mapstruct.factory.Mappers;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.dto.InterestsDto;
 
+import java.util.List;
+
 @Mapper(uses = AgeTranslator.class)
 public interface InterestsMapper {
 
@@ -13,6 +15,10 @@ public interface InterestsMapper {
     /**
      * @return мэппинг Interests в DTO
      */
-    InterestsDto mapInterestsToDto(Interests interests);
+    List<InterestsDto> mapInterestsToDtoList(List<Interests> interests);
 
+    /**
+     * @return мэппинг Interests в DTO
+     */
+    InterestsDto mapInterestToDto(Interests interest);
 }

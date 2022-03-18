@@ -2,7 +2,6 @@ package ru.team.up.input.service;
 
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
-import ru.team.up.core.entity.User;
 
 import java.util.List;
 
@@ -95,7 +94,6 @@ public interface EventServiceRest {
     Event deleteParticipant(Long eventId, Long userId);
 
     /**
-     *
      * @param city город проведения мероприятий
      * @return Получение всех мероприятий в городе
      */

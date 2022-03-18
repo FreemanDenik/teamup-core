@@ -51,7 +51,6 @@ public class UserRestControllerPublic {
                 HttpStatus.OK);
     }
 
-
     /**
      * Метод поиска пользователя по почте
      *
@@ -117,7 +116,7 @@ public class UserRestControllerPublic {
 
         return new ResponseEntity<>(
                 EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(userServiceRest.getEventsByOwnerId(id)))
+                        .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id)))
                         .build(), HttpStatus.OK);
     }
 
@@ -134,10 +133,9 @@ public class UserRestControllerPublic {
 
         return new ResponseEntity<>(
                 EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapEventsToDtoEventList(userServiceRest.getEventsBySubscriberId(id)))
+                        .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id)))
                         .build(), HttpStatus.OK);
     }
-
 
     /**
      * Метод обновления пользователя

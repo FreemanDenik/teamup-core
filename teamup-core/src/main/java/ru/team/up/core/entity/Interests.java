@@ -41,7 +41,7 @@ public class Interests {
     /**
      * Пользователи
      */
-    @ManyToMany
+    @ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
     @JoinTable(name = "USER_ACCOUNT_INTERESTS",
             joinColumns = @JoinColumn(name = "INTERESTS_ID"),
             inverseJoinColumns = @JoinColumn(name = "USER_ID"))
@@ -50,6 +50,10 @@ public class Interests {
     /**
      * ID мероприятия
      */
-    @ManyToMany(mappedBy = "eventInterests", cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @ManyToMany(cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+    @JoinTable(name="INTERESTS_EVENT",
+            joinColumns=@JoinColumn(name="INTERESTS_ID", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "EVENT_ID"))
+    @Column(name = "INTERESTS_EVENT")
     private Set<Event> event;
 }
