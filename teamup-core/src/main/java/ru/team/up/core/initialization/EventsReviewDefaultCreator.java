@@ -4,6 +4,7 @@ package ru.team.up.core.initialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import ru.team.up.core.entity.EventReview;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
+@Profile("CreateDefaultBeans")
 public class EventsReviewDefaultCreator {
 
     private final EventReviewRepository eventReviewRepository;

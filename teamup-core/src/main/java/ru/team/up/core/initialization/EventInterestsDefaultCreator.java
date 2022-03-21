@@ -4,6 +4,7 @@ package ru.team.up.core.initialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.InterestsRepository;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Component
 @Transactional
+@Profile("CreateDefaultBeans")
 public class EventInterestsDefaultCreator {
 
     private final InterestsRepository interestsRepository;

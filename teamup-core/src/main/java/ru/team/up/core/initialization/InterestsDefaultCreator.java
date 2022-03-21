@@ -3,6 +3,7 @@ package ru.team.up.core.initialization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.Interests;
 import ru.team.up.core.repositories.InterestsRepository;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Transactional
+@Profile("CreateDefaultBeans")
 public class InterestsDefaultCreator {
 
     private final InterestsRepository interestsRepository;
@@ -19,7 +21,6 @@ public class InterestsDefaultCreator {
     public InterestsDefaultCreator(InterestsRepository interestsRepository) {
         this.interestsRepository = interestsRepository;
     }
-
 
     @Bean("InterestsDefaultCreator")
     public void interestsDefaultCreator() {
@@ -99,6 +100,126 @@ public class InterestsDefaultCreator {
                 .id(13L)
                 .title("Танцы")
                 .shortDescription("Диско, Танго, Сальса, Hip Hop")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(14L)
+                .title("Рукоделие")
+                .shortDescription("Вышивка, оригами, вязание вещей и игрушек, лоскутное шитье")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(15L)
+                .title("Моделирование одежды")
+                .shortDescription("Создание дизайнерской одежды")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(16L)
+                .title("Шахматы")
+                .shortDescription("Игра в классические шахматы")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(17L)
+                .title("Фотография")
+                .shortDescription("Портрет, Жанровая, Документальная, Научно-прикладная")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(18L)
+                .title("Охота")
+                .shortDescription("Активная, Пассивная, Зимняя охота")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(19L)
+                .title("Лепка")
+                .shortDescription("Пластелин, Воск, Глина")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(20L)
+                .title("Лыжи")
+                .shortDescription("Классические, горные")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(21L)
+                .title("Пение")
+                .shortDescription("Диско, Танго, Сальса, Hip Hop")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(22L)
+                .title("Робототехника")
+                .shortDescription("Создание и модернизация автоматизированных технических систем")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(23L)
+                .title("Геокешинг")
+                .shortDescription("Нахождение тайников оставленных другими игроками")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(24L)
+                .title("Стекло")
+                .shortDescription("Изготовление украшений и предметов интерьера")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(25L)
+                .title("Коллекционирование")
+                .shortDescription("Монеты, Марки, Украшения, Значки")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(26L)
+                .title("Компьютерная графика")
+                .shortDescription("Дизайн, 3D, flash, спецэффекты и т.д.")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(27L)
+                .title("Кроссворды")
+                .shortDescription("Составление и разгадывание")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(28L)
+                .title("Лошади")
+                .shortDescription("Верховая езда, уход")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(29L)
+                .title("Моделирование")
+                .shortDescription("Самолёты, корабли, воздушные змеи, из спичек, из дерева,…")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(30L)
+                .title("Плетение")
+                .shortDescription("Бисер, корзины, коробочки, кружева, макраме")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(31L)
+                .title("Радиовещание")
+                .shortDescription("Подкасты, интернет-радиостанции, радиопередатчики")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(32L)
+                .title("Рисование")
+                .shortDescription("Акварель, холст, бумага, карандаши, стекло, гуашь ")
+                .build());
+
+        interestsRepository.save(Interests.builder()
+                .id(33L)
+                .title("Скрапбукинг")
+                .shortDescription("Фотоальбомы своими руками")
                 .build());
     }
 }

@@ -4,6 +4,7 @@ package ru.team.up.core.initialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.repositories.EventRepository;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
+@Profile("CreateDefaultBeans")
 public class EventsDefaultCreator {
 
     private final EventRepository eventRepository;
@@ -96,6 +98,90 @@ public class EventsDefaultCreator {
                 .eventType(eventTypeRepository.getOne(4L))
                 .authorId(userRepository.findUserById(9L))
                 .status(statusRepository.getOne(2L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Выставка «Археология: из прошлого в настоящее»")
+                .descriptionEvent("2022 году отмечается 300-летие знаменательного события — проведение первых археологических раскопок в масштабах страны")
+                .placeEvent("yлица Чертыгашева, 65, Абакан, Республика Хакасия, 655017")
+                .city("Абакан")
+                .timeEvent(LocalDateTime.of(2022, 5, 25, 10,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 100)
+                .eventType(eventTypeRepository.getOne(2L))
+                .authorId(userRepository.findUserById(10L))
+                .status(statusRepository.getOne(5L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Чемпионат по танцам UDC 2022")
+                .descriptionEvent("Раскачаем этот год с Ежегодного чемпионата от #DANCEKБ - Urban Dance Championship 2022")
+                .placeEvent("yлица Радищева, 41, Екатеринбург, Свердловская область, 620014")
+                .city("Екатеринбург")
+                .timeEvent(LocalDateTime.of(2022, 6, 22, 12,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 30)
+                .eventType(eventTypeRepository.getOne(5L))
+                .authorId(userRepository.findUserById(11L))
+                .status(statusRepository.getOne(6L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Лыжный марафон 2022 - Праздник Севера")
+                .descriptionEvent("Марафон ПраздникСевера проходит с 1973 в рамках Полярной Олимпиады и долгое время оставался единственным марафоном в СССР")
+                .placeEvent("улица Долина Уюта, 2, Мурманск, Мурманская область, 183052")
+                .city("Мурманск")
+                .timeEvent(LocalDateTime.of(2022, 12, 5, 10,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 127)
+                .eventType(eventTypeRepository.getOne(4L))
+                .authorId(userRepository.findUserById(12L))
+                .status(statusRepository.getOne(5L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Глубина резкости")
+                .descriptionEvent("VI Дальневосточный фотоконкурс")
+                .placeEvent("набережная Корабельная, 1, Владивосток, Приморский край, 690091")
+                .city("Владивосток")
+                .timeEvent(LocalDateTime.of(2022, 6, 8, 17,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 50)
+                .eventType(eventTypeRepository.getOne(2L))
+                .authorId(userRepository.findUserById(13L))
+                .status(statusRepository.getOne(1L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Восхождение на г. Казбек 5033м с север")
+                .descriptionEvent("Хочешь проверить в себя? Побывать на пятитысячнике или может добавить в копилочку? Вперёд с нами!")
+                .placeEvent("площадь Привокзальная, 5, Краснодар, Краснодарский край, 350033")
+                .city("Краснодар")
+                .timeEvent(LocalDateTime.of(2022, 7, 16, 02,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 5)
+                .eventType(eventTypeRepository.getOne(4L))
+                .authorId(userRepository.findUserById(14L))
+                .status(statusRepository.getOne(6L))
+                .build());
+
+        eventRepository.save(Event.builder()
+                .id(4L)
+                .eventName("Экскурсии по Нарвской заставе и не только...")
+                .descriptionEvent("Вас ждет увлекательная экскурсия по уникальным районам города")
+                .placeEvent("проспект Стачек, 45, Санкт-Петербург, Ленинградская область, 198097")
+                .city("Санкт-Петербург")
+                .timeEvent(LocalDateTime.of(2022, 5, 22, 14,0))
+                .eventUpdateDate(LocalDate.now())
+                .eventNumberOfParticipant((byte) 10)
+                .eventType(eventTypeRepository.getOne(6L))
+                .authorId(userRepository.findUserById(15L))
+                .status(statusRepository.getOne(1L))
                 .build());
     }
 }

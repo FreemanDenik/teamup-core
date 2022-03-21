@@ -3,6 +3,7 @@ package ru.team.up.core.initialization;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.repositories.EventTypeRepository;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Transactional
+@Profile("CreateDefaultBeans")
 public class EventTypeDefaultCreator {
 
     private final EventTypeRepository eventTypeRepository;
@@ -40,6 +42,16 @@ public class EventTypeDefaultCreator {
         eventTypeRepository.save(EventType.builder()
                 .id(4L)
                 .type("Спорт")
+                .build());
+
+        eventTypeRepository.save(EventType.builder()
+                .id(5L)
+                .type("Танцы")
+                .build());
+
+        eventTypeRepository.save(EventType.builder()
+                .id(6L)
+                .type("Экскурсия")
                 .build());
     }
 }
