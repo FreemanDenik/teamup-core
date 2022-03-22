@@ -78,6 +78,7 @@ public class EventRestControllerPublic {
     public ResponseEntity<EventDtoResponse> findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
 
+
         return new ResponseEntity<>(
                 EventDtoResponse.builder().eventDto(EventMapper.INSTANCE
                         .mapEventToEventDto(eventServiceRest.getEventById(eventId))).build(),

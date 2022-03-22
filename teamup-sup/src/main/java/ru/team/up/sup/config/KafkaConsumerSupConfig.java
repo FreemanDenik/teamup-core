@@ -9,6 +9,7 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.SupParameterDto;
 
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class KafkaConsumerSupConfig {
         ConcurrentKafkaListenerContainerFactory<String, SupParameterDto<?>> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setRecordFilterStrategy(param -> param.value().getSystemName()!=AppModuleNameDto.TEAMUP_CORE);
         return factory;
     }
 }
