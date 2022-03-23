@@ -13,7 +13,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class StatusDefaultCreator {
 
     private final StatusRepository statusRepository;

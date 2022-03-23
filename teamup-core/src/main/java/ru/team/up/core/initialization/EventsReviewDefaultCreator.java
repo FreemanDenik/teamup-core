@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class EventsReviewDefaultCreator {
 
     private final EventReviewRepository eventReviewRepository;

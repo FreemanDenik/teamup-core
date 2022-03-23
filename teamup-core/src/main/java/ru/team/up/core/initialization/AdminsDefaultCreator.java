@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class AdminsDefaultCreator {
 
     private final AccountRepository accountRepository;

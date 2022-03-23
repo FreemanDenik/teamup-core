@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class UserSubscribersDefaultCreator {
 
     private final UserRepository userRepository;

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class UsersDefaultCreator {
 
     private final AccountRepository accountRepository;
@@ -310,7 +310,5 @@ public class UsersDefaultCreator {
                 .aboutUser("Увлекается музыкой и восточными боевыми искусствами")
                 .city("Хабаровск")
                 .build());
-
-
     }
 }

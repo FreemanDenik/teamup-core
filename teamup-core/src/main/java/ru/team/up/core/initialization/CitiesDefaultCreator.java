@@ -29,7 +29,7 @@ public class CitiesDefaultCreator {
         this.cityRepository = cityRepository;
     }
 
-    @Bean("cityDefaultCreator")
+    @Bean("cdb")
     @Async //не уверен, работает ли эта аннотация (@EnableAsync навешана в SchedulingConfig)
     public void citiesDefaultCreator() throws IOException {
         List <CityForParse> cities = new ObjectMapper().readValue(

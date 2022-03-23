@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class InterestsDefaultCreator {
 
     private final InterestsRepository interestsRepository;

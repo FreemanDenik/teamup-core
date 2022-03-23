@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class EventInterestsDefaultCreator {
 
     private final InterestsRepository interestsRepository;
