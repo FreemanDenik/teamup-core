@@ -10,7 +10,6 @@ import ru.team.up.core.repositories.UserRepository;
 import javax.transaction.Transactional;
 import java.util.Set;
 
-
 @Component
 @Transactional
 @Profile("cdb")

@@ -16,10 +16,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-
 @Component
 @Transactional
-@Profile("CreateDefaultBeans")
+@Profile("cdb")
 public class CitiesDefaultCreator {
 
     private final CityRepository cityRepository;
@@ -29,7 +28,7 @@ public class CitiesDefaultCreator {
         this.cityRepository = cityRepository;
     }
 
-    @Bean("cdb")
+    @Bean("cityDefaultCreator")
     @Async //не уверен, работает ли эта аннотация (@EnableAsync навешана в SchedulingConfig)
     public void citiesDefaultCreator() throws IOException {
         List <CityForParse> cities = new ObjectMapper().readValue(

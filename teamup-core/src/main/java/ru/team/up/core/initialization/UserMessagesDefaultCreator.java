@@ -1,11 +1,9 @@
 package ru.team.up.core.initialization;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import ru.team.up.core.entity.Status;
 import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.entity.UserMessageType;
 import ru.team.up.core.repositories.StatusRepository;

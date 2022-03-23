@@ -1,6 +1,5 @@
 package ru.team.up.core.initialization;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -14,7 +13,6 @@ import ru.team.up.core.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-
 
 @Component
 @Transactional

@@ -1,6 +1,5 @@
 package ru.team.up.core.initialization;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -9,7 +8,6 @@ import ru.team.up.core.entity.Status;
 import ru.team.up.core.repositories.StatusRepository;
 
 import javax.transaction.Transactional;
-
 
 @Component
 @Transactional
