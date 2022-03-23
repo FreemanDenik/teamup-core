@@ -3,10 +3,13 @@ package ru.team.up.moderator.sheduleds;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.repositories.ModeratorRepository;
 import ru.team.up.moderator.service.AssignedEventsService;
 
 
@@ -15,6 +18,8 @@ import ru.team.up.moderator.service.AssignedEventsService;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AssignEvents {
     private AssignedEventsService assignedEventsService;
+    private final ModeratorRepository moderatorRepository;
+
 
     /**
      * Метод возвращает List IDs Ивентов которые находятся на проверке
@@ -24,7 +29,17 @@ public class AssignEvents {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
         log.debug("Получаем List IDs");
-
+        //Метод получаем лист мероприятий, у которых status_id = 2 (статус на проверке)
+        assignedEventsService.getEventsForChecking();
+        //Метод получает лист айдишников мероприятий, которые нуждаются в проверке
+        assignedEventsService.getEventsIds(assignedEventsService.getEventsForChecking());
+        //Метод получает все мероприятия, которые находятся на проверке по ID модератора
+        assignedEventsService.getAllEventsByModeratorId();
         log.debug("Удалось получить следюущие мероприятия: {}", "");
+        moderatorRepository.findAllByRole()
     }
 }
+//Каждые 5 минут пробегается по всем мероприятиям в статусе (на проверке) записывает их в список
+//        и назначает на модераторов, перед назначением, смотрит, есть ли данное мероприятие в таблице AssignEvent,
+//        если есть, пропускает, если нет ищет модератора
+
