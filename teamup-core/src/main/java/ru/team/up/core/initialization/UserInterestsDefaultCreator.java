@@ -1,8 +1,8 @@
 package ru.team.up.core.initialization;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.repositories.InterestsRepository;
 import ru.team.up.core.repositories.UserRepository;
@@ -10,9 +10,9 @@ import ru.team.up.core.repositories.UserRepository;
 import javax.transaction.Transactional;
 import java.util.Set;
 
-
 @Component
 @Transactional
+@Profile("cdb")
 public class UserInterestsDefaultCreator {
 
     private final UserRepository userRepository;

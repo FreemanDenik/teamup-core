@@ -24,5 +24,4 @@ public class TeamupAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(TeamupAppApplication.class, args);
     }
-
 }

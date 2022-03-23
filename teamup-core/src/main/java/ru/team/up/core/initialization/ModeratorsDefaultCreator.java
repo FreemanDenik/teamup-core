@@ -1,8 +1,8 @@
 package ru.team.up.core.initialization;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 import ru.team.up.core.entity.Moderator;
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 
 @Component
 @Transactional
+@Profile("cdb")
 public class ModeratorsDefaultCreator {
 
     private final AccountRepository accountRepository;
