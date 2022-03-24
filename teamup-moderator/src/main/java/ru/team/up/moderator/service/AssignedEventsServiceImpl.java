@@ -10,6 +10,7 @@ import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.repositories.AssignedEventsRepository;
+import ru.team.up.moderator.sheduleds.AssignEvents;
 
 import javax.management.Query;
 import java.util.List;
@@ -65,6 +66,8 @@ public class AssignedEventsServiceImpl implements AssignedEventsService {
         assignedEventsRepository.updateEventIdBeforeDeleting(statusId, eventId);
     }
 
+
+
     /**
      *
      * @param id
@@ -95,4 +98,11 @@ public class AssignedEventsServiceImpl implements AssignedEventsService {
     public void removeAssignedEvent(Long id) {
         assignedEventsRepository.deleteById(id);
     }
+
+    //////////////
+    @Override
+    public List<AssignedEvents> getAssignedEvents() {
+        return assignedEventsRepository.getAssignedEvents();
+    }
+    /////////////
 }

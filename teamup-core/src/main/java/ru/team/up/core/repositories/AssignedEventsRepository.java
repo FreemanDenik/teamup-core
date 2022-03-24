@@ -35,4 +35,10 @@ public interface AssignedEventsRepository extends JpaRepository<AssignedEvents, 
     )
     void updateEventIdBeforeDeleting(@Param("statusId") Long statusId,
                                      @Param("eventId") Long eventId);
+
+    @Query(
+            value = "SELECT * FROM AssignedEvents",
+            nativeQuery = true
+    )
+    List<AssignedEvents> getAssignedEvents();
 }

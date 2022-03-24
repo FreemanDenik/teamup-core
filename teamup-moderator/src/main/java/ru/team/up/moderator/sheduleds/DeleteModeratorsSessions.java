@@ -39,13 +39,14 @@ public class DeleteModeratorsSessions {
         // Удалить все сессии, у которых последнее время обновления больше заданного значения
         moderatorSessionRepository.getInvalidateSession(LocalDateTime.now().minusMinutes(30L),
                                                         LocalDateTime.now().plusMinutes(30L))
-                .forEach(v -> {
-                    checkAssignEvent(v.getModeratorId())
-                            .forEach(a -> {
+                //Получили лист сессий модератора (ModeratorSession)
+                .forEach(v -> {         // для каждой ModeratorSession из листа
+                    checkAssignEvent(v.getModeratorId()) //Получаем лист всех мероприятий (AssignedEvents), которые находятся на проверке у модератора
+                            .forEach(a -> { //Для каждого AssignedEvents из листа изменить статус на 1
                                 assignedEventsRepository.updateEventIdBeforeDeleting(1L, a.getEventId());
-                                assignedEventsRepository.deleteById(a.getId());
+                                assignedEventsRepository.deleteById(a.getId()); //удалить мероприятие по id
                             });
-                    moderatorSessionRepository.deleteById(v.getId());
+                    moderatorSessionRepository.deleteById(v.getId()); //Удалить сессию модератора
                 });
         // moderatorSessionRepository.deleteById(id);
         log.debug("Удалили неактивного модератора");

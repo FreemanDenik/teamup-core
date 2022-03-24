@@ -4,6 +4,7 @@ import org.springframework.data.repository.query.Param;
 import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.repositories.AssignedEventsRepository;
+import ru.team.up.moderator.sheduleds.AssignEvents;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface AssignedEventsService {
     AssignedEvents saveAssignedEvent(AssignedEvents assignedEvents);
 
     void removeAssignedEvent(Long id);
+
+    /////
+    List<AssignedEvents> getAssignedEvents();
+    //////
 }
