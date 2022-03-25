@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.team.up.auth.config.SuccessHandler;
 import ru.team.up.auth.config.jwt.JwtProvider;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.mappers.UserMapper;
@@ -49,6 +51,26 @@ public class AuthController {
         if (Objects.nonNull(account)) {
             if (passwordEncoder.matches(request.getPassword(), account.getPassword())) {
                 token = jwtProvider.generateToken(account.getEmail());
+                if (account instanceof User) {
+                    userDto = UserMapper.INSTANCE.mapUserToDto((User) account);
+                } else if (account instanceof Moderator) {
+                    userDto = UserMapper.INSTANCE.mapModeratorToDto((Moderator) account);
+                } else if (account instanceof Admin) {
+                    userDto = UserMapper.INSTANCE.mapAdminToDto((Admin) account);
+                }
+            }
+        }
+        return new AuthResponse(token, userDto);
+    }
+
+    @GetMapping("/loginByGoogle")
+    public AuthResponse loginByGoogle() {
+        UserDto userDto = null;
+        String token = SuccessHandler.getToken();
+        if (Objects.nonNull(token)) {
+            String login = jwtProvider.getLoginFromToken(token);
+            Account account = (Account) userDetailsService.loadUserByUsername(login);
+            if (Objects.nonNull(account)) {
                 if (account instanceof User) {
                     userDto = UserMapper.INSTANCE.mapUserToDto((User) account);
                 } else if (account instanceof Moderator) {

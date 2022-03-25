@@ -29,11 +29,15 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
-    private JwtFilter jwtFilter;
+    private final JwtFilter jwtFilter;
+    private final SuccessHandler successHandler;
 
     @Autowired
-    public SecurityConfigToken(@Qualifier("userDetailsImpl") UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+    public SecurityConfigToken(SuccessHandler successHandler,
+                               @Qualifier("userDetailsImpl") UserDetailsService userDetailsService,
+                               JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
+        this.successHandler = successHandler;
         this.jwtFilter = jwtFilter;
     }
 
@@ -57,7 +61,10 @@ public class SecurityConfigToken extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/moderator").hasRole("MODERATOR")
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login()
+                .loginPage("/oauth2/authorization/google")
+                .successHandler(successHandler);
 
         http.logout()//URL выхода из системы безопасности Spring - только POST. Вы можете поддержать выход из системы
                 // без POST, изменив конфигурацию Java
