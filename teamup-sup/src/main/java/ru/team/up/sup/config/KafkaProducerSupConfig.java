@@ -32,8 +32,8 @@ public class KafkaProducerSupConfig {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
-    @Bean(value = "producerKafkaTemplate")
-    public KafkaTemplate<String, AppModuleNameDto> kafkaTemplate() {
+    @Bean
+    public KafkaTemplate<String, AppModuleNameDto> kafkaModuleNameTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

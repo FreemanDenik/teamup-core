@@ -16,5 +16,5 @@ public interface SupService {
      *
      * @return возвращает List из объектов SupParameterDto
      */
-    List<SupParameterDto> getListParameters();
+    List<SupParameterDto<?>> getListParameters();
 }
