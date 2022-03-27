@@ -41,4 +41,10 @@ public class AssignedEventsServiceImpl implements AssignedEventsService {
     public List<Long> getIdNotAssignedEvents() {
         return assignedEventsRepository.getIdNotAssignedEvents();
     }
+
+    @Transactional
+    @Override
+    public List<Long> getIdAssignedEventsByModeratorId(Long id) {
+        return assignedEventsRepository.getIdAssignedEventsByModeratorId(id);
+    }
 }

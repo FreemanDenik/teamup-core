@@ -1,9 +1,11 @@
 package ru.team.up.moderator.service;
 
+import org.springframework.data.repository.query.Param;
 import ru.team.up.core.entity.ModeratorSession;
 import ru.team.up.core.repositories.ModeratorSessionRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,4 +33,7 @@ public interface ModeratorSessionsService {
     void removeModeratorSession(Long id);
 
     Long getFreeModerator();
+
+    List<Long> getInactiveModerators(@Param("downtime") LocalDateTime downtime);
+
 }

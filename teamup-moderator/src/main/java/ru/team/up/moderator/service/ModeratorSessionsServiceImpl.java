@@ -11,6 +11,7 @@ import ru.team.up.core.repositories.ModeratorSessionRepository;
 import ru.team.up.moderator.exception.ModeratorSessionNotFoundException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,5 +62,11 @@ public class ModeratorSessionsServiceImpl implements ModeratorSessionsService {
     @Override
     public Long getFreeModerator() {
         return moderatorSessionRepository.getFreeModerator();
+    }
+
+    @Transactional
+    @Override
+    public List<Long> getInactiveModerators(LocalDateTime downtime) {
+        return moderatorSessionRepository.getInactiveModerators(downtime);
     }
 }

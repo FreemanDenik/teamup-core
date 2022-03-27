@@ -1,8 +1,10 @@
 package ru.team.up.core.service;
 
+import org.springframework.data.repository.query.Param;
 import ru.team.up.core.entity.ModeratorSession;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Интерфейс для создания сессии модеоатора

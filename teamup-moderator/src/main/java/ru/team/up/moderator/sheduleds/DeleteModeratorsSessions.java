@@ -7,12 +7,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.repositories.AssignedEventsRepository;
 import ru.team.up.core.repositories.ModeratorSessionRepository;
+import ru.team.up.core.service.AssignedEventsServiceImpl;
+import ru.team.up.moderator.service.ModeratorSessionsServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -21,38 +21,42 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class DeleteModeratorsSessions {
 
+    private ModeratorSessionsServiceImpl moderatorSessionsServiceImpl;
     private ModeratorSessionRepository moderatorSessionRepository;
     private AssignedEventsRepository assignedEventsRepository;
-
-    public DeleteModeratorsSessions() {
-    }
+    private AssignedEventsServiceImpl assignedEventsServiceImpl;
 
     /**
-     * метод удаления сессии модератора по активности
-     * удаляет не активных по полю время прогрева
+     * Метод удаляет сессию модератора по активности (удаляет не активных по полю время прогрева)
      */
 //    @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 10000)
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void removeModeratorSession() {
-        //TODO добавить логику проверки
-        log.debug("Удаляем неактивного модератора");
-        // Удалить все сессии, у которых последнее время обновления больше заданного значения
-        moderatorSessionRepository.getInvalidateSession(LocalDateTime.now().minusMinutes(30L),
-                                                        LocalDateTime.now().plusMinutes(30L))
-                .forEach(v -> {
-                    checkAssignEvent(v.getModeratorId())
-                            .forEach(a -> {
-                                assignedEventsRepository.updateEventIdBeforeDeleting(1L, a.getEventId());
-                                assignedEventsRepository.deleteById(a.getId());
-                            });
-                    moderatorSessionRepository.deleteById(v.getId());
-                });
-        // moderatorSessionRepository.deleteById(id);
-        log.debug("Удалили неактивного модератора");
-    }
 
-    private List<AssignedEvents> checkAssignEvent(Long moderatorId) {
-        return assignedEventsRepository.getAllEventsByModeratorId(moderatorId);
+        log.debug("Получение листа ID неактивных модераторов");
+        List<Long> listInactiveModeratorsId = moderatorSessionsServiceImpl
+                .getInactiveModerators(LocalDateTime.now().minusMinutes(1L));
+
+        if (!listInactiveModeratorsId.isEmpty()) {
+            listInactiveModeratorsId
+                    .forEach(delete -> {
+                        /*
+                          Сброс мероприятий, назначенных на удаляемого модератора
+                         */
+                        assignedEventsServiceImpl.getIdAssignedEventsByModeratorId(delete)
+                                .forEach(deleteEvents -> {
+                                    assignedEventsRepository.deleteById(deleteEvents);
+                                    log.debug("Мероприятие с ID " + deleteEvents + " было удалено");
+                                });
+                        /*
+                         * Удаление неактивного модератора
+                         */
+                        moderatorSessionRepository.deleteById(delete);
+                        log.debug("Модератор с ID " + delete + " был удален");
+                    });
+        } else {
+            log.debug("Неактивных модераторов нет");
+        }
     }
 }

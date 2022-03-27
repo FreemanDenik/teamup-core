@@ -1,5 +1,6 @@
 package ru.team.up.core.service;
 
+import org.springframework.data.repository.query.Param;
 import ru.team.up.core.entity.AssignedEvents;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface AssignedEventsService {
     void removeAssignedEvent(Long id);
 
     List<Long> getIdNotAssignedEvents();
+
+    List<Long> getIdAssignedEventsByModeratorId(Long id);
 }
