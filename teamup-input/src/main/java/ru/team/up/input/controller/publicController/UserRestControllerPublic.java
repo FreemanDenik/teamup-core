@@ -13,11 +13,13 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.dto.SupParameterDto;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.List;
 
@@ -34,6 +36,7 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
+    private final ParameterService parameterService;
 
     /**
      * Метод для поиска пользователя по id
@@ -45,7 +48,12 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-
+        SupParameterDto<?> param = parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+        if (param != null) {
+            if (!(boolean) param.getParameterValue()) {
+                return new ResponseEntity<>(HttpStatus.LOCKED);
+            }
+        }
         return new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(userId))).build(),
                 HttpStatus.OK);
@@ -81,7 +89,7 @@ public class UserRestControllerPublic {
 
         return new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserByUsername(userUsername)))
-                         .build(), HttpStatus.OK);
+                        .build(), HttpStatus.OK);
     }
 
     /**
@@ -187,6 +195,7 @@ public class UserRestControllerPublic {
 
     /**
      * Метод поиска топ популярных пользователей в городе
+     *
      * @param city название города
      * @return Список UserDto
      */
