@@ -29,4 +29,6 @@ public interface ModeratorSessionsService {
      * @param id
      */
     void removeModeratorSession(Long id);
+
+    Long getFreeModerator();
 }

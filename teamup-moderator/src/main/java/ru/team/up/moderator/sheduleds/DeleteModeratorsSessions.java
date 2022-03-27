@@ -31,7 +31,8 @@ public class DeleteModeratorsSessions {
      * метод удаления сессии модератора по активности
      * удаляет не активных по полю время прогрева
      */
-    @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
+//    @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
+    @Scheduled(fixedRate = 20000)
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void removeModeratorSession() {
         //TODO добавить логику проверки

@@ -56,4 +56,10 @@ public class ModeratorSessionsServiceImpl implements ModeratorSessionsService {
             moderatorSessionRepository.deleteById(id);
         }
     }
+
+    @Transactional
+    @Override
+    public Long getFreeModerator() {
+        return moderatorSessionRepository.getFreeModerator();
+    }
 }
