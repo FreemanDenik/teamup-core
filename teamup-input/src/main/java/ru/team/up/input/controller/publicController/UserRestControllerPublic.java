@@ -48,9 +48,10 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        SupParameterDto<?> param = parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+        SupParameterDto<Boolean> param = (SupParameterDto<Boolean>) parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
         if (param != null) {
-            if (!(boolean) param.getParameterValue()) {
+            if (!param.getParameterValue()) {
+                log.debug("Метод getUserById выключен параметром TEAMUP_CORE_GET_USER_BY_ID_ENABLED = false");
                 return new ResponseEntity<>(HttpStatus.LOCKED);
             }
         }

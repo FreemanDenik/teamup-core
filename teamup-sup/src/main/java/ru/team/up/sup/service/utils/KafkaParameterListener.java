@@ -7,17 +7,17 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.team.up.dto.AppModuleNameDto;
-import ru.team.up.dto.SupParameterDto;
 import ru.team.up.dto.ListSupParameterDto;
-import ru.team.up.sup.repository.SupRepository;
+import ru.team.up.dto.SupParameterDto;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.annotation.PostConstruct;
 
 @Slf4j
 @Component
-public class KafkaMessageListener {
+public class KafkaParameterListener {
 
-    private final SupRepository supRepository;
+    private final ParameterService parameterService;
 
     @Value(value = "${sup.kafka.system.name}")
     private AppModuleNameDto systemName;
@@ -25,9 +25,9 @@ public class KafkaMessageListener {
     private final KafkaTemplate<String, AppModuleNameDto> kafkaTemplate;
 
     @Autowired
-    public KafkaMessageListener(KafkaTemplate<String, AppModuleNameDto> kafkaModuleNameTemplate,
-                                SupRepository supRepository) {
-        this.supRepository = supRepository;
+    public KafkaParameterListener(KafkaTemplate<String, AppModuleNameDto> kafkaModuleNameTemplate,
+                                  ParameterService parameterService) {
+        this.parameterService = parameterService;
         this.kafkaTemplate = kafkaModuleNameTemplate;
     }
 
@@ -38,10 +38,9 @@ public class KafkaMessageListener {
 
     @KafkaListener(topics = "${sup.kafka.topic.name}", containerFactory = "listDtoKafkaContainerFactory")
     public void listener(ListSupParameterDto listParameterDto) {
-        log.debug("Вход в метод listener");
         for (SupParameterDto<?> parameterDto : listParameterDto.getList()) {
             log.debug("Получен параметр {}", parameterDto.getParameterName());
-            supRepository.add(parameterDto);
+            parameterService.addParam(parameterDto);
         }
     }
 }
