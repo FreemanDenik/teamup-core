@@ -24,7 +24,7 @@ public class InterestServiceRestImpl implements InterestServiceRest {
 
     @Override
     @Transactional
-    public List<Interests> getInterestById(Long id) {
+    public Interests getInterestById(Long id) {
         return interestsRepository.getInterestsById(id);
     }
 }

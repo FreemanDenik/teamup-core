@@ -28,6 +28,8 @@ services:
   mongo:
     image: mongo:4.4.11
     restart: unless-stopped
+    ports:
+      - "27017:27017"
   mongo-express:
     image: mongo-express
     restart: unless-stopped
