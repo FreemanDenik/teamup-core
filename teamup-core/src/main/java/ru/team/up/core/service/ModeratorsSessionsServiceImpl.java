@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.ModeratorSession;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.ModeratorSessionRepository;
@@ -79,5 +80,19 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
     public void removeModeratorSession(Long id) {
         log.debug("Удаление сессии по ID сессии {}", id);
         moderatorSessionRepository.deleteById(id);
+    }
+
+    @Transactional
+    @Override
+    public Long getFreeModerator() {
+        log.debug("Получение свободного модератора");
+        return moderatorSessionRepository.getFreeModerator();
+    }
+
+    @Transactional
+    @Override
+    public List<Long> getInactiveModerators(LocalDateTime downtime) {
+        log.debug("Получение неактивных модераторов");
+        return moderatorSessionRepository.getInactiveModerators(downtime);
     }
 }

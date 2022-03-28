@@ -15,4 +15,6 @@ public interface ModeratorsSessionsService {
     ModeratorSession getModeratorsSessionByModerator(Long id);
     ModeratorSession createModeratorsSession(Long id);
     void removeModeratorSession(Long id);
+    Long getFreeModerator();
+    List<Long> getInactiveModerators(LocalDateTime downtime);
 }

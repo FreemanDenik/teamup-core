@@ -48,7 +48,7 @@ public interface AssignedEventsRepository extends JpaRepository<AssignedEvents, 
                                             @Param("eventId") Long eventId);
 
     /**
-     * Метод получает ID новых мероприятий нераспределенных на модераторов и со статусом 'на проверке'
+     * Метод получает ID новых мероприятий со статусом 'на проверке' нераспределенных на модераторов
      */
     @Query(value = "SELECT e.id FROM Event e LEFT JOIN AssignedEvents ae ON e.id=ae.eventId " +
             "WHERE ae.eventId IS NULL AND e.status = 2")

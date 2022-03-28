@@ -43,5 +43,4 @@ public interface ModeratorSessionRepository extends JpaRepository<ModeratorSessi
     @Query(value = "SELECT ms.id FROM ModeratorSession ms " +
             "WHERE ms.lastUpdateSessionTime <= :downtime")
     public List<Long> getInactiveModerators(@Param("downtime") LocalDateTime downtime);
-
 }

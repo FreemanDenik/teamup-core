@@ -8,12 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.AssignedEvents;
-import ru.team.up.core.repositories.AssignedEventsRepository;
 import ru.team.up.core.service.AssignedEventsServiceImpl;
-import ru.team.up.moderator.service.ModeratorSessionsServiceImpl;
+import ru.team.up.core.service.ModeratorsSessionsServiceImpl;
 
 import java.util.List;
-
 
 @Component
 @Slf4j
@@ -21,27 +19,25 @@ import java.util.List;
 public class AssignEvents {
 
     private AssignedEventsServiceImpl assignedEventsServiceImpl;
-    private ModeratorSessionsServiceImpl moderatorSessionsServiceImpl;
-    private AssignedEventsRepository assignedEventsRepository;
+    private ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
 
     /**
-     * Метод проверяет по расписанию наличие новых мероприятий в статусе "на проверке" и назначает их на модераторов
+     * Метод проверяет по расписанию наличие новых мероприятий в статусе "на проверке"
+     * и назначает их на модераторов
      */
-    @Scheduled(fixedRate = 5000)
-//    @Scheduled(fixedDelayString = "${eventsScan.delay}")
+//    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelayString = "${eventsScan.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
         log.debug("Получение листа новых мероприятий");
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
-
         newEventsIdList.forEach(System.out::println);
-
 
         if (!newEventsIdList.isEmpty()) {
             if (moderatorSessionsServiceImpl.getFreeModerator() != null) {
 
                 newEventsIdList.forEach(eventId -> {
-                    assignedEventsRepository.save(AssignedEvents.builder()
+                    assignedEventsServiceImpl.saveAssignedEvent(AssignedEvents.builder()
                             .eventId(eventId)
                             .moderatorId(moderatorSessionsServiceImpl.getFreeModerator())
                             .build());

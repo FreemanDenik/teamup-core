@@ -31,9 +31,4 @@ public interface ModeratorSessionsService {
      * @param id
      */
     void removeModeratorSession(Long id);
-
-    Long getFreeModerator();
-
-    List<Long> getInactiveModerators(@Param("downtime") LocalDateTime downtime);
-
 }
