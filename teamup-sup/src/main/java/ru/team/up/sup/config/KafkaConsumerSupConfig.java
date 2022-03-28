@@ -10,7 +10,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import ru.team.up.dto.AppModuleNameDto;
-import ru.team.up.sup.dto.ListSupParameterDto;
+import ru.team.up.dto.ListSupParameterDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class KafkaConsumerSupConfig {
 
     @Bean
     public ConsumerFactory<String, ListSupParameterDto> listDtoConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig());
+        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig(), new StringDeserializer(), new JsonDeserializer<>(ListSupParameterDto.class));
     }
 
     @Bean

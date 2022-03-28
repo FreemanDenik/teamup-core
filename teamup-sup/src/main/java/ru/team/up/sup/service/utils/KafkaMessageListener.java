@@ -8,7 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.SupParameterDto;
-import ru.team.up.sup.dto.ListSupParameterDto;
+import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.sup.repository.SupRepository;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +17,12 @@ import javax.annotation.PostConstruct;
 @Component
 public class KafkaMessageListener {
 
-    private SupRepository supRepository;
+    private final SupRepository supRepository;
 
     @Value(value = "${sup.kafka.system.name}")
     private AppModuleNameDto systemName;
 
-    private KafkaTemplate<String, AppModuleNameDto> kafkaTemplate;
+    private final KafkaTemplate<String, AppModuleNameDto> kafkaTemplate;
 
     @Autowired
     public KafkaMessageListener(KafkaTemplate<String, AppModuleNameDto> kafkaModuleNameTemplate,
