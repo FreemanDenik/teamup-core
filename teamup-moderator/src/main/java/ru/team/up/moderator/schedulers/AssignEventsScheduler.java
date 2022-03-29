@@ -1,4 +1,4 @@
-package ru.team.up.moderator.sheduleds;
+package ru.team.up.moderator.schedulers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +16,10 @@ import java.util.List;
 @Component
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class AssignEvents {
+public class AssignEventsScheduler {
 
-    private AssignedEventsServiceImpl assignedEventsServiceImpl;
-    private ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
+    private final AssignedEventsServiceImpl assignedEventsServiceImpl;
+    private final ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
 
     /**
      * Метод проверяет по расписанию наличие новых мероприятий в статусе "на проверке"
@@ -29,7 +29,7 @@ public class AssignEvents {
     @Scheduled(fixedDelayString = "${eventsScan.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
-        log.debug("Получение листа новых мероприятий");
+        log.debug("Получение список новых мероприятий");
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
         newEventsIdList.forEach(System.out::println);
 
@@ -47,7 +47,7 @@ public class AssignEvents {
                 log.debug("Нет активных модераторов");
             }
         } else {
-            log.debug("Новых мероприятий нет");
+            log.debug("Список новых мероприятий пуст");
         }
     }
 }

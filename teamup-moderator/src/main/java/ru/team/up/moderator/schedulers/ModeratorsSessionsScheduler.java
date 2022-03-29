@@ -1,4 +1,4 @@
-package ru.team.up.moderator.sheduleds;
+package ru.team.up.moderator.schedulers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,13 @@ import java.util.List;
 @Component
 @Slf4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class DeleteModeratorsSessions {
+public class ModeratorsSessionsScheduler {
 
-    private ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
-    private AssignedEventsServiceImpl assignedEventsServiceImpl;
+    private final ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
+    private final AssignedEventsServiceImpl assignedEventsServiceImpl;
 
     /**
-     * Метод удаляет сессию модератора по активности (удаляет не активных по полю время прогрева)
+     * Метод удаляет сессию модератора по активности (удаляет не активных модераторов по полю время прогрева)
      */
 //    @Scheduled(fixedRate = 10000)
     @Scheduled(fixedDelayString = "${moderatorActivity.delay}")
