@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.dto.*;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -23,7 +26,10 @@ import ru.team.up.input.wordmatcher.WordMatcher;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST-контроллер для мероприятий
@@ -40,6 +46,8 @@ import java.util.List;
 public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
+    private MonitorProducerService monitoringProducerService;
+
 
     /**
      * Метод получения списка всех мероприятий
@@ -50,10 +58,30 @@ public class EventRestControllerPublic {
     @GetMapping
     public EventDtoListResponse getAllEvents() {
         log.debug("Получение запроса на список мероприятий");
-
-        return EventDtoListResponse.builder().eventDtoList(
-                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
+        EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
+                        EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
                 .build();
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("999 " + o);
+
+        //log.debug("поискЖ " + accountDto.getFirstName() + "  " + accountDto.getId() + "  " + accountDto.getRole());
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("Количество мероприятий в списке: ", eventDtoListResponse.getEventDtoList().size());
+
+        ReportDto reportDto = ReportDto.builder()
+                .control(ControlDto.MANUAL)
+                        .appModuleName(AppModuleNameDto.TEAMUP_CORE)
+                                .initiatorType(InitiatorTypeDto.USER)
+                                        .initiatorName("VASYA TEST")
+                                                .initiatorId(777L)
+                                                        .time(new Date())
+                                                                .status(StatusDto.builder().SUCCESS("Success").build())
+                                                                        .parameters(parameters).build();
+        monitoringProducerService.send(reportDto);
+
+        return eventDtoListResponse;
     }
 
     /**
