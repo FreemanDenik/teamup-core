@@ -14,6 +14,7 @@ import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
 import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.dto.NotificationDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,7 +33,7 @@ public class EventServiceImpl implements EventService {
     private UserRepository userRepository;
     private StatusRepository statusRepository;
     private UserMessageRepository userMessageRepository;
-    private SendMessageService sendMessageService;
+    private NotificationService notificationService;
 
     /**
      * @return Возвращает коллекцию Event.
@@ -151,16 +152,17 @@ public class EventServiceImpl implements EventService {
         Event event = getOneEvent(eventId);
 
         log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(user)
-                .message("Пользователь " + user.getUsername()
+        NotificationDto message = NotificationDto.builder()
+                .text("Пользователь " + user.getUsername()
                         + " стал участником мероприятия " + event.getEventName())
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+                .subject("Новый участник!!!")
+                .email(event.getAuthorId().getEmail())
+                .status(NotificationDto.Status.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build();
 
         log.debug("Отправка сообщения создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+        notificationService.sendNotification(message);
 
         event.addParticipant(user);
         log.debug("Добавили нового участника с ID {}", user.getId());
@@ -168,6 +170,24 @@ public class EventServiceImpl implements EventService {
         Event save = eventRepository.save(event);
         log.debug("Сохранили мероприятие с ID {} в БД ", save.getId());
     }
+        //TODO удалить если код он в дальнейшем не используется
+//        UserMessage message = UserMessage.builder()
+//                .messageOwner(user)
+//                .message("Пользователь " + user.getUsername()
+//                        + " стал участником мероприятия " + event.getEventName())
+//                .status(statusRepository.getOne(5L))
+//                .messageCreationTime(LocalDateTime.now()).build();
+//        userMessageRepository.save(message);
+
+//        log.debug("Отправка сообщения создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
+//        sendMessageService.sendMessage(event.getAuthorId(), message);
+
+//        event.addParticipant(user);
+//        log.debug("Добавили нового участника с ID {}", user.getId());
+//
+//        Event save = eventRepository.save(event);
+//        log.debug("Сохранили мероприятие с ID {} в БД ", save.getId());
+//    }
 
     @Override
     @Transactional
@@ -180,18 +200,34 @@ public class EventServiceImpl implements EventService {
         event.setStatus((statusRepository.getOne(1L)));
 
         log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(event.getAuthorId())
-                .message("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+        NotificationDto message = NotificationDto.builder()
+                .text("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
+                .subject("Мероприятие одобрено модератором!!!")
+                .email(event.getAuthorId().getEmail())
+                .status(NotificationDto.Status.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build();
 
         log.debug("Отправляем сообщение создателю мероприятия");
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+        notificationService.sendNotification(message);
 
         eventRepository.save(event);
         log.debug("Сохраняем мероприятие в БД {}", event.getEventName());
+
+        //TODO удалить если код он в дальнейшем не используется
+//        log.debug("Создаем и сохраняем сообщение");
+//        UserMessage message = UserMessage.builder()
+//                .messageOwner(event.getAuthorId())
+//                .message("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
+//                .status(statusRepository.getOne(5L))
+//                .messageCreationTime(LocalDateTime.now()).build();
+//        userMessageRepository.save(message);
+//
+//        log.debug("Отправляем сообщение создателю мероприятия");
+//        sendMessageService.sendMessage(event.getAuthorId(), message);
+//
+//        eventRepository.save(event);
+//        log.debug("Сохраняем мероприятие в БД {}", event.getEventName());
     }
 
     @Override
@@ -205,18 +241,34 @@ public class EventServiceImpl implements EventService {
         event.setStatus((statusRepository.getOne(4L)));
 
         log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(event.getAuthorId())
-                .message("Мероприятие " + event.getEventName() + " закрыто модератором.")
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+        NotificationDto message = NotificationDto.builder()
+                .text("Мероприятие " + event.getEventName() + " закрыто модератором.")
+                .subject("event.getEventName() + закрыто модератором.!!!")
+                .email(event.getAuthorId().getEmail())
+                .status(NotificationDto.Status.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build();
 
         log.debug("Отправляем сообщение создателю {} мероприятия {}", event.getAuthorId(), event.getId());
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+        notificationService.sendNotification(message);
 
         eventRepository.save(event);
         log.debug("Сохраняем мероприятие {} в БД ", event.getId());
+
+        //TODO удалить если код он в дальнейшем не используется
+//        log.debug("Создаем и сохраняем сообщение");
+//        UserMessage message = UserMessage.builder()
+//                .messageOwner(event.getAuthorId())
+//                .message("Мероприятие " + event.getEventName() + " закрыто модератором.")
+//                .status(statusRepository.getOne(5L))
+//                .messageCreationTime(LocalDateTime.now()).build();
+//        userMessageRepository.save(message);
+//
+//        log.debug("Отправляем сообщение создателю {} мероприятия {}", event.getAuthorId(), event.getId());
+//        sendMessageService.sendMessage(event.getAuthorId(), message);
+//
+//        eventRepository.save(event);
+//        log.debug("Сохраняем мероприятие {} в БД ", event.getId());
     }
 
     @Override
