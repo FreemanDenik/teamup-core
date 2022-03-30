@@ -8,18 +8,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.dto.*;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST-контроллер для пользователей
@@ -34,6 +40,7 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
+    private MonitorProducerService monitoringProducerService;
 
     /**
      * Метод для поиска пользователя по id
@@ -46,9 +53,21 @@ public class UserRestControllerPublic {
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
 
-        return new ResponseEntity<>(
+        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(userId))).build(),
                 HttpStatus.OK);
+
+        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
+                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
+                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
+
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                "Id, Email и Username Юзера полученного по id ", dataUser);
+        monitoringProducerService.send(reportDto);
+        return userDtoResponseResponseEntity;
     }
 
     /**
@@ -62,9 +81,20 @@ public class UserRestControllerPublic {
     public ResponseEntity<UserDtoResponse> getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
 
-        return new ResponseEntity<>(
+        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserByEmail(userEmail)))
                         .build(), HttpStatus.OK);
+        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
+                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
+                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
+
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                "Id, Email и Username Юзера полученного по email ", dataUser);
+        monitoringProducerService.send(reportDto);
+        return userDtoResponseResponseEntity;
     }
 
     /**
@@ -78,9 +108,20 @@ public class UserRestControllerPublic {
     public ResponseEntity<UserDtoResponse> getUserByUsername(@PathVariable(value = "username") String userUsername) {
         log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
 
-        return new ResponseEntity<>(
+        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserByUsername(userUsername)))
-                         .build(), HttpStatus.OK);
+                        .build(), HttpStatus.OK);
+        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
+                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
+                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
+
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                "Id, Email и Username Юзера полученного по имени ", dataUser);
+        monitoringProducerService.send(reportDto);
+        return userDtoResponseResponseEntity;
     }
 
     /**
@@ -100,6 +141,12 @@ public class UserRestControllerPublic {
         }
 
         log.debug("Список пользователей получен");
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                "Количество всех Юзеров", users.size());
+        monitoringProducerService.send(reportDto);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
@@ -114,10 +161,17 @@ public class UserRestControllerPublic {
     public ResponseEntity<EventDtoListResponse> getEventsByOwnerId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
 
-        return new ResponseEntity<>(
+        ResponseEntity<EventDtoListResponse> response = new ResponseEntity<>(
                 EventDtoListResponse.builder()
                         .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id)))
                         .build(), HttpStatus.OK);
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                "Количество всех мероприятий полученных по id пользователя", response.getBody()
+                        .getEventDtoList().size());
+        monitoringProducerService.send(reportDto);
+        return response;
     }
 
     /**
@@ -131,10 +185,23 @@ public class UserRestControllerPublic {
     public ResponseEntity<EventDtoListResponse> getEventsBySubscriberId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий на которые подписан пользователь с id: {}", id);
 
-        return new ResponseEntity<>(
+        ResponseEntity<EventDtoListResponse> response = new ResponseEntity<>(
                 EventDtoListResponse.builder()
                         .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id)))
                         .build(), HttpStatus.OK);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("Size list of Users: ", response.getBody().getEventDtoList().size());
+
+        ReportDto reportDto = ReportDto.builder()
+                .control(ControlDto.MANUAL)
+                .appModuleName(AppModuleNameDto.TEAMUP_CORE)
+                .initiatorType(InitiatorTypeDto.USER)
+                .initiatorName("VASYA TEST")
+                .initiatorId(777L)
+                .time(new Date())
+                .parameters(parameters).build();
+        monitoringProducerService.send(reportDto);
+        return response;
     }
 
     /**
@@ -185,6 +252,7 @@ public class UserRestControllerPublic {
 
     /**
      * Метод поиска топ популярных пользователей в городе
+     *
      * @param city название города
      * @return Список UserDto
      */
