@@ -1,4 +1,4 @@
-package ru.team.up.moderator.schedulers;
+package ru.team.up.moderator.schedules;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +29,8 @@ public class AssignEventsScheduler {
     @Scheduled(fixedDelayString = "${eventsScan.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
-        log.debug("Получение список новых мероприятий");
+        log.debug("Получение списка новых мероприятий");
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
-        newEventsIdList.forEach(System.out::println);
 
         if (!newEventsIdList.isEmpty()) {
             if (moderatorSessionsServiceImpl.getFreeModerator() != null) {

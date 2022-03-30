@@ -21,7 +21,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
+public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService {
 
     ModeratorSessionRepository moderatorSessionRepository;
 
@@ -30,6 +30,7 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
 
     /**
      * Метод получения сессии модератора по ID
+     *
      * @param id
      * @return moderatorSession
      */
@@ -40,6 +41,7 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
 
     /**
      * Метод получения всех сессий модератора
+     *
      * @param id
      * @return moderatorsSessions
      */
@@ -59,6 +61,7 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
 
     /**
      * метод создания новой сессии
+     *
      * @param id
      * @return
      */
@@ -75,6 +78,7 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
 
     /**
      * метод удаления сессии модератора по id
+     *
      * @param id
      */
     public void removeModeratorSession(Long id) {
@@ -94,5 +98,28 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService{
     public List<Long> getInactiveModerators(LocalDateTime downtime) {
         log.debug("Получение неактивных модераторов");
         return moderatorSessionRepository.getInactiveModerators(downtime);
+    }
+
+    @Transactional
+    @Override
+    public ModeratorSession findModeratorSessionByModeratorId(Long id) {
+        log.debug("Получение сессии модератора по id модератора {}", id);
+        return moderatorSessionRepository.findModeratorSessionByModeratorId(id);
+    }
+
+    /**
+     * Метод для инкрементации счетчика мероприятий модератора при добавлении ему нового мероприятия на проверку
+     */
+    public void incrementModeratorEventCounter(Long id) {
+        log.debug("Обновление счетчика мероприятий модератора c id {}", id);
+        ModeratorSession moderatorSession = findModeratorSessionByModeratorId(id);
+
+        moderatorSessionRepository.saveAndFlush(ModeratorSession.builder()
+                .id(moderatorSession.getId())
+                .moderatorId(moderatorSession.getModeratorId())
+                .amountOfModeratorsEvents(moderatorSession.getAmountOfModeratorsEvents()+1)
+                .lastUpdateSessionTime(moderatorSession.getLastUpdateSessionTime())
+                .createdSessionTime(moderatorSession.getCreatedSessionTime())
+                .build());
     }
 }

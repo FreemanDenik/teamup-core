@@ -17,23 +17,27 @@ import java.util.List;
 public class AssignedEventsServiceImpl implements AssignedEventsService {
 
     private final AssignedEventsRepository assignedEventsRepository;
+    private final ModeratorsSessionsServiceImpl moderatorsSessionsServiceImpl;
 
-    @Transactional(readOnly = true)
-    public AssignedEvents getAssignedEvent(Long id) {
-        return assignedEventsRepository.getOne(id);
-    }
-
-    public AssignedEvents saveAssignedEvent(AssignedEvents assignedEvents) {
-        AssignedEvents save = assignedEventsRepository.saveAndFlush(assignedEvents);
-        return save;
-    }
-
+    @Override
     public void removeAssignedEvent(Long id) {
         try {
             assignedEventsRepository.deleteById(id);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Метод сохраняет, распределенное на модератора, мероприятие
+     * и инкрементирует счетчик мероприятий у модератора
+     */
+    @Transactional
+    @Override
+    public AssignedEvents saveAssignedEvent(AssignedEvents assignedEvents) {
+        AssignedEvents save = assignedEventsRepository.saveAndFlush(assignedEvents);
+        moderatorsSessionsServiceImpl.incrementModeratorEventCounter(save.getModeratorId());
+        return save;
     }
 
     @Transactional
