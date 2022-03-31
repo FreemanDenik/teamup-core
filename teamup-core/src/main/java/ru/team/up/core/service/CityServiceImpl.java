@@ -6,19 +6,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.repositories.CityRepository;
+import ru.team.up.dto.SupParameterDto;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class CityServiceImpl implements  CityService{
+public class CityServiceImpl implements CityService {
 
     private final CityRepository cityRepository;
+    private final ParameterService parameterService;
 
     @Autowired
-    public CityServiceImpl(CityRepository cityRepository) {
+    public CityServiceImpl(CityRepository cityRepository, ParameterService parameterService) {
         this.cityRepository = cityRepository;
+        this.parameterService = parameterService;
     }
 
     @Override
@@ -59,6 +63,13 @@ public class CityServiceImpl implements  CityService{
     @Override
     public List<City> getSomeCitiesByName(String name) {
         log.debug("Поиск списка городов по имени {}", name);
-        return cityRepository.getSomeCitiesByName(name).stream().limit(10).collect(Collectors.toList());
+        int citiesNumber = 10;
+        SupParameterDto<Integer> countReturnCity = (SupParameterDto<Integer>)
+                parameterService.getParamByName("TEAMUP_CORE_COUNT_RETURN_CITY");
+        if (countReturnCity != null & countReturnCity.getParameterValue() > 0) {
+            citiesNumber = countReturnCity.getParameterValue();
+            log.debug("Количество возвращаемых городов изменено параметром на {}", citiesNumber);
+        }
+        return cityRepository.getSomeCitiesByName(name).stream().limit(citiesNumber).collect(Collectors.toList());
     }
 }

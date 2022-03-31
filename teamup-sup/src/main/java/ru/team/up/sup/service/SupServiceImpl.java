@@ -16,7 +16,7 @@ public class SupServiceImpl implements SupService {
     private SupRepository supRepository;
 
     @Override
-    public List<SupParameterDto> getListParameters() {
+    public List<SupParameterDto<?>> getListParameters() {
         return supRepository.findAll();
     }
 }

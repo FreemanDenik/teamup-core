@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
+import ru.team.up.dto.SupParameterDto;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -20,9 +21,10 @@ import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.EventDtoResponse;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
+import ru.team.up.sup.service.ParameterService;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-
 import java.util.List;
 
 /**
@@ -40,6 +42,7 @@ import java.util.List;
 public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
+    private final ParameterService parameterService;
 
     /**
      * Метод получения списка всех мероприятий
@@ -52,7 +55,7 @@ public class EventRestControllerPublic {
         log.debug("Получение запроса на список мероприятий");
 
         return EventDtoListResponse.builder().eventDtoList(
-                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
+                        EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
                 .build();
     }
 
@@ -66,7 +69,12 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
-
+        SupParameterDto<Boolean> enabled = (SupParameterDto<Boolean>) parameterService
+                .getParamByName("TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
+        if (enabled != null & !enabled.getParameterValue()) {
+            log.debug("Метод findEventById выключен параметром TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED = false");
+            throw new RuntimeException("Method findEventById disabled by parameter TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
+        }
         return EventDtoResponse.builder().eventDto(
                 EventMapper.INSTANCE.mapEventToDto(
                         eventServiceRest.getEventById(eventId))).build();
@@ -84,8 +92,8 @@ public class EventRestControllerPublic {
         log.debug("Запрос на поиск мероприятий по городу city: {}", city);
 
         return EventDtoListResponse.builder().eventDtoList(
-                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCity(city)))
-                        .build();
+                        EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCity(city)))
+                .build();
     }
 
     /**
@@ -100,8 +108,8 @@ public class EventRestControllerPublic {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
 
         return EventDtoListResponse.builder().eventDtoList(
-                                EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getEventByName(eventName)))
-                        .build();
+                        EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getEventByName(eventName)))
+                .build();
     }
 
     /**
