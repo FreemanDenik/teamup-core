@@ -64,8 +64,7 @@ public class UserRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
-                "Id, Email и Username Юзера полученного по id ", dataUser);
+                this.getClass(), "Id, Email и Username Юзера полученного по id ", dataUser);
         monitoringProducerService.send(reportDto);
         return userDtoResponseResponseEntity;
     }
@@ -91,7 +90,7 @@ public class UserRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id, Email и Username Юзера полученного по email ", dataUser);
         monitoringProducerService.send(reportDto);
         return userDtoResponseResponseEntity;
@@ -118,7 +117,7 @@ public class UserRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id, Email и Username Юзера полученного по имени ", dataUser);
         monitoringProducerService.send(reportDto);
         return userDtoResponseResponseEntity;
@@ -144,7 +143,7 @@ public class UserRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество всех Юзеров", users.size());
         monitoringProducerService.send(reportDto);
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -167,7 +166,7 @@ public class UserRestControllerPublic {
                         .build(), HttpStatus.OK);
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество всех мероприятий полученных по id пользователя", response.getBody()
                         .getEventDtoList().size());
         monitoringProducerService.send(reportDto);
@@ -189,17 +188,11 @@ public class UserRestControllerPublic {
                 EventDtoListResponse.builder()
                         .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id)))
                         .build(), HttpStatus.OK);
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("Size list of Users: ", response.getBody().getEventDtoList().size());
-
-        ReportDto reportDto = ReportDto.builder()
-                .control(ControlDto.MANUAL)
-                .appModuleName(AppModuleNameDto.TEAMUP_CORE)
-                .initiatorType(InitiatorTypeDto.USER)
-                .initiatorName("VASYA TEST")
-                .initiatorId(777L)
-                .time(new Date())
-                .parameters(parameters).build();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество всех мероприятий на которые подписан пользователь", response.getBody()
+                        .getEventDtoList().size());
         monitoringProducerService.send(reportDto);
         return response;
     }

@@ -64,7 +64,7 @@ public class EventRestControllerPublic {
                 .build();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество всех мероприятий", eventDtoListResponse.getEventDtoList().size());
         monitoringProducerService.send(reportDto);
 
@@ -89,7 +89,7 @@ public class EventRestControllerPublic {
                 + eventDtoResponse.getEventDto().getEventName();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id и name Мероприятия полученного по идентификатору ", dataEvent);
         monitoringProducerService.send(reportDto);
         return eventDtoResponse;
@@ -112,7 +112,7 @@ public class EventRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество мероприятий по city", eventDtoListResponse.getEventDtoList().size());
         monitoringProducerService.send(reportDto);
 
@@ -135,7 +135,7 @@ public class EventRestControllerPublic {
                 .build();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество мероприятий по названию", eventDtoListResponse.getEventDtoList().size());
         monitoringProducerService.send(reportDto);
         return eventDtoListResponse;
@@ -162,7 +162,7 @@ public class EventRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество мероприятий по автору", events.size());
         monitoringProducerService.send(reportDto);
 
@@ -192,7 +192,7 @@ public class EventRestControllerPublic {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество мероприятий по типу", events.size());
         monitoringProducerService.send(reportDto);
 

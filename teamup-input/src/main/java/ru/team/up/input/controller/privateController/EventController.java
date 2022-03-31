@@ -47,7 +47,7 @@ public class EventController {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество всех мероприятий", responseEntity.getBody().size());
         monitoringProducerService.send(reportDto);
 
@@ -69,7 +69,7 @@ public class EventController {
                 + responseEntity.getBody().getEventName();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id и name Мероприятия полученного по идентификатору ", dataEvent);
         monitoringProducerService.send(reportDto);
         return responseEntity;
@@ -92,7 +92,7 @@ public class EventController {
                 + responseEntity.getBody().getEventName();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id и name Мероприятия полученного по идентификатору ", dataEvent);
         monitoringProducerService.send(reportDto);
         return responseEntity;

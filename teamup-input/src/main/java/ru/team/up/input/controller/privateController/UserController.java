@@ -62,7 +62,7 @@ public class UserController {
         log.debug("Получили ответ {}", responseEntity);
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Количество всех Юзеров", responseEntity.getBody().size());
         monitoringProducerService.send(reportDto);
         return responseEntity;
@@ -88,7 +88,7 @@ public class UserController {
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                "Название контроллера", AppModuleNameDto.TEAMUP_CORE, ReportStatusDto.SUCCESS,
+                this.getClass(),
                 "Id, Email и Username Юзера полученного по id ", dataUser);
         monitoringProducerService.send(reportDto);
         return response;
