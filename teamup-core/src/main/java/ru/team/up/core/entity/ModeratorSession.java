@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @Table(name = "MODERATOR_SESSION")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @NoArgsConstructor
@@ -44,6 +46,7 @@ public class ModeratorSession {
      * Количество обрабатываемых мероприятий у модератора
      */
     @Column(name = "AMOUNT_OF_MODERATORS_EVENTS")
+    @NotNull
     private Long amountOfModeratorsEvents;
 
 }
