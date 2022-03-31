@@ -81,12 +81,19 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
+        EventDtoResponse eventDtoResponse = null;
+        String dataEvent = null;
 
-        EventDtoResponse eventDtoResponse = EventDtoResponse.builder().eventDto(
-                EventMapper.INSTANCE.mapEventToDto(
-                        eventServiceRest.getEventById(eventId))).build();
-        String dataEvent = eventDtoResponse.getEventDto().getId() + " "
-                + eventDtoResponse.getEventDto().getEventName();
+        try {
+            eventDtoResponse = EventDtoResponse.builder().eventDto(
+                    EventMapper.INSTANCE.mapEventToDto(
+                            eventServiceRest.getEventById(eventId))).build();
+            dataEvent = eventDtoResponse.getEventDto().getId() + " "
+                    + eventDtoResponse.getEventDto().getEventName();
+        } catch (Exception e) {
+            System.out.println("ER ------- OR" + e);
+        }
+
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),

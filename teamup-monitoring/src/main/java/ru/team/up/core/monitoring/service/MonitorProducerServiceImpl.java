@@ -47,8 +47,6 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
             reportDto.setInitiatorId(0L);
             reportDto.setInitiatorName("anonymousUser");
             reportDto.setInitiatorType(InitiatorTypeDto.USER);
-        } else if (principal == null) {
-            log.warn("Не удалось получить данные из объекта Principal");
         } else if (principal instanceof Admin) {
             Admin admin = (Admin) principal;
             reportDto.setInitiatorId(admin.getId());
@@ -64,6 +62,8 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
             reportDto.setInitiatorId(moderator.getId());
             reportDto.setInitiatorName(moderator.getUsername());
             reportDto.setInitiatorType(InitiatorTypeDto.MANAGER);
+        } else {
+            log.warn("Не удалось получить данные из объекта Principal");
         }
 
         String[] appModuleName = cl.getPackageName().split("\\.");
