@@ -11,4 +11,6 @@ public interface MonitorProducerService {
                                  Class cl, String param1, Object param2);
 
     void send(ReportDto content);
+
+
 }

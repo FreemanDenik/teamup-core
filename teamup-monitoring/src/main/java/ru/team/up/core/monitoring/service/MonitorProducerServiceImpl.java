@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.team.up.dto.*;
 import ru.team.up.core.entity.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -39,7 +36,7 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
         ReportDto reportDto = ReportDto.builder()
                 .control(control)
                 .reportName(cl.getSimpleName())
-                .reportStatus(Optional.of(param2).isEmpty() ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
+                .reportStatus(Optional.of(param2).isEmpty() || (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
                 .time(new Date())
                 .parameters(parameters(param1, param2)).build();
 
