@@ -69,11 +69,12 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
-        SupParameterDto<Boolean> enabled = (SupParameterDto<Boolean>) parameterService
-                .getParamByName("TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
-        if (enabled != null & !enabled.getParameterValue()) {
-            log.debug("Метод findEventById выключен параметром TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED = false");
-            throw new RuntimeException("Method findEventById disabled by parameter TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
+        String enabledParamName = "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED";
+                SupParameterDto<Boolean> param = (SupParameterDto<Boolean>) parameterService
+                .getParamByName(enabledParamName);
+        if (param != null && !param.getParameterValue()) {
+            log.debug("Метод findEventById выключен параметром {} = false", enabledParamName);
+            throw new RuntimeException("Method findEventById disabled by parameter" + enabledParamName);
         }
         return EventDtoResponse.builder().eventDto(
                 EventMapper.INSTANCE.mapEventToDto(

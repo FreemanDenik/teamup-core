@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.team.up.dto.SupParameterDto;
-import ru.team.up.sup.service.SupService;
-
-import java.util.List;
+import ru.team.up.sup.service.KafkaSupService;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -20,11 +17,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/public/sup")
 public class SupControllerPublic {
-    private SupService supService;
+    private KafkaSupService kafkaSupService;
 
     @PostMapping("/get")
-    public ResponseEntity<List<SupParameterDto<?>>> get() {
-        return new ResponseEntity<>(supService.getListParameters(), HttpStatus.OK);
+    public ResponseEntity get() {
+        kafkaSupService.getAllModuleParameters();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

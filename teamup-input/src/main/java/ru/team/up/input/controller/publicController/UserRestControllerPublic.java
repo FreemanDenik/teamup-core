@@ -48,15 +48,15 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
+        String enabledParamName = "TEAMUP_CORE_GET_USER_BY_ID_ENABLED";
         SupParameterDto<Boolean> param = (SupParameterDto<Boolean>)
-                parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
-        if (param != null & !param.getParameterValue()) {
-            log.debug("Метод getUserById выключен параметром TEAMUP_CORE_GET_USER_BY_ID_ENABLED = false");
-            throw new RuntimeException("Method getUserById disabled by parameter TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+                parameterService.getParamByName(enabledParamName);
+        if (param != null && !param.getParameterValue()) {
+            log.debug("Метод getUserById выключен параметром {} = false", enabledParamName);
+            throw new RuntimeException("Method getUserById disabled by parameter " + enabledParamName);
         }
         return UserDtoResponse.builder()
-                .userDto(UserMapper.INSTANCE
-                        .mapUserToDto(userServiceRest.getUserById(userId)))
+                .userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(userId)))
                 .build();
     }
 
@@ -70,7 +70,6 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/email/{email:.+}/", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
-
         return UserDtoResponse.builder().userDto(UserMapper.INSTANCE
                         .mapUserToDto(userServiceRest.getUserByEmail(userEmail)))
                 .build();
@@ -86,10 +85,9 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserByUsername(@PathVariable(value = "username") String userUsername) {
         log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
-
         return UserDtoResponse.builder().userDto(UserMapper.INSTANCE
                         .mapUserToDto(userServiceRest.getUserByUsername(userUsername)))
-                        .build();
+                .build();
     }
 
     /**
@@ -102,12 +100,10 @@ public class UserRestControllerPublic {
     public List<User> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
         List<User> users = userServiceRest.getAllUsers();
-
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
             throw new RuntimeException("Список пользователей пуст");
         }
-
         log.debug("Список пользователей получен");
         return users;
     }
@@ -122,10 +118,9 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/event/{id}/owner", produces = MediaType.APPLICATION_JSON_VALUE)
     public EventDtoListResponse getEventsByOwnerId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
-
         return EventDtoListResponse.builder().eventDtoList(EventMapper.INSTANCE
                         .mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id)))
-                        .build();
+                .build();
     }
 
     /**
@@ -138,10 +133,9 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/event/{id}/subscriber", produces = MediaType.APPLICATION_JSON_VALUE)
     public EventDtoListResponse getEventsBySubscriberId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий на которые подписан пользователь с id: {}", id);
-
         return EventDtoListResponse.builder().eventDtoList(EventMapper.INSTANCE
                         .mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id)))
-                        .build();
+                .build();
     }
 
     /**
@@ -156,12 +150,10 @@ public class UserRestControllerPublic {
     public Account updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
         log.debug("Получен запрос на обновление пользователя");
         Account existUser = userServiceRest.getUserById(userId);
-
         if (existUser == null) {
             log.error("Пользователь не найден");
             throw new RuntimeException("Пользователь не найден");
         }
-
         Account newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
         return newUser;
@@ -178,14 +170,11 @@ public class UserRestControllerPublic {
     public ResponseEntity<Account> deleteUserById(@PathVariable("id") Long userId) {
         log.debug("Получен запрос на удаления пользователя с id = {}", userId);
         Account user = userServiceRest.getUserById(userId);
-
         if (user == null) {
             log.error("Пользователь с id = {} не найден", userId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         userServiceRest.deleteUserById(userId);
-
         log.debug("Пользователь с id = {} успешно удален", userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -200,9 +189,8 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/top/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoListResponse getTopUsersListInCity(@PathVariable(value = "city") String city) {
         log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
-
         return UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE
-                .mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
+                        .mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
                 .build();
     }
 }

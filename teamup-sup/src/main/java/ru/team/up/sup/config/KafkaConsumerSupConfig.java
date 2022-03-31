@@ -20,15 +20,8 @@ import java.util.Map;
 @PropertySource("classpath:sup.properties")
 public class KafkaConsumerSupConfig {
 
-    /**
-     * Значение groupId, которе определяет группу консьюмеров, в рамках которой доставляется один экземпляр сообщения.
-     * Например, при трех консьюмеров в одной группе, слушающих один Topic сообщение достанется, только, одному
-     */
     @Value(value = "${sup.kafka.group.id}")
     private String groupId;
-    /**
-     * Адрес bootstrap сервера kafka
-     */
     @Value(value = "${sup.kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
@@ -45,7 +38,9 @@ public class KafkaConsumerSupConfig {
 
     @Bean
     public ConsumerFactory<String, ListSupParameterDto> listDtoConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig(), new StringDeserializer(), new JsonDeserializer<>(ListSupParameterDto.class));
+        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig(),
+                new StringDeserializer(),
+                new JsonDeserializer<>(ListSupParameterDto.class));
     }
 
     @Bean
