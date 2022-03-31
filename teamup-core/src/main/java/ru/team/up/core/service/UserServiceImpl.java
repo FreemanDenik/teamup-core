@@ -9,9 +9,13 @@ import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.dto.NotifyDto;
+import ru.team.up.dto.NotifyStatusDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
+    private NotifyService notifyService;
 
     /**
      * @return Возвращает коллекцию User.
@@ -63,6 +68,22 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User saveUser(User user) {
         log.debug("Старт метода User saveUser(User user) с параметром {}", user);
+
+        log.debug("Отправляем уведомления пользователю о новых подписчиках, если они есть");
+
+        Set<User> newSetOfSubscribers = user.getSubscribers();
+        newSetOfSubscribers.removeAll(userRepository.findUserById(user.getId()).getSubscribers());
+        String userEmail = user.getEmail();
+
+        notifyService.notify(newSetOfSubscribers.stream().map(s -> {
+            return NotifyDto.builder()
+                    .subject("Новый подписчик")
+                    .text("Пользователь " + s.getUsername() + " подписался на вас")
+                    .email(userEmail)
+                    .creationTime(LocalDateTime.now())
+                    .status(NotifyStatusDto.NOT_SENT)
+                    .build();
+        }).collect(Collectors.toSet()));
 
         User save = userRepository.save(user);
         log.debug("Сохранили юзера в БД {}", save);

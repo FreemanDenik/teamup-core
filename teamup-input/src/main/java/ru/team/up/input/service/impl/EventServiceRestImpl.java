@@ -1,6 +1,7 @@
 package ru.team.up.input.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +11,13 @@ import ru.team.up.core.entity.EventType;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.core.service.NotifyService;
+import ru.team.up.core.service.UserService;
+import ru.team.up.dto.NotifyDto;
+import ru.team.up.dto.NotifyStatusDto;
 import ru.team.up.input.service.EventServiceRest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -19,12 +25,14 @@ import java.util.Set;
  * @author Pavel Kondrashov
  */
 
+@Slf4j
 @Service
 @Transactional
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventServiceRestImpl implements EventServiceRest {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private NotifyService notifyService;
 
 
     @Override
@@ -69,11 +77,26 @@ public class EventServiceRestImpl implements EventServiceRest {
 
     @Override
     public Event addParticipant(Long eventId, Long userId) {
+
         Event event = getEventById(eventId);
         Account participant = userRepository.getOne(userId);
         Set<User> participants = event.getParticipantsEvent();
         participants.add((User) participant);
         event.setParticipantsEvent(participants);
+
+        log.debug("Отправка уведомления создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
+
+        String message = "Пользователь " + participant.getUsername()
+                + " стал участником мероприятия " + event.getEventName();
+
+        notifyService.notify(NotifyDto.builder()
+                .email(event.getAuthorId().getEmail())
+                .subject(message)
+                .text(message)
+                .status(NotifyStatusDto.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build());
+
         return updateEvent(eventId, event);
     }
 
