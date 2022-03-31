@@ -51,7 +51,7 @@ public class EventsDefaultCreator {
                 .eventNumberOfParticipant((byte) 80)
                 .eventType(eventTypeRepository.getOne(3L))
                 .authorId(userRepository.findUserById(7L))
-                .status(statusRepository.getOne(3L))
+                .status(statusRepository.getOne(2L))
                 .build());
 
         eventRepository.save(Event.builder()

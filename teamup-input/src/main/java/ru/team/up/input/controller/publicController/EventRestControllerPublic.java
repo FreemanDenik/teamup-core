@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
+import ru.team.up.dto.SupParameterDto;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
-import ru.team.up.dto.*;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -23,6 +23,7 @@ import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.EventDtoResponse;
 import ru.team.up.input.service.EventServiceRest;
 import ru.team.up.input.wordmatcher.WordMatcher;
+import ru.team.up.sup.service.ParameterService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -47,6 +48,7 @@ import java.util.Map;
 public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
+    private final ParameterService parameterService;
     private MonitorProducerService monitoringProducerService;
 
 
@@ -81,6 +83,7 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
+
         EventDtoResponse eventDtoResponse = null;
         String dataEvent = null;
 

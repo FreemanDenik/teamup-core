@@ -14,6 +14,7 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.dto.SupParameterDto;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.*;
 import ru.team.up.input.payload.request.UserRequest;
@@ -21,11 +22,9 @@ import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * REST-контроллер для пользователей
@@ -40,6 +39,7 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
+    private final ParameterService parameterService;
     private MonitorProducerService monitoringProducerService;
 
     /**
@@ -50,23 +50,26 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение пользователя по id")
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable("id") Long userId) {
+    public UserDtoResponse getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
+        SupParameterDto<Boolean> param = (SupParameterDto<Boolean>)
+                parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+        if (param != null & !param.getParameterValue()) {
+            log.debug("Метод getUserById выключен параметром TEAMUP_CORE_GET_USER_BY_ID_ENABLED = false");
+            throw new RuntimeException("Method getUserById disabled by parameter TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+        }
+        UserDto user = UserMapper.INSTANCE
+                .mapUserToDto(userServiceRest.getUserById(userId));
 
-        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
-                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(userId))).build(),
-                HttpStatus.OK);
-
-        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
-                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
-                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
-
-
+        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(), "Id, Email и Username Юзера полученного по id ", dataUser);
         monitoringProducerService.send(reportDto);
-        return userDtoResponseResponseEntity;
+
+        return UserDtoResponse.builder()
+                .userDto(user)
+                .build();
     }
 
     /**
@@ -77,23 +80,22 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск пользователя по email")
     @GetMapping(value = "/email/{email:.+}/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDtoResponse> getUserByEmail(@PathVariable(value = "email") String userEmail) {
+    public UserDtoResponse getUserByEmail(@PathVariable(value = "email") String userEmail) {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
+        UserDto user = UserMapper.INSTANCE
+                .mapUserToDto(userServiceRest.getUserByEmail(userEmail));
 
-        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
-                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserByEmail(userEmail)))
-                        .build(), HttpStatus.OK);
-        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
-                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
-                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
-
+        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),
                 "Id, Email и Username Юзера полученного по email ", dataUser);
         monitoringProducerService.send(reportDto);
-        return userDtoResponseResponseEntity;
+
+        return UserDtoResponse.builder()
+                .userDto(user)
+                .build();
     }
 
     /**
@@ -104,15 +106,12 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск пользователя по имени")
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDtoResponse> getUserByUsername(@PathVariable(value = "username") String userUsername) {
+    public UserDtoResponse getUserByUsername(@PathVariable(value = "username") String userUsername) {
         log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
 
-        ResponseEntity<UserDtoResponse> userDtoResponseResponseEntity = new ResponseEntity<>(
-                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserByUsername(userUsername)))
-                        .build(), HttpStatus.OK);
-        String dataUser = userDtoResponseResponseEntity.getBody().getUserDto().getId() + " "
-                + userDtoResponseResponseEntity.getBody().getUserDto().getEmail() + " " +
-                userDtoResponseResponseEntity.getBody().getUserDto().getUsername();
+       UserDto user = UserMapper.INSTANCE
+               .mapUserToDto(userServiceRest.getUserByUsername(userUsername));
+        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
 
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -120,7 +119,10 @@ public class UserRestControllerPublic {
                 this.getClass(),
                 "Id, Email и Username Юзера полученного по имени ", dataUser);
         monitoringProducerService.send(reportDto);
-        return userDtoResponseResponseEntity;
+
+        return UserDtoResponse.builder()
+                .userDto(user)
+                .build();
     }
 
     /**
@@ -130,23 +132,23 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение списка всех пользователей")
     @GetMapping("/")
-    public ResponseEntity<List<User>> getUsersList() {
+    public List<User> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
         List<User> users = userServiceRest.getAllUsers();
 
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new RuntimeException("Список пользователей пуст");
         }
-
-        log.debug("Список пользователей получен");
 
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),
                 "Количество всех Юзеров", users.size());
         monitoringProducerService.send(reportDto);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+
+        log.debug("Список пользователей получен");
+        return users;
     }
 
     /**
@@ -157,20 +159,19 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск мероприятий по id пользователя")
     @GetMapping(value = "/event/{id}/owner", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDtoListResponse> getEventsByOwnerId(@PathVariable Long id) {
+    public EventDtoListResponse getEventsByOwnerId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
 
-        ResponseEntity<EventDtoListResponse> response = new ResponseEntity<>(
-                EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id)))
-                        .build(), HttpStatus.OK);
+        List<EventDto> eventList = EventMapper.INSTANCE
+                .mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id));
+
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),
-                "Количество всех мероприятий полученных по id пользователя", response.getBody()
-                        .getEventDtoList().size());
+                "Количество всех мероприятий полученных по id пользователя",eventList.size());
         monitoringProducerService.send(reportDto);
-        return response;
+        return EventDtoListResponse.builder().eventDtoList(eventList)
+                .build();
     }
 
     /**
@@ -181,20 +182,19 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Поиск мероприятий на которые подписан пользователь")
     @GetMapping(value = "/event/{id}/subscriber", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDtoListResponse> getEventsBySubscriberId(@PathVariable Long id) {
+    public EventDtoListResponse getEventsBySubscriberId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий на которые подписан пользователь с id: {}", id);
 
-        ResponseEntity<EventDtoListResponse> response = new ResponseEntity<>(
-                EventDtoListResponse.builder()
-                        .eventDtoList(EventMapper.INSTANCE.mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id)))
-                        .build(), HttpStatus.OK);
+        List<EventDto> eventList = EventMapper.INSTANCE
+                .mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id));
+
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),
-                "Количество всех мероприятий на которые подписан пользователь", response.getBody()
-                        .getEventDtoList().size());
+                "Количество всех мероприятий на которые подписан пользователь", eventList.size());
         monitoringProducerService.send(reportDto);
-        return response;
+        return EventDtoListResponse.builder().eventDtoList(eventList)
+                .build();
     }
 
     /**
@@ -206,18 +206,18 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Изменение пользователя")
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Account> updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
+    public Account updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
         log.debug("Получен запрос на обновление пользователя");
         Account existUser = userServiceRest.getUserById(userId);
 
         if (existUser == null) {
             log.error("Пользователь не найден");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new RuntimeException("Пользователь не найден");
         }
 
         Account newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
-        return new ResponseEntity<>(newUser, HttpStatus.OK);
+        return newUser;
     }
 
     /**
@@ -251,11 +251,11 @@ public class UserRestControllerPublic {
      */
     @Operation(summary = "Получение списка \"Топ популярных пользователей в городе\"")
     @GetMapping(value = "/top/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDtoListResponse> getTopUsersListInCity(@PathVariable(value = "city") String city) {
+    public UserDtoListResponse getTopUsersListInCity(@PathVariable(value = "city") String city) {
         log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
 
-        return new ResponseEntity<>(
-                UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city))).build(),
-                HttpStatus.OK);
+        return UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE
+                .mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
+                .build();
     }
 }

@@ -7,16 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.StatusRepository;
-import ru.team.up.core.repositories.UserMessageRepository;
 import ru.team.up.core.repositories.UserRepository;
+import ru.team.up.dto.NotifyDto;
+import ru.team.up.dto.NotifyStatusDto;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Alexey Tkachenko
@@ -28,11 +29,11 @@ import java.util.*;
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventServiceImpl implements EventService {
+
     private EventRepository eventRepository;
     private UserRepository userRepository;
     private StatusRepository statusRepository;
-    private UserMessageRepository userMessageRepository;
-    private SendMessageService sendMessageService;
+    private NotifyService notifyService;
 
     /**
      * @return Возвращает коллекцию Event.
@@ -51,7 +52,6 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     *
      * @param authorId Id пользователя
      * @return Получение всех мероприятий пользователя
      */
@@ -63,7 +63,6 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     *
      * @param city город проведения мероприятий
      * @return Получение всех мероприятий в городе
      */
@@ -106,18 +105,22 @@ public class EventServiceImpl implements EventService {
         log.debug("Формируем список подписчиков пользователя");
         Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
 
+        log.debug("Создание уведомления {} подписчикам", userSubscribers.size());
 
-        log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder().messageOwner(userCreatedEventDB)
-                .message("Пользователь " + userCreatedEventDB.getUsername()
-                        + " создал мероприятие " + event.getEventName()
-                        + " с приватностью" + event.getEventPrivacy())
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+        String subject = "Новое мероприятие " + event.getEventName();
+        String text = "Пользователь " + userCreatedEventDB.getUsername()
+                + " создал мероприятие " + event.getEventName()
+                + " с приватностью" + event.getEventPrivacy();
 
-        log.debug("Отправка сообщения {} подписчикам", userSubscribers.size());
-        sendMessageService.sendMessage(userSubscribers, message);
+        notifyService.notify(userSubscribers.stream().map(u -> {
+            return NotifyDto.builder()
+                    .subject(subject)
+                    .text(text)
+                    .email(u.getEmail())
+                    .status(NotifyStatusDto.NOT_SENT)
+                    .creationTime(LocalDateTime.now())
+                    .build();
+        }).collect(Collectors.toList()));
 
         log.debug("Старт метода сохранения мероприятия");
         Event save = eventRepository.save(event);
@@ -150,17 +153,18 @@ public class EventServiceImpl implements EventService {
         log.debug("Получаем мероприятие по ID: {}", eventId);
         Event event = getOneEvent(eventId);
 
-        log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(user)
-                .message("Пользователь " + user.getUsername()
-                        + " стал участником мероприятия " + event.getEventName())
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+        log.debug("Отправка уведомления создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
 
-        log.debug("Отправка сообщения создателю c ID: {} для мероприятия с ID: {}", event.getAuthorId(), eventId);
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+        String message = "Пользователь " + user.getUsername()
+                + " стал участником мероприятия " + event.getEventName();
+
+        notifyService.notify(NotifyDto.builder()
+                .email(event.getAuthorId().getEmail())
+                .subject(message)
+                .text(message)
+                .status(NotifyStatusDto.NOT_SENT)
+                        .creationTime(LocalDateTime.now())
+                .build());
 
         event.addParticipant(user);
         log.debug("Добавили нового участника с ID {}", user.getId());
@@ -171,7 +175,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public void eventApprovedByModerator(Long eventId){
+    public void eventApprovedByModerator(Long eventId) {
 
         log.debug("Получаем мероприятие по ID");
         Event event = getOneEvent(eventId);
@@ -179,16 +183,16 @@ public class EventServiceImpl implements EventService {
         log.debug("Меняем статус мероприятия на одобренный");
         event.setStatus((statusRepository.getOne(1L)));
 
-        log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(event.getAuthorId())
-                .message("Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.")
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
+        log.debug("Создаём уведомление автору мероприятия");
 
-        log.debug("Отправляем сообщение создателю мероприятия");
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+        String message = "Мероприятие " + event.getEventName() + " прошло проверку и одобрено модератором.";
+        notifyService.notify(NotifyDto.builder()
+                .email(event.getAuthorId().getEmail())
+                .subject(message)
+                .text(message)
+                .status(NotifyStatusDto.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build());
 
         eventRepository.save(event);
         log.debug("Сохраняем мероприятие в БД {}", event.getEventName());
@@ -196,7 +200,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public void eventClosedByModerator(Long eventId){
+    public void eventClosedByModerator(Long eventId) {
 
         log.debug("Получаем мероприятие {} по ID", eventId);
         Event event = getOneEvent(eventId);
@@ -204,16 +208,17 @@ public class EventServiceImpl implements EventService {
         log.debug("Меняем статус мероприятия {} на закрытый модератором", event.getId());
         event.setStatus((statusRepository.getOne(4L)));
 
-        log.debug("Создаем и сохраняем сообщение");
-        UserMessage message = UserMessage.builder()
-                .messageOwner(event.getAuthorId())
-                .message("Мероприятие " + event.getEventName() + " закрыто модератором.")
-                .status(statusRepository.getOne(5L))
-                .messageCreationTime(LocalDateTime.now()).build();
-        userMessageRepository.save(message);
-
         log.debug("Отправляем сообщение создателю {} мероприятия {}", event.getAuthorId(), event.getId());
-        sendMessageService.sendMessage(event.getAuthorId(), message);
+
+        String message = "Мероприятие " + event.getEventName() + " закрыто модератором.";
+
+        notifyService.notify(NotifyDto.builder()
+                .email(event.getAuthorId().getEmail())
+                .subject(message)
+                .text(message)
+                .status(NotifyStatusDto.NOT_SENT)
+                .creationTime(LocalDateTime.now())
+                .build());
 
         eventRepository.save(event);
         log.debug("Сохраняем мероприятие {} в БД ", event.getId());
@@ -229,7 +234,6 @@ public class EventServiceImpl implements EventService {
     }
 
     /**
-     *
      * @param subscriberId Id пользователя
      * @return Поиск мероприятий на которые подписан пользователь
      */

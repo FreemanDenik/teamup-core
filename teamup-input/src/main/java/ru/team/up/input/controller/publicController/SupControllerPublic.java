@@ -22,10 +22,8 @@ import java.util.List;
 public class SupControllerPublic {
     private SupService supService;
 
-
-
     @PostMapping("/get")
-    public ResponseEntity<List<SupParameterDto>> get() {
+    public ResponseEntity<List<SupParameterDto<?>>> get() {
         return new ResponseEntity<>(supService.getListParameters(), HttpStatus.OK);
     }
 

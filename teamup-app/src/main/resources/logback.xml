@@ -4,4 +4,5 @@
     <logger name="org.springframework" level="OFF"/>
     <logger name="org.apache" level="OFF"/>
     <logger name="kafka" level="OFF"/>
+    <logger name="sun.rmi" level="OFF"/>
 </configuration>

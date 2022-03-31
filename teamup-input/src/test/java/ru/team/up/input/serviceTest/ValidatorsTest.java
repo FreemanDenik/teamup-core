@@ -1,10 +1,7 @@
 package ru.team.up.input.serviceTest;
 
 import org.junit.Test;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.team.up.input.TeamupInputApplication;
 import ru.team.up.input.service.ValidatorService;
 import ru.team.up.input.service.impl.EmailValidatorService;
 import ru.team.up.input.service.impl.PhoneNumberValidatorService;
