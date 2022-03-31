@@ -36,7 +36,8 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
         ReportDto reportDto = ReportDto.builder()
                 .control(control)
                 .reportName(cl.getSimpleName())
-                .reportStatus(Optional.of(param2).isEmpty() || (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
+                .reportStatus(Optional.of(param2).isEmpty() ||
+                        (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
                 .time(new Date())
                 .parameters(parameters(param1, param2)).build();
 
