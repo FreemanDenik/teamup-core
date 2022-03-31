@@ -40,7 +40,16 @@
             <version>${spring.boot.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+        <groupId>ru.team.up.dto</groupId>
+        <artifactId>teamup-dto</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>compile</scope>
+    </dependency>
+        <dependency>
+            <groupId>ru.team.up</groupId>
+            <artifactId>teamup-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

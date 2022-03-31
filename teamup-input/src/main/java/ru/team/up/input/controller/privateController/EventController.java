@@ -5,9 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.EventService;
+import ru.team.up.dto.AppModuleNameDto;
+import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ReportDto;
+import ru.team.up.dto.ReportStatusDto;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
@@ -26,6 +32,7 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventController {
     private EventService eventService;
+    private MonitorProducerService monitoringProducerService;
 
     /**
      * @return Результат работы метода eventService.getAllEvents()) в виде коллекции мероприятий
@@ -37,6 +44,12 @@ public class EventController {
 
         ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(eventService.getAllEvents());
         log.debug("Получили ответ {}", responseEntity);
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество всех мероприятий", responseEntity.getBody().size());
+        monitoringProducerService.send(reportDto);
 
         return responseEntity;
     }
@@ -52,7 +65,13 @@ public class EventController {
 
         ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.getOneEvent(id));
         log.debug("Получили ответ {}", responseEntity);
-
+        String dataEvent = responseEntity.getBody().getId() + " "
+                + responseEntity.getBody().getEventName();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Id и name Мероприятия полученного по идентификатору ", dataEvent);
+        monitoringProducerService.send(reportDto);
         return responseEntity;
     }
 
@@ -69,7 +88,13 @@ public class EventController {
 
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Получили ответ {}", responseEntity);
-
+        String dataEvent = responseEntity.getBody().getId() + " "
+                + responseEntity.getBody().getEventName();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Id и name Мероприятия полученного по идентификатору ", dataEvent);
+        monitoringProducerService.send(reportDto);
         return responseEntity;
     }
 

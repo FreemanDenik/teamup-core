@@ -7,11 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.dto.SupParameterDto;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -25,7 +27,11 @@ import ru.team.up.sup.service.ParameterService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * REST-контроллер для мероприятий
@@ -43,6 +49,8 @@ public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
     private final ParameterService parameterService;
+    private MonitorProducerService monitoringProducerService;
+
 
     /**
      * Метод получения списка всех мероприятий
@@ -53,10 +61,16 @@ public class EventRestControllerPublic {
     @GetMapping
     public EventDtoListResponse getAllEvents() {
         log.debug("Получение запроса на список мероприятий");
-
-        return EventDtoListResponse.builder().eventDtoList(
+        EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
                 .build();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество всех мероприятий", eventDtoListResponse.getEventDtoList().size());
+        monitoringProducerService.send(reportDto);
+
+        return eventDtoListResponse;
     }
 
     /**
@@ -69,15 +83,26 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
-        SupParameterDto<Boolean> enabled = (SupParameterDto<Boolean>) parameterService
-                .getParamByName("TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
-        if (enabled != null & !enabled.getParameterValue()) {
-            log.debug("Метод findEventById выключен параметром TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED = false");
-            throw new RuntimeException("Method findEventById disabled by parameter TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED");
+
+        EventDtoResponse eventDtoResponse = null;
+        String dataEvent = null;
+
+        try {
+            eventDtoResponse = EventDtoResponse.builder().eventDto(
+                    EventMapper.INSTANCE.mapEventToDto(
+                            eventServiceRest.getEventById(eventId))).build();
+            dataEvent = eventDtoResponse.getEventDto().getId() + " "
+                    + eventDtoResponse.getEventDto().getEventName();
+        } catch (Exception e) {
+            System.out.println("ER ------- OR" + e);
         }
-        return EventDtoResponse.builder().eventDto(
-                EventMapper.INSTANCE.mapEventToDto(
-                        eventServiceRest.getEventById(eventId))).build();
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Id и name Мероприятия полученного по идентификатору ", dataEvent);
+        monitoringProducerService.send(reportDto);
+        return eventDtoResponse;
     }
 
     /**
@@ -91,9 +116,17 @@ public class EventRestControllerPublic {
     public EventDtoListResponse getAllEventByCity(@PathVariable String city) {
         log.debug("Запрос на поиск мероприятий по городу city: {}", city);
 
-        return EventDtoListResponse.builder().eventDtoList(
+        EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCity(city)))
                 .build();
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество мероприятий по city", eventDtoListResponse.getEventDtoList().size());
+        monitoringProducerService.send(reportDto);
+
+        return eventDtoListResponse;
     }
 
     /**
@@ -107,9 +140,15 @@ public class EventRestControllerPublic {
     public EventDtoListResponse findEventsByName(@PathVariable("eventName") String eventName) {
         log.debug("Получен запрос на поиск мероприятий по названию {}", eventName);
 
-        return EventDtoListResponse.builder().eventDtoList(
+        EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getEventByName(eventName)))
                 .build();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество мероприятий по названию", eventDtoListResponse.getEventDtoList().size());
+        monitoringProducerService.send(reportDto);
+        return eventDtoListResponse;
     }
 
     /**
@@ -130,6 +169,13 @@ public class EventRestControllerPublic {
         }
 
         log.debug("Мероприятия от автора {} найдены", author);
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество мероприятий по автору", events.size());
+        monitoringProducerService.send(reportDto);
+
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
@@ -151,6 +197,15 @@ public class EventRestControllerPublic {
         }
 
         log.debug("Мероприятия с типом: {} найдены", eventType);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("Size list of Events: ", events.size());
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество мероприятий по типу", events.size());
+        monitoringProducerService.send(reportDto);
+
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
