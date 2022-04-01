@@ -10,6 +10,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import ru.team.up.dto.ReportDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,12 +33,12 @@ public class KafkaProducerConfig {
     //
     // ==============  После добавления модуля DTO - изменить Object на Report   =====================
     //
-    private ProducerFactory<String, Object> producerFactory() {
+    private ProducerFactory<String, ReportDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate() {
+    public KafkaTemplate<String, ReportDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

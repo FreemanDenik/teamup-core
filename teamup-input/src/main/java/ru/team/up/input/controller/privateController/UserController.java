@@ -8,11 +8,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.UserMapper;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.UserService;
+import ru.team.up.dto.AppModuleNameDto;
+import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ReportDto;
+import ru.team.up.dto.ReportStatusDto;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -22,7 +28,6 @@ import java.util.List;
 
 /**
  * @author Alexey Tkachenko
- *
  * @link localhost:8080/swagger-ui.html
  * Документация API
  */
@@ -37,13 +42,14 @@ public class UserController {
     //TODO По правильному нужно перевести все на UserServiceRest! Это нужно сделать при подкручивании приватных контроллеров
     private UserService userService;
     private UserServiceRest userServiceRest;
+    private MonitorProducerService monitoringProducerService;
 
     /**
      * @return Результат работы метода userService.getAllUsers() в виде коллекции юзеров
      * в теле ResponseEntity
      */
     @GetMapping
-    @Operation(summary ="Получение списка всех юзеров")
+    @Operation(summary = "Получение списка всех юзеров")
     public ResponseEntity<List<User>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
 
@@ -54,7 +60,11 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.debug("Получили ответ {}", responseEntity);
-
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Количество всех Юзеров", responseEntity.getBody().size());
+        monitoringProducerService.send(reportDto);
         return responseEntity;
     }
 
@@ -64,13 +74,24 @@ public class UserController {
      * в теле ResponseEntity
      */
     @GetMapping("/{id}")
-    @Operation(summary ="Получение юзера по id")
+    @Operation(summary = "Получение юзера по id")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
 
-        return new ResponseEntity<>(
+        ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
                 UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(id))).build(),
                 HttpStatus.OK);
+        String dataUser = response.getBody().getUserDto().getId() + " "
+                + response.getBody().getUserDto().getEmail() + " " +
+                response.getBody().getUserDto().getUsername();
+
+
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
+                this.getClass(),
+                "Id, Email и Username Юзера полученного по id ", dataUser);
+        monitoringProducerService.send(reportDto);
+        return response;
     }
 
     /**
@@ -79,7 +100,7 @@ public class UserController {
      * в теле ResponseEntity
      */
     @PostMapping
-    @Operation(summary ="Создание юзера")
+    @Operation(summary = "Создание юзера")
     public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
@@ -100,7 +121,7 @@ public class UserController {
      * в теле ResponseEntity
      */
     @PatchMapping
-    @Operation(summary ="Обновление юзера")
+    @Operation(summary = "Обновление юзера")
     public ResponseEntity<Account> updateUser(@RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
 
@@ -120,7 +141,7 @@ public class UserController {
      * @return Объект ResponseEntity со статусом OK
      */
     @DeleteMapping("/{id}")
-    @Operation(summary ="Удаление юзера")
+    @Operation(summary = "Удаление юзера")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> deleteUser(@PathVariable Long id) с параметром {}", id);
 
