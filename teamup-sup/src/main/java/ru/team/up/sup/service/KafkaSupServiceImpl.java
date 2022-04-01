@@ -13,17 +13,17 @@ public class KafkaSupServiceImpl implements KafkaSupService {
 
     @Value(value = "${sup.kafka.system.name}")
     private AppModuleNameDto systemName;
-    @Value(value = "${sup.kafka.init.topic.name}")
-    private String initTopic;
-    private final KafkaTemplate<String, AppModuleNameDto> kafkaTemplate;
+    @Value(value = "${sup.kafka.topic.name}")
+    private String topic;
+    private final KafkaTemplate<AppModuleNameDto, AppModuleNameDto> kafkaTemplate;
 
     @Autowired
-    public KafkaSupServiceImpl(KafkaTemplate<String, AppModuleNameDto> kafkaModuleNameTemplate) {
+    public KafkaSupServiceImpl(KafkaTemplate<AppModuleNameDto, AppModuleNameDto> kafkaModuleNameTemplate) {
         this.kafkaTemplate = kafkaModuleNameTemplate;
     }
 
     @Override
     public void getAllModuleParameters() {
-        kafkaTemplate.send(initTopic, systemName);
+        kafkaTemplate.send(topic, AppModuleNameDto.TEAMUP_SUP, systemName);
     }
 }

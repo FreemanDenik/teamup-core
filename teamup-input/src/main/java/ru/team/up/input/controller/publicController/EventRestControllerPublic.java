@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
-import ru.team.up.dto.SupParameterDto;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ReportDto;
+import ru.team.up.dto.SupParameterDto;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -27,8 +29,6 @@ import ru.team.up.sup.service.ParameterService;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +90,7 @@ public class EventRestControllerPublic {
                 .getParamByName(enabledParamName);
         if (param != null && !param.getParameterValue()) {
             log.debug("Метод findEventById выключен параметром {} = false", enabledParamName);
-            throw new RuntimeException("Method findEventById disabled by parameter" + enabledParamName);
+            throw new RuntimeException("Method findEventById disabled by parameter " + enabledParamName);
         }
         try {
             eventDtoResponse = EventDtoResponse.builder().eventDto(
