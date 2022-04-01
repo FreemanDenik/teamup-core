@@ -1,10 +1,11 @@
 package ru.team.up.core.service;
 
-import org.springframework.data.jpa.repository.Query;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alexey Tkachenko
@@ -39,4 +40,13 @@ public interface EventService {
     void updateNumberOfViews(Long id);
 
     List<Event> getAllEventsBySubscriberId(Long subscriberId);
+
+    /**
+     * @author Nail Faizullin, Dmitry Koryanov
+     * @param startDateTime Время события мероприятия от
+     * @param endDateTime Время события мероприятия до
+     *           Метод получает map-у с предстоящими в указанном интервале событиями и пользователями, которые
+     *                    участвуют в этих событиях
+     */
+    Map<Event, List<User>> getEventsUsers(LocalDateTime startDateTime, LocalDateTime endDateTime);
 }
