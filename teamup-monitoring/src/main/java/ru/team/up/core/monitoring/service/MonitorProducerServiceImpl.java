@@ -37,8 +37,7 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
                 .control(control)
                 .reportName(cl.getSimpleName())
                 .reportStatus(Optional.of(param2).isEmpty() ||
-                        (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
-                .time(new Date())
+                        (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS).time(new Date())
                 .parameters(parameters(param1, param2)).build();
 
         if (principal.toString().equals("anonymousUser")) {
