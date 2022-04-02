@@ -243,4 +243,30 @@ public class EventServiceImpl implements EventService {
         log.debug("Старт метода Поиск мероприятий на которые подписан пользователь");
         return eventRepository.getAllEventsBySubscriberId(subscriberId);
     }
+
+    /**
+     * @author Nail Faizullin, Dmitry Koryanov
+     * @param startDateTime Время события мероприятия от
+     * @param endDateTime Время события мероприятия до
+     *           Метод получает map-у с предстоящими в указанном интервале событиями и пользователями, которые
+     *                    участвуют в этих событиях
+     */
+    @Override
+    public Map<Event, List<User>> getEventsUsers(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+
+        log.debug("startDateTime: "+startDateTime);
+        log.debug("endDateTime: "+endDateTime);
+
+        return eventRepository
+                .findByTimeEventBetween(startDateTime, endDateTime)
+                .stream()
+                .collect(Collectors.toMap(e -> e, e -> {
+                    return eventRepository
+                            .getEventUserIds(e.getId())
+                            .stream()
+                            .map(userId -> userRepository.findUserById(userId))
+                            .collect(Collectors.toList());
+                }));
+    }
+
 }
