@@ -64,11 +64,10 @@ public class CityServiceImpl implements CityService {
     public List<City> getSomeCitiesByName(String name) {
         log.debug("Поиск списка городов по имени {}", name);
         int citiesNumber = 10;
-        SupParameterDto<Integer> countReturnCity = (SupParameterDto<Integer>)
+        SupParameterDto<Integer> param = (SupParameterDto<Integer>)
                 parameterService.getParamByName("TEAMUP_CORE_COUNT_RETURN_CITY");
-        if (countReturnCity != null & countReturnCity.getParameterValue() > 0) {
-            citiesNumber = countReturnCity.getParameterValue();
-            log.debug("Количество возвращаемых городов изменено параметром на {}", citiesNumber);
+        if (param != null && param.getParameterValue() > 0) {
+            citiesNumber = param.getParameterValue();
         }
         return cityRepository.getSomeCitiesByName(name).stream().limit(citiesNumber).collect(Collectors.toList());
     }

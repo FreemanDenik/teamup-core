@@ -52,11 +52,12 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
+        String enabledParamName = "TEAMUP_CORE_GET_USER_BY_ID_ENABLED";
         SupParameterDto<Boolean> param = (SupParameterDto<Boolean>)
-                parameterService.getParamByName("TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
-        if (param != null & !param.getParameterValue()) {
-            log.debug("Метод getUserById выключен параметром TEAMUP_CORE_GET_USER_BY_ID_ENABLED = false");
-            throw new RuntimeException("Method getUserById disabled by parameter TEAMUP_CORE_GET_USER_BY_ID_ENABLED");
+                parameterService.getParamByName(enabledParamName);
+        if (param != null && !param.getParameterValue()) {
+            log.debug("Метод getUserById выключен параметром {} = false", enabledParamName);
+            throw new RuntimeException("Method getUserById disabled by parameter " + enabledParamName);
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserById(userId));
@@ -135,7 +136,6 @@ public class UserRestControllerPublic {
     public List<User> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
         List<User> users = userServiceRest.getAllUsers();
-
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
             throw new RuntimeException("Список пользователей пуст");
@@ -209,12 +209,10 @@ public class UserRestControllerPublic {
     public Account updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {
         log.debug("Получен запрос на обновление пользователя");
         Account existUser = userServiceRest.getUserById(userId);
-
         if (existUser == null) {
             log.error("Пользователь не найден");
             throw new RuntimeException("Пользователь не найден");
         }
-
         Account newUser = userServiceRest.updateUser(user, existUser.getId());
         log.debug("Пользователь обновлен");
         return newUser;
@@ -231,14 +229,11 @@ public class UserRestControllerPublic {
     public ResponseEntity<Account> deleteUserById(@PathVariable("id") Long userId) {
         log.debug("Получен запрос на удаления пользователя с id = {}", userId);
         Account user = userServiceRest.getUserById(userId);
-
         if (user == null) {
             log.error("Пользователь с id = {} не найден", userId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
         userServiceRest.deleteUserById(userId);
-
         log.debug("Пользователь с id = {} успешно удален", userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -253,9 +248,8 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/top/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoListResponse getTopUsersListInCity(@PathVariable(value = "city") String city) {
         log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
-
-        return UserDtoListResponse.builder().userDtoList(UserMapper.INSTANCE
-                .mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
+        return UserDtoListResponse.builder().userDtoList(
+                UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
                 .build();
     }
 }

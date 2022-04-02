@@ -1,7 +1,6 @@
 package ru.team.up.sup.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,22 +19,15 @@ import java.util.Map;
 @PropertySource("classpath:sup.properties")
 public class KafkaConsumerSupConfig {
 
-    /**
-     * Значение groupId, которе определяет группу консьюмеров, в рамках которой доставляется один экземпляр сообщения.
-     * Например, при трех консьюмеров в одной группе, слушающих один Topic сообщение достанется, только, одному
-     */
     @Value(value = "${sup.kafka.group.id}")
     private String groupId;
-    /**
-     * Адрес bootstrap сервера kafka
-     */
     @Value(value = "${sup.kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
     public Map<String, Object> jsonConsumerConfig() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         configProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
@@ -44,16 +36,16 @@ public class KafkaConsumerSupConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, ListSupParameterDto> listDtoConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig(), new StringDeserializer(), new JsonDeserializer<>(ListSupParameterDto.class));
+    public ConsumerFactory<AppModuleNameDto, ListSupParameterDto> listDtoConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(jsonConsumerConfig());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ListSupParameterDto> listDtoKafkaContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ListSupParameterDto> factory =
+    public ConcurrentKafkaListenerContainerFactory<AppModuleNameDto, ListSupParameterDto> listDtoKafkaContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<AppModuleNameDto, ListSupParameterDto> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(listDtoConsumerFactory());
-        factory.setRecordFilterStrategy(param -> param.value().getModuleName() != AppModuleNameDto.TEAMUP_CORE);
+        factory.setRecordFilterStrategy(param -> param.key() != AppModuleNameDto.TEAMUP_CORE);
         return factory;
     }
 }
