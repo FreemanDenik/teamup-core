@@ -25,9 +25,10 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
 
     @Override
     public ReportDto constructReportDto(Object principal, ControlDto control, Class cl, Map<String, Object> params) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         ReportDto reportDto = ReportDto.builder()
                 .control(control)
-                .reportName(cl.getSimpleName())
+                .reportName(cl.getSimpleName() + "/" + stackTrace[2].getMethodName())
                 .reportStatus(ReportStatusDto.SUCCESS)
                 .time(new Date())
                 .parameters(params).build();
