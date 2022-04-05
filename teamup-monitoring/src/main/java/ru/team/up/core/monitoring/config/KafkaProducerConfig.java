@@ -30,9 +30,6 @@ public class KafkaProducerConfig {
         return property;
     }
 
-    //
-    // ==============  После добавления модуля DTO - изменить Object на Report   =====================
-    //
     private ProducerFactory<String, ReportDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }

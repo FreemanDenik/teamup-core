@@ -17,7 +17,10 @@ import ru.team.up.dto.ReportStatusDto;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -41,16 +44,15 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Старт метода ResponseEntity<List<Event>> getAllEvents()");
-
         ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(eventService.getAllEvents());
         log.debug("Получили ответ {}", responseEntity);
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Количество всех мероприятий", responseEntity.getBody().size());
-        monitoringProducerService.send(reportDto);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("Количество всех мероприятий ",
+                Objects.requireNonNull(responseEntity.getBody()).size());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return responseEntity;
     }
 
@@ -62,16 +64,15 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> getOneEvent(@PathVariable Long id) с параметром {}", id);
-
         ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.getOneEvent(id));
         log.debug("Получили ответ {}", responseEntity);
-        String dataEvent = responseEntity.getBody().getId() + " "
-                + responseEntity.getBody().getEventName();
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Id и name Мероприятия полученного по идентификатору ", dataEvent);
-        monitoringProducerService.send(reportDto);
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID мероприятия ", Objects.requireNonNull(responseEntity.getBody()).getId());
+        monitoringParameters.put("Название мероприятия ", responseEntity.getBody().getEventName());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return responseEntity;
     }
 
@@ -83,18 +84,16 @@ public class EventController {
     @GetMapping("viewEvent/{id}")
     public ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) с параметром {}", id);
-
         eventService.updateNumberOfViews(id);
-
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Получили ответ {}", responseEntity);
-        String dataEvent = responseEntity.getBody().getId() + " "
-                + responseEntity.getBody().getEventName();
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Id и name Мероприятия полученного по идентификатору ", dataEvent);
-        monitoringProducerService.send(reportDto);
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID мероприятия ", Objects.requireNonNull(responseEntity.getBody()).getId());
+        monitoringParameters.put("Название мероприятия ", responseEntity.getBody().getEventName());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return responseEntity;
     }
 
