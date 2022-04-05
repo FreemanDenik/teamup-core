@@ -2,8 +2,6 @@ package ru.team.up.sup.service;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.SupParameterDto;
 import ru.team.up.sup.entity.SupParameter;
@@ -14,7 +12,6 @@ import java.util.Set;
 
 @Data
 @Slf4j
-@PropertySource("classpath:defaultParameters.properties")
 @Service
 public class ParameterServiceImp implements ParameterService {
 
@@ -23,13 +20,6 @@ public class ParameterServiceImp implements ParameterService {
             getEventByIdEnabled,
             getUserByIdEnabled,
             countReturnCity);
-
-    @Value("${getEventByIdEnabled}")
-    private Boolean defaultGetEventByIdEnabled;
-    @Value("${getUserByIdEnabled}")
-    private Boolean defaultGetUserByIdEnabled;
-    @Value("${countReturnCity}")
-    private Integer defaultCountReturnCity;
 
     @Override
     public List<SupParameterDto<?>> getAll() {
@@ -49,14 +39,15 @@ public class ParameterServiceImp implements ParameterService {
 
     @Override
     public void load(SupParameterDto dto) {
-        log.debug("Load enter");
+        log.debug("Method load enter");
         for (SupParameter parameter : parameterSet) {
             if (dto.getParameterName().equals(parameter.getName())) {
                 log.debug("Параметр {} со значением {}", parameter.getName(), parameter.getValue());
                 parameter.setValue(parameterDao.findByName(parameter.getName()).getParameterValue());
                 log.debug("Теперь имеет значение {}", parameter.getValue());
+                break;
             }
         }
-        log.debug("Load exit");
+        log.debug("Method load exit");
     }
 }

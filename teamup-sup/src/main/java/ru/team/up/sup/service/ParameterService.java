@@ -12,15 +12,12 @@ public interface ParameterService {
 
     SupParameter<Boolean> getEventByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED",
-            false,
             false);
     SupParameter<Boolean> getUserByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_USER_BY_ID_ENABLED",
-            false,
             false);
     SupParameter<Integer> countReturnCity = new SupParameter<>(
             "TEAMUP_CORE_COUNT_RETURN_CITY",
-            1,
             1);
 
     List<SupParameterDto<?>> getAll();
