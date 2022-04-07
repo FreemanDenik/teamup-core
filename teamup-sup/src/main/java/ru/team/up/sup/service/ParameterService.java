@@ -26,5 +26,7 @@ public interface ParameterService {
 
     SupParameterDto<?> getParamByName(String name);
 
-    void load(SupParameterDto<?> parameter);
+    void updateStaticField(SupParameterDto<?> parameter);
+
+    void initialize();
 }

@@ -25,7 +25,7 @@ public class KafkaParameterListener {
     }
 
     @PostConstruct
-    public void init() {
+    private void init() {
         kafkaSupService.getAllModuleParameters();
     }
 
