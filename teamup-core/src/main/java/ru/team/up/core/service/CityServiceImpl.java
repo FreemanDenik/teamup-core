@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.repositories.CityRepository;
-import ru.team.up.dto.SupParameterDto;
 import ru.team.up.sup.service.ParameterService;
 
 import java.util.List;
@@ -17,12 +16,10 @@ import java.util.stream.Collectors;
 public class CityServiceImpl implements CityService {
 
     private final CityRepository cityRepository;
-    private final ParameterService parameterService;
 
     @Autowired
-    public CityServiceImpl(CityRepository cityRepository, ParameterService parameterService) {
+    public CityServiceImpl(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
-        this.parameterService = parameterService;
     }
 
     @Override
@@ -63,12 +60,9 @@ public class CityServiceImpl implements CityService {
     @Override
     public List<City> getSomeCitiesByName(String name) {
         log.debug("Поиск списка городов по имени {}", name);
-        int citiesNumber = 10;
-        SupParameterDto<Integer> param = (SupParameterDto<Integer>)
-                parameterService.getParamByName("TEAMUP_CORE_COUNT_RETURN_CITY");
-        if (param != null && param.getParameterValue() > 0) {
-            citiesNumber = param.getParameterValue();
-        }
-        return cityRepository.getSomeCitiesByName(name).stream().limit(citiesNumber).collect(Collectors.toList());
+        return cityRepository.getSomeCitiesByName(name)
+                .stream()
+                .limit(ParameterService.countReturnCity.getValue())
+                .collect(Collectors.toList());
     }
 }

@@ -15,7 +15,6 @@ import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.dto.ReportDto;
-import ru.team.up.dto.SupParameterDto;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -48,7 +47,6 @@ import java.util.Map;
 public class EventRestControllerPublic {
     private final EventServiceRest eventServiceRest;
     private final WordMatcher wordMatcher;
-    private final ParameterService parameterService;
     private MonitorProducerService monitoringProducerService;
 
 
@@ -83,15 +81,12 @@ public class EventRestControllerPublic {
     @GetMapping(value = "/id/{id}")
     public EventDtoResponse findEventById(@PathVariable("id") Long eventId) {
         log.debug("Получен запрос на поиск мероприятия по id: {}", eventId);
+        if (!ParameterService.getEventByIdEnabled.getValue()) {
+            log.debug("Метод findEventById выключен параметром getEventByIdEnabled = false");
+            throw new RuntimeException("Method findEventById is disabled by parameter getEventByIdEnabled");
+        }
         EventDtoResponse eventDtoResponse = null;
         String dataEvent = null;
-        String enabledParamName = "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED";
-        SupParameterDto<Boolean> param = (SupParameterDto<Boolean>) parameterService
-                .getParamByName(enabledParamName);
-        if (param != null && !param.getParameterValue()) {
-            log.debug("Метод findEventById выключен параметром {} = false", enabledParamName);
-            throw new RuntimeException("Method findEventById disabled by parameter " + enabledParamName);
-        }
         try {
             eventDtoResponse = EventDtoResponse.builder().eventDto(
                     EventMapper.INSTANCE.mapEventToDto(

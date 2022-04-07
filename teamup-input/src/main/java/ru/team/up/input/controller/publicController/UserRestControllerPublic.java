@@ -14,9 +14,11 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.mappers.UserMapper;
-import ru.team.up.dto.SupParameterDto;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
-import ru.team.up.dto.*;
+import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.EventDto;
+import ru.team.up.dto.ReportDto;
+import ru.team.up.dto.UserDto;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
 import ru.team.up.input.response.UserDtoListResponse;
@@ -39,7 +41,6 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
     private final UserServiceRest userServiceRest;
-    private final ParameterService parameterService;
     private MonitorProducerService monitoringProducerService;
 
     /**
@@ -52,12 +53,9 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserById(@PathVariable("id") Long userId) {
         log.debug("Запрос на поиск пользователя с id = {}", userId);
-        String enabledParamName = "TEAMUP_CORE_GET_USER_BY_ID_ENABLED";
-        SupParameterDto<Boolean> param = (SupParameterDto<Boolean>)
-                parameterService.getParamByName(enabledParamName);
-        if (param != null && !param.getParameterValue()) {
-            log.debug("Метод getUserById выключен параметром {} = false", enabledParamName);
-            throw new RuntimeException("Method getUserById disabled by parameter " + enabledParamName);
+        if (!ParameterService.getUserByIdEnabled.getValue()) {
+            log.debug("Метод getUserById выключен параметром getUserByIdEnabled = false");
+            throw new RuntimeException("Method getUserById disabled by parameter getUserByIdEnabled");
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserById(userId));
@@ -110,8 +108,8 @@ public class UserRestControllerPublic {
     public UserDtoResponse getUserByUsername(@PathVariable(value = "username") String userUsername) {
         log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
 
-       UserDto user = UserMapper.INSTANCE
-               .mapUserToDto(userServiceRest.getUserByUsername(userUsername));
+        UserDto user = UserMapper.INSTANCE
+                .mapUserToDto(userServiceRest.getUserByUsername(userUsername));
         String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
 
 
@@ -168,7 +166,7 @@ public class UserRestControllerPublic {
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
                 this.getClass(),
-                "Количество всех мероприятий полученных по id пользователя",eventList.size());
+                "Количество всех мероприятий полученных по id пользователя", eventList.size());
         monitoringProducerService.send(reportDto);
         return EventDtoListResponse.builder().eventDtoList(eventList)
                 .build();
@@ -249,7 +247,7 @@ public class UserRestControllerPublic {
     public UserDtoListResponse getTopUsersListInCity(@PathVariable(value = "city") String city) {
         log.debug("Получен запрос на список \"Топ популярных пользователей в городе\" в городе: {}", city);
         return UserDtoListResponse.builder().userDtoList(
-                UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
+                        UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
                 .build();
     }
 }
