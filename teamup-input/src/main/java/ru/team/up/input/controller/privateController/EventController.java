@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.EventService;
-import ru.team.up.dto.AppModuleNameDto;
-import ru.team.up.dto.ControlDto;
-import ru.team.up.dto.ReportDto;
-import ru.team.up.dto.ReportStatusDto;
+import ru.team.up.dto.*;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
@@ -44,11 +41,12 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<Event>> getAllEvents() {
         log.debug("Старт метода ResponseEntity<List<Event>> getAllEvents()");
-        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(eventService.getAllEvents());
-        log.debug("Получили ответ {}", responseEntity);
+        List<Event> events = eventService.getAllEvents();
+        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(events);
+        log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("Количество всех мероприятий ",
-                Objects.requireNonNull(responseEntity.getBody()).size());
+                events.size());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -64,11 +62,12 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> getOneEvent(@PathVariable Long id) с параметром {}", id);
-        ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.getOneEvent(id));
-        log.debug("Получили ответ {}", responseEntity);
+        Event event = eventService.getOneEvent(id);
+        ResponseEntity<Event> responseEntity = ResponseEntity.ok(event);
+        log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID мероприятия ", Objects.requireNonNull(responseEntity.getBody()).getId());
-        monitoringParameters.put("Название мероприятия ", responseEntity.getBody().getEventName());
+        monitoringParameters.put("ID мероприятия ", event.getId());
+        monitoringParameters.put("Название мероприятия ", event.getEventName());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -84,12 +83,13 @@ public class EventController {
     @GetMapping("viewEvent/{id}")
     public ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) с параметром {}", id);
+        Event event = eventService.getOneEvent(id);
         eventService.updateNumberOfViews(id);
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID мероприятия ", Objects.requireNonNull(responseEntity.getBody()).getId());
-        monitoringParameters.put("Название мероприятия ", responseEntity.getBody().getEventName());
+        monitoringParameters.put("ID мероприятия ", event.getId());
+        monitoringParameters.put("Название мероприятия ", event.getEventName());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -108,11 +108,11 @@ public class EventController {
 
         try {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
-            log.debug("Получили ответ {}", responseEntity);
+            log.debug("Сформирован ответ {}", responseEntity);
             return responseEntity;
         } catch (PersistenceException e) {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            log.debug("Получили ответ {}", responseEntity);
+            log.debug("Сформирован ответ {}", responseEntity);
             return responseEntity;
         }
     }
@@ -127,12 +127,12 @@ public class EventController {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
         try {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.saveEvent(event));
-            log.debug("Получили ответ {}", responseEntity);
+            log.debug("Сформирован ответ {}", responseEntity);
             return responseEntity;
 
         } catch (PersistenceException e) {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            log.debug("Получили ответ {}", responseEntity);
+            log.debug("СформированСформирован ответ {}", responseEntity);
             return responseEntity;
         }
     }
@@ -148,7 +148,7 @@ public class EventController {
         eventService.deleteEvent(id);
 
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }

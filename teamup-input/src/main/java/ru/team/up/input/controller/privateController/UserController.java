@@ -55,16 +55,17 @@ public class UserController {
     @Operation(summary = "Получение списка всех юзеров")
     public ResponseEntity<List<User>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
+        List<User> users = userService.getAllUsers();
         ResponseEntity<List<User>> responseEntity;
         try {
-            responseEntity = ResponseEntity.ok(userService.getAllUsers());
+            responseEntity = ResponseEntity.ok(users);
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("Количество всех пользователей ",
-                Objects.requireNonNull(responseEntity.getBody()).size());
+                users.size());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -81,14 +82,15 @@ public class UserController {
     @Operation(summary = "Получение юзера по id")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
+        User user = userServiceRest.getUserById(id);
         ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
                 UserDtoResponse.builder().
-                        userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(id))).build(),
+                        userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
                 HttpStatus.OK);
         Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID ", response.getBody().getUserDto().getId());
-        monitoringParameters.put("Email ", response.getBody().getUserDto().getEmail());
-        monitoringParameters.put("Имя ", response.getBody().getUserDto().getUsername());
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -112,7 +114,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
@@ -133,7 +135,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
@@ -154,7 +156,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
