@@ -26,7 +26,11 @@ import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.sup.service.ParameterService;
 
+import java.util.HashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map;
 
 /**
  * REST-контроллер для пользователей
@@ -59,13 +63,14 @@ public class UserRestControllerPublic {
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserById(userId));
-
-        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(), "Id, Email и Username Юзера полученного по id ", dataUser);
-        monitoringProducerService.send(reportDto);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return UserDtoResponse.builder()
                 .userDto(user)
                 .build();
@@ -83,15 +88,14 @@ public class UserRestControllerPublic {
         log.debug("Запрос на поиск пользователя с почтой: {}", userEmail);
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserByEmail(userEmail));
-
-        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Id, Email и Username Юзера полученного по email ", dataUser);
-        monitoringProducerService.send(reportDto);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return UserDtoResponse.builder()
                 .userDto(user)
                 .build();
@@ -107,18 +111,16 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/username/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDtoResponse getUserByUsername(@PathVariable(value = "username") String userUsername) {
         log.debug("Запрос на поиск пользователя с именем: {}", userUsername);
-
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserByUsername(userUsername));
-        String dataUser = user.getId() + " " + user.getEmail() + " " + user.getUsername();
-
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Id, Email и Username Юзера полученного по имени ", dataUser);
-        monitoringProducerService.send(reportDto);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return UserDtoResponse.builder()
                 .userDto(user)
                 .build();
@@ -134,17 +136,16 @@ public class UserRestControllerPublic {
     public List<User> getUsersList() {
         log.debug("Получен запрос на список всех пользоватей");
         List<User> users = userServiceRest.getAllUsers();
+        Map<String, Object> monitoringParameters = new HashMap<>();
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
             throw new RuntimeException("Список пользователей пуст");
         }
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Количество всех Юзеров", users.size());
-        monitoringProducerService.send(reportDto);
-
+        monitoringParameters.put("Количество всех пользователей ", users.size());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         log.debug("Список пользователей получен");
         return users;
     }
@@ -159,15 +160,14 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/event/{id}/owner", produces = MediaType.APPLICATION_JSON_VALUE)
     public EventDtoListResponse getEventsByOwnerId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий пользователя с id: {}", id);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
         List<EventDto> eventList = EventMapper.INSTANCE
                 .mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id));
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Количество всех мероприятий полученных по id пользователя", eventList.size());
-        monitoringProducerService.send(reportDto);
+        monitoringParameters.put("Количество всех мероприятий по id пользователя " + id, eventList.size());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return EventDtoListResponse.builder().eventDtoList(eventList)
                 .build();
     }
@@ -182,15 +182,14 @@ public class UserRestControllerPublic {
     @GetMapping(value = "/event/{id}/subscriber", produces = MediaType.APPLICATION_JSON_VALUE)
     public EventDtoListResponse getEventsBySubscriberId(@PathVariable Long id) {
         log.debug("Запрос на поиск мероприятий на которые подписан пользователь с id: {}", id);
-
+        Map<String, Object> monitoringParameters = new HashMap<>();
         List<EventDto> eventList = EventMapper.INSTANCE
                 .mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id));
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Количество всех мероприятий на которые подписан пользователь", eventList.size());
-        monitoringProducerService.send(reportDto);
+        monitoringParameters.put("Количество мероприятий, на которые подписан пользователь id " + id, eventList.size());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return EventDtoListResponse.builder().eventDtoList(eventList)
                 .build();
     }
