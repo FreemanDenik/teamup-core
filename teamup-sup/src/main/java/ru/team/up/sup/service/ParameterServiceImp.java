@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
+import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
@@ -21,6 +22,8 @@ import java.util.Set;
 public class ParameterServiceImp implements ParameterService {
 
     private final ParameterDao parameterDao;
+    private final ParameterSender parameterSender;
+    private final KafkaSupService kafkaSupService;
     private Set<SupParameter<?>> parameterSet = Set.of(
             getEventByIdEnabled,
             getUserByIdEnabled,
@@ -28,29 +31,9 @@ public class ParameterServiceImp implements ParameterService {
 
     @PostConstruct
     private void init() {
-        initialize();
-    }
-
-    @Override
-    public void initialize() {
-//        try (FileWriter writer = new FileWriter("./Parameters_2.json")) {
-//            writer.write(getEventByIdEnabled.toString());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        for (SupParameter parameter : parameterSet){
-            parameterDao.add(SupParameterDto.builder()
-                    .parameterName(parameter.getName())
-                    .systemName(AppModuleNameDto.TEAMUP_CORE)
-                    .parameterValue(parameter.getValue())
-                    .build());
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(new File("./Parameters.json"), parameterDao.findAll());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createDefaultParamFile();
+        parameterSender.sendDefaultsToSup();
+        kafkaSupService.getAllModuleParameters();
     }
 
     @Override
@@ -69,17 +52,33 @@ public class ParameterServiceImp implements ParameterService {
         updateStaticField(parameter);
     }
 
-    @Override
-    public void updateStaticField(SupParameterDto dto) {
-        log.debug("Method load enter");
-        for (SupParameter parameter : parameterSet) {
-            if (dto.getParameterName().equals(parameter.getName())) {
-                log.debug("Параметр {} со значением {}", parameter.getName(), parameter.getValue());
-                parameter.setValue(parameterDao.findByName(parameter.getName()).getParameterValue());
-                log.debug("Теперь имеет значение {}", parameter.getValue());
+    private void createDefaultParamFile() {
+        ListSupParameterDto defaultList = new ListSupParameterDto();
+        ObjectMapper mapper = new ObjectMapper();
+        for (SupParameter<?> parameter : parameterSet) {
+            SupParameterDto<?> dto = SupParameterDto.builder()
+                    .parameterName(parameter.getName())
+                    .systemName(AppModuleNameDto.TEAMUP_CORE)
+                    .parameterValue(parameter.getValue())
+                    .build();
+            parameterDao.add(dto);
+            defaultList.addParameter(dto);
+        }
+        try {
+            mapper.writeValue(new File("./Parameters.json"), defaultList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateStaticField(SupParameterDto<?> newParam) {
+        for (SupParameter oldParam : parameterSet) {
+            if (newParam.getParameterName().equals(oldParam.getName())) {
+                log.debug("Параметр {} со значением {}", oldParam.getName(), oldParam.getValue());
+                oldParam.setValue(oldParam.getValue());
+                log.debug("Теперь имеет значение {}", oldParam.getValue());
                 break;
             }
         }
-        log.debug("Method load exit");
     }
 }

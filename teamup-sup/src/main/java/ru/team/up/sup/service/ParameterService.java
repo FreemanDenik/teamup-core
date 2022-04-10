@@ -10,6 +10,9 @@ import java.util.List;
  */
 public interface ParameterService {
 
+    /**
+     * Параметры модуля по умолчанию
+     */
     SupParameter<Boolean> getEventByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED",
             false);
@@ -20,13 +23,19 @@ public interface ParameterService {
             "TEAMUP_CORE_COUNT_RETURN_CITY",
             1);
 
+    /**
+     * Получение листа текущих параметров из кэша
+     */
     List<SupParameterDto<?>> getAll();
 
+    /**
+     * Добавление или перезапись параметра
+     */
     void addParam(SupParameterDto<?> parameter);
 
+    /**
+     * Поиск параметра по имени
+     */
     SupParameterDto<?> getParamByName(String name);
 
-    void updateStaticField(SupParameterDto<?> parameter);
-
-    void initialize();
 }
