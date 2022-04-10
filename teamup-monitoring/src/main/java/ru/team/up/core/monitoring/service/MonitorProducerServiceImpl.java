@@ -24,22 +24,14 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
 
 
     @Override
-    public Map<String, Object> parameters(String key, Object value) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(key, value);
-        return parameters;
-    }
-
-    @Override
-    public ReportDto constructReportDto(Object principal, ControlDto control,
-                                        Class cl, String param1, Object param2) {
+    public ReportDto constructReportDto(Object principal, ControlDto control, Class cl, Map<String, Object> params) {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         ReportDto reportDto = ReportDto.builder()
                 .control(control)
-                .reportName(cl.getSimpleName())
-                .reportStatus(Optional.of(param2).isEmpty() ||
-                        (Integer) param2 == 0 ? ReportStatusDto.FAILURE : ReportStatusDto.SUCCESS)
+                .reportName(cl.getSimpleName() + "/" + stackTrace[2].getMethodName())
+                .reportStatus(ReportStatusDto.SUCCESS)
                 .time(new Date())
-                .parameters(parameters(param1, param2)).build();
+                .parameters(params).build();
 
         if (principal.toString().equals("anonymousUser")) {
             reportDto.setInitiatorId(0L);
@@ -94,14 +86,14 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
                 reportDto.setAppModuleName(AppModuleNameDto.TEAMUP_SUP);
                 break;
             default:
-                log.warn("\"Не удалось определить модуль\"");
+                log.warn("Не удалось определить модуль");
         }
         return reportDto;
     }
 
     @Override
     public void send(ReportDto content) {
-        log.debug("topic: " + topic + " content (ReportDro): " + content);
+        log.debug("SEND:  topic: " + topic + "  content (ReportDro): " + content);
         kafkaTemplate.send(topic, content);
     }
 }

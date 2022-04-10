@@ -24,7 +24,10 @@ import ru.team.up.input.service.UserServiceRest;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Alexey Tkachenko
@@ -52,19 +55,21 @@ public class UserController {
     @Operation(summary = "Получение списка всех юзеров")
     public ResponseEntity<List<User>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
-
+        List<User> users = userService.getAllUsers();
         ResponseEntity<List<User>> responseEntity;
         try {
-            responseEntity = ResponseEntity.ok(userService.getAllUsers());
+            responseEntity = ResponseEntity.ok(users);
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Количество всех Юзеров", responseEntity.getBody().size());
-        monitoringProducerService.send(reportDto);
+        log.debug("Сформирован ответ {}", responseEntity);
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("Количество всех пользователей ",
+                users.size());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return responseEntity;
     }
 
@@ -77,20 +82,19 @@ public class UserController {
     @Operation(summary = "Получение юзера по id")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
-
+        User user = userServiceRest.getUserById(id);
         ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
-                UserDtoResponse.builder().userDto(UserMapper.INSTANCE.mapUserToDto(userServiceRest.getUserById(id))).build(),
+                UserDtoResponse.builder().
+                        userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
                 HttpStatus.OK);
-        String dataUser = response.getBody().getUserDto().getId() + " "
-                + response.getBody().getUserDto().getEmail() + " " +
-                response.getBody().getUserDto().getUsername();
-
-
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ReportDto reportDto = monitoringProducerService.constructReportDto(o, ControlDto.MANUAL,
-                this.getClass(),
-                "Id, Email и Username Юзера полученного по id ", dataUser);
-        monitoringProducerService.send(reportDto);
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
         return response;
     }
 
@@ -110,7 +114,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
@@ -131,7 +135,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
@@ -152,7 +156,7 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
     }
