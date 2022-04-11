@@ -1,4 +1,4 @@
-package ru.team.up.core;
+package ru.team.up.core.repositories;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +41,18 @@ class TeamupCoreRepositoryTests extends Assertions {
     @Autowired
     private UserMessageRepository userMessageRepository;
 
+    @Autowired
+    private ApplicationRepository applicationRepository;
+
+    @Autowired
+    private CityRepository cityRepository;
+
+    @Autowired
+    private AssignedEventsRepository assignedEventsRepository;
+
+    @Autowired
+    private ModeratorSessionRepository moderatorSessionRepository;
+
     private Admin adminTest;
 
     private Moderator moderatorTest;
@@ -56,6 +68,14 @@ class TeamupCoreRepositoryTests extends Assertions {
     private Event eventTest;
 
     private UserMessage userMessageTest;
+
+    private Application applicationTest;
+
+    private City cityTest;
+
+    private AssignedEvents assignedEventsTest1, assignedEventsTest2;
+
+    private ModeratorSession moderatorSessionTest1, moderatorSessionTest2;
 
     @BeforeEach
     public void setUpEntity() {
@@ -147,14 +167,52 @@ class TeamupCoreRepositoryTests extends Assertions {
         eventTest = Event.builder()
                 .eventName("Football game")
                 .descriptionEvent("Join people to play football math")
-                .placeEvent("Moscow")
+                .city("Moscow")
+                .placeEvent("Stadium")
+                .eventNumberOfParticipant((byte)20)
                 .timeEvent(LocalDateTime.now())
+                .status(statusTest)
+                .eventType(eventTypeTest)
+                .authorId(userTest)
                 .build();
 
         userMessageTest = UserMessage.builder()
                 .message("Благодарю за подписку!")
-                .status(statusRepository.getOne(6L))
+                .status(statusTest)
                 .messageCreationTime(LocalDateTime.now())
+                .build();
+
+        applicationTest = Application.builder()
+                .event(eventTest)
+                .user(userTest)
+                .build();
+
+        cityTest = City.builder()
+                .name("Краснодар")
+                .subject("Краснодарский край")
+                .lat("45°02′")
+                .lon("38°59′")
+                .build();
+
+        // 7L и 8L - случайно выбранные числа, чтобы избежать цепочки зависимостей
+        assignedEventsTest1 = AssignedEvents.builder()
+                .eventId(7L)
+                .moderatorId(7L)
+                .build();
+
+        assignedEventsTest2 = AssignedEvents.builder()
+                .eventId(8L)
+                .moderatorId(8L)
+                .build();
+
+        moderatorSessionTest1 = ModeratorSession.builder()
+                .moderatorId(11L)
+                .amountOfModeratorsEvents(21L)
+                .build();
+
+        moderatorSessionTest2 = ModeratorSession.builder()
+                .moderatorId(12L)
+                .amountOfModeratorsEvents(22L)
                 .build();
     }
 
@@ -188,6 +246,13 @@ class TeamupCoreRepositoryTests extends Assertions {
     }
 
     @Test
+    void adminTestNull() {
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{adminRepository.save(Admin.builder().build());
+                });
+    }
+
+    @Test
     @Transactional
     void moderatorTest() {
         // Сохранили тестового модератора в БД
@@ -217,6 +282,13 @@ class TeamupCoreRepositoryTests extends Assertions {
         moderatorRepository.deleteById(testModeratorId);
         // Проверили что тестового модератора больше нет в БД
         assertEquals(moderatorRepository.findById(testModeratorId), Optional.empty());
+    }
+
+    @Test
+    void moderatorTestNull(){
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{moderatorRepository.save(Moderator.builder().build());
+                });
     }
 
     @Test
@@ -284,6 +356,13 @@ class TeamupCoreRepositoryTests extends Assertions {
         userRepository.deleteById(testUserId);
         // Проверили что тестовый пользователь отсутствует в БД
         assertEquals(userRepository.findById(testUserId), Optional.empty());
+    }
+
+    @Test
+    void userTestNull(){
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{userRepository.save(User.builder().build());
+                });
     }
 
     @Test
@@ -415,6 +494,12 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertEquals(userRepository.findById(testUserId), Optional.empty());
     }
 
+    @Test
+    void eventTestNull(){
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{eventRepository.save(Event.builder().build());
+                });
+    }
 
     @Test
     @Transactional
@@ -489,24 +574,163 @@ class TeamupCoreRepositoryTests extends Assertions {
         assertEquals(userRepository.findById(subscriberId2), Optional.empty());
     }
 
+    // TODO не проходит, скорее всего надо исправить
     @Test
-    void adminTestNull() {
+    void userMessageTestNull(){
         assertThrows(DataIntegrityViolationException.class,
-                ()->{adminRepository.save(Admin.builder().build());
+                ()->{userMessageRepository.save(UserMessage.builder().build());
                 });
     }
 
     @Test
-    void moderatorTestNull(){
+    @Transactional
+    void applicationTest() {
+        // Записываем данные (в этом порядке, чтобы не попасть на DataIntegrityViolationException)
+        statusRepository.save(statusTest);
+        eventTypeRepository.save(eventTypeTest);
+        userRepository.save(userTest);
+        eventRepository.save(eventTest);
+        applicationRepository.save(applicationTest);
+
+        // Проверка работы методов репозитория
+        assertNotNull(applicationRepository.findAllByEventId(1L));
+        assertNotNull(applicationRepository.findAllByUserId(1L));
+        // Проверка соответствия данных
+        assertEquals(userTest, applicationRepository.getOne(1L).getEvent().getAuthorId());
+
+        // Очистка репозиториев в обратном порядке
+        applicationRepository.deleteById(applicationTest.getId());
+        eventRepository.deleteById(eventTest.getId());
+        userRepository.deleteById(userTest.getId());
+        eventTypeRepository.deleteById(eventTypeTest.getId());
+    }
+
+    // TODO не проходит, скорее всего надо исправить
+    @Test
+    void applicationTestNull(){
         assertThrows(DataIntegrityViolationException.class,
-                ()->{moderatorRepository.save(Moderator.builder().build());
+                ()->{applicationRepository.save(Application.builder().build());
                 });
     }
 
     @Test
-    void userTestNull(){
+    void cityTest() {
+        // запись данных в репозиторий
+        cityRepository.save(cityTest);
+
+        // проверка наличия нашего города в репозитории
+        assertNotNull(cityRepository.findAll());
+        assertEquals(1, cityRepository.getSomeCitiesByName("Краснодар").size());
+        // проверка методов
+        assertEquals("Краснодарский край", cityRepository.getSomeCitiesByName("Краснодар").get(0).getSubject());
+        assertEquals("Краснодарский край", cityRepository.findCityByName("Краснодар").getSubject());
+        assertEquals("Краснодарский край",
+                cityRepository.getCityByNameAndSubject("Краснодар", "Краснодарский край").getSubject());
+        assertEquals("Краснодар", cityRepository.getCityByLatAndLon("45°02′", "38°59′").getName());
+
+        // очистка репозиториев
+        cityRepository.deleteAll();
+    }
+
+    @Test
+    void cityTestNull() {
         assertThrows(DataIntegrityViolationException.class,
-                ()->{userRepository.save(User.builder().build());
+                ()->{cityRepository.save(City.builder().build());
+                });
+    }
+
+    @Test
+    void interestsTest() {
+        // заполнение репозитория
+        interestsRepository.save(interestsTest1);
+
+        // проверка метода и корректности данных
+        assertNotNull(interestsRepository.getInterestsById(1L));
+        assertEquals("Football", interestsRepository.getInterestsById(1L).getTitle());
+
+        // очистка репозитория
+        interestsRepository.deleteAll();
+    }
+
+    @Test
+    void interestsTestNull() {
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{interestsRepository.save(Interests.builder().build());
+                });
+    }
+
+    // TODO странный репозиторий, надо уточнить принцип работы + там SQLGrammarException
+    @Test
+    @Transactional
+    void assignedEventsTest() {
+        // Заполнение репозитория
+        statusRepository.save(statusTest);
+        eventTypeRepository.save(eventTypeTest);
+        userRepository.save(userTest);
+        eventRepository.save(eventTest);
+        assignedEventsRepository.save(assignedEventsTest1);
+        assignedEventsRepository.save(assignedEventsTest2);
+
+        // Проверка заполнения
+        assertNotNull(assignedEventsRepository.findAll());
+        assertEquals(2, assignedEventsRepository.findAll().size());
+
+        // Проверка методов и корректности данных
+        // TODO скорее всего надо добавить List в название метода (и там в запросе надо поменять status на status.id) ??
+        assertEquals(1L, assignedEventsRepository.getIdAssignedEventsByModeratorId(7L).get(0));
+        assertEquals(2L, assignedEventsRepository.getIdAssignedEventsByModeratorId(8L).get(0));
+        //assertEquals(7L, assignedEventsRepository.getIdNotAssignedEvents());
+
+        // проверка наличия мероприятия с Id=1
+        assertEquals(1L, eventRepository.getOne(1L).getId());
+        // проверка статуса мероприятия с Id=1, что он равен 1
+        assertEquals(1L, eventRepository.getOne(1L).getStatus().getId());
+        // попытка обновить статус мероприятия с 1 на 33
+        assignedEventsRepository.updateEventIdBeforeDeleting(33L, 1L);
+        // проверка обновления статуса
+        assertEquals(33L, eventRepository.getOne(1L).getStatus().getId());
+
+        // Очистка репозитория
+        assignedEventsRepository.deleteAll();
+    }
+
+    @Test
+    void assignedEventsTestNull() {
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{assignedEventsRepository.save(AssignedEvents.builder().build());
+                });
+    }
+
+    @Test
+    void moderatorSessionTest() {
+        // Заполняем репозиторий. В сессиях находятся два модератора:
+        // в moderatorSessionTest1 : 1-й модератор с id=11, у него висит 21 задача
+        // в moderatorSessionTest2 : 2-й модератор с id=12, у него висят 22 задачи
+        moderatorSessionRepository.save(moderatorSessionTest1);
+        moderatorSessionRepository.save(moderatorSessionTest2);
+
+        // проверка, что обе сессии находтятся в репозитории
+        assertNotNull(moderatorSessionRepository.findModeratorSessionByModeratorId(11L));
+        assertNotNull(moderatorSessionRepository.findModeratorSessionByModeratorId(12L));
+
+        // проверка методов и корректности данных
+        assertEquals(22,
+                moderatorSessionRepository.findModeratorSessionByModeratorId(12L).getAmountOfModeratorsEvents());
+        // у модератора с id=11 меньше задач, поэтому ожидаем, что вернется его id
+        assertEquals(11, moderatorSessionRepository.getFreeModerator());
+        // TODO изменить условно-бесполезный тест, надо придумать проверку по времени
+        assertTrue(moderatorSessionRepository.getInactiveModerators(LocalDateTime.now()).isEmpty());
+
+        // очистка репозитория
+        moderatorSessionRepository.deleteAll();
+        assertNull(moderatorSessionRepository.getFreeModerator());
+    }
+
+    // TODO не проходит, скорее всего надо исправить
+    @Test
+    void moderatorSessionTestNull() {
+        assertThrows(DataIntegrityViolationException.class,
+                ()->{moderatorSessionRepository.save(ModeratorSession.builder().build());
                 });
     }
 }

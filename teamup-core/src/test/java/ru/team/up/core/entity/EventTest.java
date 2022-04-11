@@ -60,9 +60,11 @@ class EventTest extends Assertions {
 
         Event eventTest = Event.builder().eventName("Football")
                 .descriptionEvent("совместная игра Core и Input ))")
+                .city("Jira")
                 .placeEvent("где-то на просторах Jira")
                 .timeEvent(LocalDateTime.of(2021, 11, 10, 21, 00))
                 .eventUpdateDate(LocalDate.now()).participantsEvent(testListUser)
+                .eventNumberOfParticipant((byte)testListUser.size())
                 .eventType(typeTest).eventPrivacy(true)
                 .authorId(userTest).eventInterests(interestsSet).status(statusTest).build();
         eventRepository.save(eventTest);

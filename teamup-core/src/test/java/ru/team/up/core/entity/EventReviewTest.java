@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.EventReviewRepository;
 import ru.team.up.core.repositories.EventTypeRepository;
@@ -74,10 +75,12 @@ class EventReviewTest extends Assertions {
             .descriptionEvent("Test description")
             .eventType(testEventType)
             .eventInterests(Collections.singleton(testInterest))
+            .city("Moscow")
             .placeEvent("Moscow")
             .timeEvent(LocalDateTime.of(2021, 11, 3, 15, 0))
             .eventUpdateDate(LocalDate.of(2021, 11, 3))
             .participantsEvent(Set.of(testUser))
+            .eventNumberOfParticipant((byte) Set.of(testUser).size())
             .status(testStatus)
             .build();
 
@@ -90,6 +93,7 @@ class EventReviewTest extends Assertions {
             .build();
 
     @Test
+    @Transactional
     void testEventReview() {
         interestsRepository.save(testInterest);
         userRepository.save(testUser);
