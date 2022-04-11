@@ -11,19 +11,11 @@ import java.util.Map;
 @Repository
 public class ParameterDaoImp implements ParameterDao {
 
-    private Map<String, SupParameterDto<?>> supParameterDtoMap = new HashMap<>();
+    private final Map<String, SupParameterDto<?>> supParameterDtoMap = new HashMap<>();
 
     @Override
     public void add(SupParameterDto<?> supParameterDto) {
-        String parameterName = supParameterDto.getParameterName();
-        if (!supParameterDtoMap.containsKey(parameterName)) {
-            supParameterDtoMap.put(parameterName, supParameterDto);
-        } else {
-            SupParameterDto<?> oldParam = supParameterDtoMap.get(parameterName);
-            if (oldParam.getUpdateTime().isBefore(supParameterDto.getUpdateTime())) {
-                supParameterDtoMap.put(parameterName, supParameterDto);
-            }
-        }
+        supParameterDtoMap.put(supParameterDto.getParameterName(), supParameterDto);
     }
 
     @Override

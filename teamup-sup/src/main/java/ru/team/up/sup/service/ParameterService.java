@@ -15,13 +15,13 @@ public interface ParameterService {
      */
     SupParameter<Boolean> getEventByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED",
-            false);
+            true);
     SupParameter<Boolean> getUserByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_USER_BY_ID_ENABLED",
-            false);
+            true);
     SupParameter<Integer> countReturnCity = new SupParameter<>(
             "TEAMUP_CORE_COUNT_RETURN_CITY",
-            1);
+            10);
 
     /**
      * Получение листа текущих параметров из кэша

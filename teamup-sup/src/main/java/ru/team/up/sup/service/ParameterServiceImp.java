@@ -75,7 +75,7 @@ public class ParameterServiceImp implements ParameterService {
         for (SupParameter oldParam : parameterSet) {
             if (newParam.getParameterName().equals(oldParam.getName())) {
                 log.debug("Параметр {} со значением {}", oldParam.getName(), oldParam.getValue());
-                oldParam.setValue(oldParam.getValue());
+                oldParam.setValue(newParam.getParameterValue());
                 log.debug("Теперь имеет значение {}", oldParam.getValue());
                 break;
             }
