@@ -33,10 +33,16 @@ class EventTest extends Assertions {
     @Autowired
     private InterestsRepository interestsRepository;
 
-    private Interests interestsTest = Interests.builder().title("Football")
-            .shortDescription("Like to play football").build();
-    private Status statusTest = Status.builder().status("Examination").build();
-    private EventType typeTest = EventType.builder().type("Game").build();
+    private Interests interestsTest = Interests.builder()
+            .title("Football")
+            .shortDescription("Like to play football")
+            .build();
+    private Status statusTest = Status.builder()
+            .status("Examination")
+            .build();
+    private EventType typeTest = EventType.builder()
+            .type("Game")
+            .build();
 
     @Test
     @Transactional
@@ -48,25 +54,39 @@ class EventTest extends Assertions {
         Set<Interests> interestsSet = new HashSet<>();
         interestsSet.add(interestsTest);
 
-        User userTest = User.builder().firstName("testUser").lastName("testUserLastName")
-                .middleName("testUserMiddleName").username("testUserLogin").email("testUser@mail.ru")
-                .password("3").accountCreatedTime(LocalDate.now())
-                .lastAccountActivity(LocalDateTime.now()).city("Moskow")
-                .birthday(LocalDate.of (1992, 1, 20)).aboutUser("testUser").userInterests(interestsSet).build();
+        User userTest = User.builder()
+                .firstName("testUser")
+                .lastName("testUserLastName")
+                .middleName("testUserMiddleName")
+                .username("testUserLogin")
+                .email("testUser@mail.ru")
+                .password("3")
+                .accountCreatedTime(LocalDate.now())
+                .lastAccountActivity(LocalDateTime.now())
+                .city("Moskow")
+                .birthday(LocalDate.of (1992, 1, 20))
+                .aboutUser("testUser")
+                .userInterests(interestsSet)
+                .build();
         userRepository.save(userTest);
 
         Set<User> testListUser = new HashSet<>();
         testListUser.add(userTest);
 
-        Event eventTest = Event.builder().eventName("Football")
+        Event eventTest = Event.builder()
+                .eventName("Football")
                 .descriptionEvent("совместная игра Core и Input ))")
                 .city("Jira")
                 .placeEvent("где-то на просторах Jira")
                 .timeEvent(LocalDateTime.of(2021, 11, 10, 21, 00))
-                .eventUpdateDate(LocalDate.now()).participantsEvent(testListUser)
+                .eventUpdateDate(LocalDate.now())
+                .participantsEvent(testListUser)
                 .eventNumberOfParticipant((byte)testListUser.size())
-                .eventType(typeTest).eventPrivacy(true)
-                .authorId(userTest).eventInterests(interestsSet).status(statusTest).build();
+                .eventType(typeTest)
+                .eventPrivacy(true)
+                .authorId(userTest)
+                .eventInterests(interestsSet)
+                .status(statusTest).build();
         eventRepository.save(eventTest);
 
         assertTrue(eventRepository.findById(1L).isPresent());

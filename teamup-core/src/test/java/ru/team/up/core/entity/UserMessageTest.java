@@ -31,7 +31,6 @@ class UserMessageTest extends Assertions{
     @Autowired
     private StatusRepository statusRepository;
 
-
     Interests programming = Interests.builder()
             .title("Programming")
             .shortDescription("Like to write programs in java")
