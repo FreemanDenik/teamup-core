@@ -1,9 +1,11 @@
 package ru.team.up.core.entity;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.repositories.*;
 
 import java.time.LocalDate;
@@ -50,18 +52,19 @@ class UserMessageTest extends Assertions{
             .build();
 
     Status status = Status.builder()
-            .status("unread")
+            .status("new")
             .build();
 
     UserMessage userMessage = UserMessage.builder()
             .messageOwner(testUser)
             .message("Hello!")
-            .status(statusRepository.getOne(4L))
+            .status(status)
             .messageCreationTime(LocalDateTime.now())
             .messageReadTime(LocalDateTime.now())
             .build();
 
     @Test
+    @Transactional
     void testUserMessage() {
         interestsRepository.save(programming);
         userRepository.save(testUser);
@@ -71,7 +74,7 @@ class UserMessageTest extends Assertions{
         UserMessage userMessage1 = userMessageRepository.findById(1L).orElse(new UserMessage());
         assertEquals(userMessage1.getMessage(), "Hello!");
         assertEquals(userMessage1.getMessageOwner().getFirstName(), "Aleksey");
-        assertEquals(userMessage1.getStatus(), "new");
+        assertEquals(userMessage1.getStatus().getStatus(), "new");
         assertEquals(userMessage1.getId(), 1L);
         assertEquals("Hello!", userMessageRepository.findAllByMessageOwner(testUser).getMessage());
     }
