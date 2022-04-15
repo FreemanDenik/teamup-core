@@ -64,6 +64,12 @@ public class Event {
     private LocalDateTime timeEvent;
 
     /**
+     * Время окончания мероприятия
+     */
+    @Column(name = "TIME_END_EVENT", nullable = false)
+    private LocalDateTime timeEndEvent;
+
+    /**
      * Время обновления мероприятия
      */
     @Column(name = "EVENT_UPDATE_DATE")

@@ -254,8 +254,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public Map<Event, List<User>> getEventsUsers(LocalDateTime startDateTime, LocalDateTime endDateTime) {
 
-        log.debug("startDateTime: "+startDateTime);
-        log.debug("endDateTime: "+endDateTime);
+        log.debug("Ищем мероприятия с участвующими в них пользователями. Время события мероприятия от: "+startDateTime);
+        log.debug("Ищем мероприятия с участвующими в них пользователями. Время события мероприятия до: "+endDateTime);
 
         return eventRepository
                 .findByTimeEventBetween(startDateTime, endDateTime)
