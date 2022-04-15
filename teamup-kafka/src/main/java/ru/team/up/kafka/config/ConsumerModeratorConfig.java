@@ -1,10 +1,11 @@
-package ru.team.up.kafka.moderator.config;
+package ru.team.up.kafka.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
@@ -17,6 +18,7 @@ import java.util.Map;
  */
 
 @Configuration
+@PropertySource("classpath:kafka.properties")
 public class ConsumerModeratorConfig {
     /**
      * Значение groupId, которе определяет группу консьюмеров, в рамках которой доставляется один экземпляр сообщения.
