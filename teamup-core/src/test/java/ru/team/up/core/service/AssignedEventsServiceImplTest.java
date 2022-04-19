@@ -36,7 +36,7 @@ class AssignedEventsServiceImplTest {
     private AssignedEvents assignedEvents;
 
     @BeforeEach
-    public void setUp() {
+    private void setUpEntity() {
         MockitoAnnotations.openMocks(this);
 
         assignedEvents = AssignedEvents.builder()
@@ -47,7 +47,7 @@ class AssignedEventsServiceImplTest {
 
     List<Long> assignedEventsList = new ArrayList<>();
 
-    // Не проходит из-за финальных полей :D
+    // TODO Не проходит из-за финальных полей (убрать)
     @Test
     void removeAssignedEvent() {
         assignedEventsList.add(assignedEvents.getId());
@@ -56,11 +56,10 @@ class AssignedEventsServiceImplTest {
         verify(assignedEventsRepository, times(1)).deleteById(1L);
     }
 
-    // проблема с сохранением модератора. Не разобрался
+    // TODO Не проходит из-за финальных полей (убрать)
     @Test
     void saveAssignedEvent() {
-        when(assignedEventsService.saveAssignedEvent(any(AssignedEvents.class))).thenReturn(assignedEvents);
-        assignedEventsService.saveAssignedEvent(assignedEvents);
+        when(assignedEventsRepository.saveAndFlush(assignedEvents)).thenReturn(assignedEvents);
         assertEquals(assignedEvents, assignedEventsService.saveAssignedEvent(assignedEvents));
     }
 }

@@ -31,15 +31,15 @@ import static org.mockito.Mockito.*;
 class AdminServiceImplTest {
 
     @Mock
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @InjectMocks
-    AdminService adminService = new AdminServiceImpl(accountRepository);
+    private AdminService adminService = new AdminServiceImpl(accountRepository);
 
     private Account admin;
 
     @BeforeEach
-    public void setUpEntity() {
+    private void setUpEntity() {
         MockitoAnnotations.openMocks(this);
 
         admin = Account.builder()

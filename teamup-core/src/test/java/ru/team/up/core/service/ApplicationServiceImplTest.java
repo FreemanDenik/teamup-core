@@ -14,7 +14,9 @@ import ru.team.up.core.repositories.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -57,16 +59,30 @@ class ApplicationServiceImplTest {
 
     private UserMessage userMessageTest;
 
+    private List<Application> newApplicationList;
+
+    private Set<UserMessage> userMessagesSetTest;
 
     @BeforeEach
-    void setUpEntity() {
+    private void setUpEntity() {
         MockitoAnnotations.openMocks(this);
+
+        userMessagesSetTest = new HashSet<>();
+        newApplicationList = new ArrayList<>();
+
+        userMessageTest = UserMessage.builder()
+                .id(1L)
+                .message("HelLo :D")
+                .build();
+
+        userMessagesSetTest.add(userMessageTest);
 
         statusTest = Status.builder()
                 .status("New")
                 .build();
 
         userTest = User.builder()
+                .id(1L)
                 .firstName("testUser")
                 .lastName("testUserLastName")
                 .middleName("testUserMiddleName")
@@ -78,6 +94,7 @@ class ApplicationServiceImplTest {
                 .city("Moscow")
                 .birthday(LocalDate.of (1992, 1, 20))
                 .aboutUser("testUserAbout")
+                .userMessages(userMessagesSetTest)
                 .build();
 
         eventTypeTest = EventType.builder()
@@ -102,8 +119,6 @@ class ApplicationServiceImplTest {
                 .build();
     }
 
-    List<Application> newApplicationList = new ArrayList<>();
-
     @Test
     void getAllApplicationsByEventId() {
         newApplicationList.add(applicationTest);
@@ -127,9 +142,12 @@ class ApplicationServiceImplTest {
         assertEquals(applicationTest, applicationService.getApplication(1L));
     }
 
-    // Плохой тест. java.util.NoSuchElementException: No value present
+    // TODO поменять на findUserById в сервисе
     @Test
     void saveApplication() {
+        when(userRepository.findUserById(userTest.getId())).thenReturn(userTest);
+        when(statusRepository.getOne(5L)).thenReturn(new Status(5L, "Создано"));
+        when(userMessageRepository.save(userMessageTest)).thenReturn(userMessageTest);
         when(applicationRepository.save(applicationTest)).thenReturn(applicationTest);
         applicationService.saveApplication(applicationTest, userTest);
         verify(applicationRepository, times(1)).save(applicationTest);

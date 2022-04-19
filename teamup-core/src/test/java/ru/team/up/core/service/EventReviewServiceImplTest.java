@@ -40,12 +40,12 @@ class EventReviewServiceImplTest {
     private EventReviewService eventReviewService = new EventReviewServiceImpl(eventReviewRepository,
             userMessageRepository, notifyService, statusRepository);
 
-    EventReview eventReviewTest;
-    User userTest;
-    Event eventTest;
+    private EventReview eventReviewTest;
+    private User userTest;
+    private Event eventTest;
 
     @BeforeEach
-    public void setUpEntity() {
+    private void setUpEntity() {
         MockitoAnnotations.openMocks(this);
 
         userTest = User.builder()

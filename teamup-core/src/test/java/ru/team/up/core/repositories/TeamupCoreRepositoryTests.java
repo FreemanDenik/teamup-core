@@ -709,7 +709,7 @@ class TeamupCoreRepositoryTests extends Assertions {
         moderatorSessionRepository.save(moderatorSessionTest1);
         moderatorSessionRepository.save(moderatorSessionTest2);
 
-        // проверка, что обе сессии находтятся в репозитории
+        // проверка, что обе сессии находятся в репозитории
         assertNotNull(moderatorSessionRepository.findModeratorSessionByModeratorId(11L));
         assertNotNull(moderatorSessionRepository.findModeratorSessionByModeratorId(12L));
 
@@ -718,7 +718,8 @@ class TeamupCoreRepositoryTests extends Assertions {
                 moderatorSessionRepository.findModeratorSessionByModeratorId(12L).getAmountOfModeratorsEvents());
         // у модератора с id=11 меньше задач, поэтому ожидаем, что вернется его id
         assertEquals(11, moderatorSessionRepository.getFreeModerator());
-        // TODO изменить условно-бесполезный тест, надо придумать проверку по времени
+        // TODO изменить условно-бесполезный тест, надо придумать проверку по времени (или изменить метод)
+        // Там вообще логика не совсем с названием связана (а может я не до конца понял sql)
         assertTrue(moderatorSessionRepository.getInactiveModerators(LocalDateTime.now()).isEmpty());
 
         // очистка репозитория
