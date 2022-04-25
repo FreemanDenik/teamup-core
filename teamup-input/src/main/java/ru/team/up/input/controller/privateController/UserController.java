@@ -15,10 +15,7 @@ import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.UserService;
-import ru.team.up.dto.AppModuleNameDto;
-import ru.team.up.dto.ControlDto;
-import ru.team.up.dto.ReportDto;
-import ru.team.up.dto.ReportStatusDto;
+import ru.team.up.dto.*;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -53,12 +50,13 @@ public class UserController {
      */
     @GetMapping
     @Operation(summary = "Получение списка всех юзеров")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
         List<User> users = userService.getAllUsers();
-        ResponseEntity<List<User>> responseEntity;
+        ResponseEntity<List<UserDto>> responseEntity;
         try {
-            responseEntity = ResponseEntity.ok(users);
+            responseEntity = ResponseEntity.ok(UserMapper.INSTANCE
+                    .mapUserListToUserDtoList(users));
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
