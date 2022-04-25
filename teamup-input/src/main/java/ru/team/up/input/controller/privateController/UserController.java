@@ -8,9 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Admin;
+import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
@@ -24,7 +27,6 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Alexey Tkachenko
@@ -103,13 +105,16 @@ public class UserController {
      */
     @PostMapping
     @Operation(summary = "Создание юзера")
-    public ResponseEntity<Account> createUser(@RequestParam String user, @RequestBody @NotNull User userCreate) {
+    // @RequestParam(required = false) String user пока оставлено из-за того, что используется в тестах
+    public ResponseEntity<Account> createUser(@RequestParam(required = false) String user,
+                                              @RequestBody @NotNull User userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
         try {
             responseEntity = new ResponseEntity<>(userService.saveUser(userCreate), HttpStatus.CREATED);
         } catch (PersistenceException e) {
+            log.debug(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.debug("Сформирован ответ {}", responseEntity);
@@ -122,14 +127,21 @@ public class UserController {
      * @return Результат работы метода userService.saveUser(user) в виде объекта User
      * в теле ResponseEntity
      */
-    @PatchMapping
+    @PutMapping/*("/{id}")*/
     @Operation(summary = "Обновление юзера")
-    public ResponseEntity<Account> updateUser(@RequestBody @NotNull User user) {
+    public ResponseEntity<Account> updateUser(/*@PathVariable Long id,*/
+                                                @RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
+        Long id = user.getId();
+
+        if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), id)) {
+            log.debug("Попытка изменить пользователя с id = {}, не имея на это прав", id);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         ResponseEntity<Account> responseEntity;
         try {
-            responseEntity = ResponseEntity.ok(userService.saveUser(user));
+            responseEntity = ResponseEntity.ok(userService.updateUser(user));
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -157,5 +169,27 @@ public class UserController {
         log.debug("Сформирован ответ {}", responseEntity);
 
         return responseEntity;
+    }
+
+    /**
+     * Метод проверки права пользователя на редактирование информации
+     *
+     * @param authentication параметр из SecurityContext текущей сессии
+     * @param id id редактируемого пользователя из запроса
+     * @return true, если изменения производит админ, модератор, или юзер сам над собой
+     */
+    private boolean haveRightsToUpdate(Authentication authentication, Long id) {
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Admin || principal instanceof Moderator) {
+            return true;
+        }
+
+        if (principal instanceof User) {
+            User currentUser = (User) principal;
+
+            return currentUser.getId().equals(id);
+        }
+
+        return false;
     }
 }
