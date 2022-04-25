@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.EventService;
 import ru.team.up.dto.*;
@@ -35,14 +36,15 @@ public class EventController {
     private MonitorProducerService monitoringProducerService;
 
     /**
-     * @return Результат работы метода eventService.getAllEvents()) в виде коллекции мероприятий
+     * @return Результат работы метода eventService.getAllEvents()) в виде коллекции EventDto
      * в теле ResponseEntity
      */
     @GetMapping
-    public ResponseEntity<List<Event>> getAllEvents() {
-        log.debug("Старт метода ResponseEntity<List<Event>> getAllEvents()");
+    public ResponseEntity<List<EventDto>> getAllEvents() {
+        log.debug("Старт метода ResponseEntity<List<EventDto>> getAllEvents()");
         List<Event> events = eventService.getAllEvents();
-        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(events);
+        ResponseEntity<List<EventDto>> responseEntity = ResponseEntity.ok(
+                EventMapper.INSTANCE.mapDtoEventToEvent(events));
         log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("Количество всех мероприятий ",
@@ -56,14 +58,16 @@ public class EventController {
 
     /**
      * @param id Значение ID мероприятия
-     * @return Результат работы метода eventService.getOneEvent(id) в виде объекта Event
+     * @return Результат работы метода eventService.getOneEvent(id) в виде объекта EventDto
      * в теле ResponseEntity
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getOneEvent(@PathVariable Long id) {
-        log.debug("Старт метода ResponseEntity<Event> getOneEvent(@PathVariable Long id) с параметром {}", id);
+    public ResponseEntity<EventDto> getOneEvent(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<EventDto> getOneEvent(@PathVariable Long id) с параметром {}", id);
         Event event = eventService.getOneEvent(id);
-        ResponseEntity<Event> responseEntity = ResponseEntity.ok(event);
+        ResponseEntity<EventDto> responseEntity = ResponseEntity.ok(
+                EventMapper.INSTANCE.mapEventToDto(event)
+        );
         log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("ID мероприятия ", event.getId());
