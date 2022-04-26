@@ -10,13 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.Event;
-import ru.team.up.core.entity.Moderator;
-import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.EventService;
@@ -27,7 +23,6 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 
 /**
@@ -106,12 +101,19 @@ public class EventController {
      * @return Результат работы метода eventService.updateNumberOfViews(id)
      * в виде объекта ResponseEntity со статусом OK
      */
+    @Operation(
+            summary = "Увеличение числа участников мероприятия на 1"
+    )
+    @ApiResponse(responseCode = "202", description = "Число участников увеличено", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = EventDto.class))
+    })
     @GetMapping("viewEvent/{id}")
-    public ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) {
+    public ResponseEntity<EventDto> updateNumberOfParticipants(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) с параметром {}", id);
         Event event = eventService.getOneEvent(id);
         eventService.updateNumberOfViews(id);
-        ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        ResponseEntity<EventDto> responseEntity = new ResponseEntity<>(
+                EventMapper.INSTANCE.mapEventToDto(eventService.getOneEvent(id)), HttpStatus.ACCEPTED);
         log.debug("Сформирован ответ {}", responseEntity);
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("ID мероприятия ", event.getId());
