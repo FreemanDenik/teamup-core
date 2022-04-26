@@ -3,9 +3,13 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.Event;
+import ru.team.up.core.entity.Moderator;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundIDException;
@@ -15,6 +19,7 @@ import ru.team.up.core.repositories.UserRepository;
 import ru.team.up.dto.NotifyDto;
 import ru.team.up.dto.NotifyStatusDto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -102,6 +107,10 @@ public class EventServiceImpl implements EventService {
         User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
         log.debug("Получили из БД пользователя с ID {}, создавшего мероприятие {}", userCreatedEventDB.getId(), event.getEventName());
 
+        if (haveNoRightsToSave(SecurityContextHolder.getContext().getAuthentication(), userCreatedEventDB)) {
+            throw new SecurityException("Попытка сохранения события как другой пользователь");
+        }
+
         log.debug("Формируем список подписчиков пользователя");
         Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
 
@@ -126,6 +135,10 @@ public class EventServiceImpl implements EventService {
             log.debug("У пользователя нет подписчиков");
         }
 
+        event.setEventUpdateDate(LocalDate.now());
+        event.setAuthorId(userCreatedEventDB);
+        event.setStatus(statusRepository.getOne(2L));
+
         log.debug("Старт метода сохранения мероприятия");
         Event save = eventRepository.save(event);
         log.debug("Успешно сохранили мероприятие с ID {} в БД ", save.getId());
@@ -143,11 +156,22 @@ public class EventServiceImpl implements EventService {
     public Event updateEvent(Event event) {
         log.debug("Старт метода сохранения ивента");
 
+        Event oldEvent = eventRepository.getOne(event.getId());
         User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
+
+        if (haveNoRightsToSave(SecurityContextHolder.getContext().getAuthentication(), userCreatedEventDB)) {
+            throw new SecurityException("Попытка изменения чужого события");
+        }
 
         log.debug("Получили из БД пользователя с ID {}, отредактировавшего мероприятие {}",
                 userCreatedEventDB.getId(), event.getEventName());
-        log.debug("Старт метода обновления мероприятия");
+
+        event.setEventUpdateDate(LocalDate.now());
+        event.setAuthorId(userCreatedEventDB);
+        event.setCountViewEvent(oldEvent.getCountViewEvent());
+        event.setStatus(statusRepository.getOne(2L));
+
+        log.debug("Старт метода обновления мероприятия {}", event);
 
         Event update = eventRepository.save(event);
 
@@ -296,4 +320,22 @@ public class EventServiceImpl implements EventService {
                 }));
     }
 
+    /**
+     *
+     * @param authentication параметр из SecurityContext текущей сессии
+     * @param user пользователь, которому принадлежит мероприятие
+     * @return true, если изменения производит админ, модератор, или юзер над своим мероприятием
+     */
+    private boolean haveNoRightsToSave(Authentication authentication, User user) {
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof Admin || principal instanceof Moderator) {
+            return false;
+        } else if (principal instanceof User) {
+            User currentUser = (User) principal;
+
+            return !currentUser.getId().equals(user.getId());
+        }
+
+        return true;
+    }
 }
