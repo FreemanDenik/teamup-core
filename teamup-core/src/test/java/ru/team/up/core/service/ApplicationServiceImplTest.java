@@ -59,7 +59,7 @@ class ApplicationServiceImplTest {
 
     private UserMessage userMessageTest;
 
-    private List<Application> newApplicationList;
+    private List<Application> newApplicationListTest;
 
     private Set<UserMessage> userMessagesSetTest;
 
@@ -68,7 +68,7 @@ class ApplicationServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         userMessagesSetTest = new HashSet<>();
-        newApplicationList = new ArrayList<>();
+        newApplicationListTest = new ArrayList<>();
 
         userMessageTest = UserMessage.builder()
                 .id(1L)
@@ -121,18 +121,18 @@ class ApplicationServiceImplTest {
 
     @Test
     void getAllApplicationsByEventId() {
-        newApplicationList.add(applicationTest);
-        when(applicationRepository.findAllByEventId(1L)).thenReturn(newApplicationList);
+        newApplicationListTest.add(applicationTest);
+        when(applicationRepository.findAllByEventId(1L)).thenReturn(newApplicationListTest);
         log.debug("↓ Проверка соответствия данных ↓");
-        assertEquals(newApplicationList, applicationService.getAllApplicationsByEventId(1L));
+        assertEquals(newApplicationListTest, applicationService.getAllApplicationsByEventId(1L));
     }
 
     @Test
     void getAllApplicationsByUserId() {
-        newApplicationList.add(applicationTest);
-        when(applicationRepository.findAllByUserId(1L)).thenReturn(newApplicationList);
+        newApplicationListTest.add(applicationTest);
+        when(applicationRepository.findAllByUserId(1L)).thenReturn(newApplicationListTest);
         log.debug("↓ Проверка соответствия данных ↓");
-        assertEquals(newApplicationList, applicationService.getAllApplicationsByUserId(1L));
+        assertEquals(newApplicationListTest, applicationService.getAllApplicationsByUserId(1L));
     }
 
     @Test
