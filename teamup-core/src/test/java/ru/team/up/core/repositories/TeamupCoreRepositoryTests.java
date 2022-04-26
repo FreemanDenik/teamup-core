@@ -171,6 +171,7 @@ class TeamupCoreRepositoryTests extends Assertions {
                 .placeEvent("Stadium")
                 .eventNumberOfParticipant((byte)20)
                 .timeEvent(LocalDateTime.now())
+                .timeEndEvent(LocalDateTime.now().plusDays(1L))
                 .status(statusTest)
                 .eventType(eventTypeTest)
                 .authorId(userTest)
@@ -248,8 +249,7 @@ class TeamupCoreRepositoryTests extends Assertions {
     @Test
     void adminTestNull() {
         assertThrows(DataIntegrityViolationException.class,
-                ()->{adminRepository.save(Admin.builder().build());
-                });
+                ()-> adminRepository.save(Admin.builder().build()));
     }
 
     @Test
@@ -287,8 +287,7 @@ class TeamupCoreRepositoryTests extends Assertions {
     @Test
     void moderatorTestNull(){
         assertThrows(DataIntegrityViolationException.class,
-                ()->{moderatorRepository.save(Moderator.builder().build());
-                });
+                ()-> moderatorRepository.save(Moderator.builder().build()));
     }
 
     @Test
@@ -361,8 +360,7 @@ class TeamupCoreRepositoryTests extends Assertions {
     @Test
     void userTestNull(){
         assertThrows(DataIntegrityViolationException.class,
-                ()->{userRepository.save(User.builder().build());
-                });
+                ()-> userRepository.save(User.builder().build()));
     }
 
     @Test
@@ -497,8 +495,7 @@ class TeamupCoreRepositoryTests extends Assertions {
     @Test
     void eventTestNull(){
         assertThrows(DataIntegrityViolationException.class,
-                ()->{eventRepository.save(Event.builder().build());
-                });
+                ()-> eventRepository.save(Event.builder().build()));
     }
 
     @Test
