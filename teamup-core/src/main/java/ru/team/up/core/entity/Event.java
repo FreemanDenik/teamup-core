@@ -26,8 +26,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "EVENT")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "id") не допускает бесконечных циклов при сериализации
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id") // аннотация не позволяет уйти в бесконечный цикл при сериализации
 public class Event {
     /**
      * Первичный ключ

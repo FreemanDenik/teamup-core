@@ -126,7 +126,7 @@ public class EventController {
      * @return Результат работы метода eventService.saveEvent(event)) в виде объекта Event
      * в теле ResponseEntity
      */
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
         try {

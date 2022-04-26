@@ -105,28 +105,55 @@ public class EventServiceImpl implements EventService {
         log.debug("Формируем список подписчиков пользователя");
         Set<User> userSubscribers = userCreatedEventDB.getSubscribers();
 
-        log.debug("Создание уведомления {} подписчикам", userSubscribers.size());
+        if (!userSubscribers.isEmpty()) {
+            log.debug("Создание уведомления {} подписчикам", userSubscribers.size());
 
-        String subject = "Новое мероприятие " + event.getEventName();
-        String text = "Пользователь " + userCreatedEventDB.getUsername()
-                + " создал мероприятие " + event.getEventName()
-                + " с приватностью" + event.getEventPrivacy();
+            String subject = "Новое мероприятие " + event.getEventName();
+            String text = "Пользователь " + userCreatedEventDB.getUsername()
+                    + " создал мероприятие " + event.getEventName()
+                    + " с приватностью" + event.getEventPrivacy();
 
-        notifyService.notify(userSubscribers.stream().map(u -> {
-            return NotifyDto.builder()
-                    .subject(subject)
-                    .text(text)
-                    .email(u.getEmail())
-                    .status(NotifyStatusDto.NOT_SENT)
-                    .creationTime(LocalDateTime.now())
-                    .build();
-        }).collect(Collectors.toList()));
+            notifyService.notify(userSubscribers.stream().map(u -> {
+                return NotifyDto.builder()
+                        .subject(subject)
+                        .text(text)
+                        .email(u.getEmail())
+                        .status(NotifyStatusDto.NOT_SENT)
+                        .creationTime(LocalDateTime.now())
+                        .build();
+            }).collect(Collectors.toList()));
+        } else {
+            log.debug("У пользователя нет подписчиков");
+        }
 
         log.debug("Старт метода сохранения мероприятия");
         Event save = eventRepository.save(event);
         log.debug("Успешно сохранили мероприятие с ID {} в БД ", save.getId());
 
         return save;
+    }
+
+    /**
+     * Метод обновления ивента
+     * @param event обновляемый ивент
+     * @return обновленный ивент
+     */
+    @Override
+    @Transactional
+    public Event updateEvent(Event event) {
+        log.debug("Старт метода сохранения ивента");
+
+        User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
+
+        log.debug("Получили из БД пользователя с ID {}, отредактировавшего мероприятие {}",
+                userCreatedEventDB.getId(), event.getEventName());
+        log.debug("Старт метода обновления мероприятия");
+
+        Event update = eventRepository.save(event);
+
+        log.debug("Успешно сохранили мероприятие с ID {} в БД ", update.getId());
+
+        return update;
     }
 
     /**
