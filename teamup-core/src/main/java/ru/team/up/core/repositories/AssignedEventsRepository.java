@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.team.up.core.entity.AssignedEvents;
+import ru.team.up.core.entity.Event;
 
 import java.util.List;
 
@@ -31,4 +32,12 @@ public interface AssignedEventsRepository extends JpaRepository<AssignedEvents, 
      */
     @Query(value = "SELECT ae.id FROM AssignedEvents ae WHERE ae.moderatorId = :moderatorId")
     public List<Long> getIdAssignedEventsByModeratorId(@Param("moderatorId") Long id);
+
+    /**
+     * Метод получает все мероприятия, которые находятся на проверке по ID модератора
+     * @param id модератора
+     * @return лист проверяющихся мероприятий конкретного модератора
+     */
+    @Query("FROM Event e, AssignedEvents ae WHERE ae.moderatorId = :moderatorId AND ae.eventId = e.id")
+    public List<Event> getAllEventsByModeratorId(@Param("moderatorId") Long id);
 }

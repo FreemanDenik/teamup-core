@@ -1,6 +1,7 @@
 package ru.team.up.core.service;
 
 import ru.team.up.core.entity.AssignedEvents;
+import ru.team.up.core.entity.Event;
 
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface AssignedEventsService {
     List<Long> getIdNotAssignedEvents();
 
     List<Long> getIdAssignedEventsByModeratorId(Long id);
+
+    List<Event> getAllEventsByModeratorId(Long id);
 }
