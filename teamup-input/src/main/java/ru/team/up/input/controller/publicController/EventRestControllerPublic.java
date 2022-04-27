@@ -45,8 +45,8 @@ import java.util.Map;
 @RequestMapping(value = "public/event")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventRestControllerPublic {
-    private final EventServiceRest eventServiceRest;
-    private final WordMatcher wordMatcher;
+    private EventServiceRest eventServiceRest;
+    private WordMatcher wordMatcher;
     private MonitorProducerService monitoringProducerService;
 
 
@@ -85,14 +85,9 @@ public class EventRestControllerPublic {
             log.debug("Метод findEventById выключен параметром getEventByIdEnabled = false");
             throw new RuntimeException("Method findEventById is disabled by parameter getEventByIdEnabled");
         }
-        EventDtoResponse eventDtoResponse = null;
-        try {
-            eventDtoResponse = EventDtoResponse.builder().eventDto(
+        EventDtoResponse eventDtoResponse = EventDtoResponse.builder().eventDto(
                     EventMapper.INSTANCE.mapEventToDto(
                             eventServiceRest.getEventById(eventId))).build();
-        } catch (Exception e) {
-            System.out.println("ER ------- OR" + e);
-        }
 
         Map<String, Object> monitoringParameters = new HashMap<>();
         monitoringParameters.put("ID мероприятия", eventDtoResponse.getEventDto().getId());
