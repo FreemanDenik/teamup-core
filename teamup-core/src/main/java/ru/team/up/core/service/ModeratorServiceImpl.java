@@ -90,6 +90,26 @@ public class ModeratorServiceImpl implements ModeratorService {
         return save;
     }
 
+    @Override
+    public Moderator updateModerator(Moderator moderator) {
+        log.debug("Старт метода Moderator updateModerator(Moderator moderator) с параметром {}", moderator);
+        Account old = accountRepository.findById(moderator.getId()).get();
+
+        try {
+            Moderator oldModerator = (Moderator) old;
+            Long amountOfClosedRequests = oldModerator.getAmountOfClosedRequests();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        moderator.setAccountCreatedTime(old.getAccountCreatedTime());
+        moderator.setLastAccountActivity(LocalDateTime.now());
+
+        accountRepository.save(moderator);
+
+        return null;
+    }
+
     /**
      * @param id Объект класса ru.team.up.core.entity.Moderator
      *           Метод удаляет пользователя из БД
