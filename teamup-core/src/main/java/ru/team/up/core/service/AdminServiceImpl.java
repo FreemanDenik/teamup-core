@@ -3,14 +3,18 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.exception.NoContentException;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.AccountRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminServiceImpl implements AdminService {
     private AccountRepository accountRepository;
+    private BCryptPasswordEncoder encoder;
 
     /**
      * @return Возвращает коллекцию Admin.
@@ -68,11 +73,34 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public Account saveAdmin(Account admin) {
         log.debug("Старт метода Admin saveAdmin(Admin admin) с параметром {}", admin);
+        admin.setAccountCreatedTime(LocalDate.now());
+        admin.setLastAccountActivity(LocalDateTime.now());
+        admin.setPassword(encoder.encode(admin.getPassword()));
+        admin.setRole(Role.ROLE_ADMIN);
 
         Account save = accountRepository.save(admin);
         log.debug("Сохранили админа в БД {}", save);
 
         return save;
+    }
+
+    @Override
+    @Transactional
+    public Admin updateAdmin(Admin admin) {
+        log.debug("Старт метода Admin updateAdmin(Admin admin) с параметром {}", admin);
+        Admin oldAdmin = (Admin) getOneAdmin(admin.getId());
+        admin.setAccountCreatedTime(oldAdmin.getAccountCreatedTime());
+        admin.setLastAccountActivity(LocalDateTime.now());
+        admin.setRole(Role.ROLE_ADMIN);
+        if (admin.getPassword() == null) {
+            admin.setPassword(oldAdmin.getPassword());
+        } else {
+            admin.setPassword(encoder.encode(admin.getPassword()));
+        }
+
+        accountRepository.save(admin);
+
+        return admin;
     }
 
     /**
@@ -89,5 +117,12 @@ public class AdminServiceImpl implements AdminService {
 
         accountRepository.deleteById(id);
         log.debug("Удалили админа из БД {}", id);
+    }
+
+    @Override
+    @Transactional
+    public boolean existsById(Long id) {
+        log.debug("Старт метода boolean existsById(Long id) с параметром {}", id);
+        return accountRepository.existsById(id);
     }
 }

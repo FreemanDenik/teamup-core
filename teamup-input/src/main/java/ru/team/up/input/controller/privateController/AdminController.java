@@ -62,13 +62,13 @@ public class AdminController {
     }
 
     /**
-     * @param admin Создаваемый объект класса Admin
+     * @param adminCreate Создаваемый объект класса Admin
      * @return Результат работы метода adminService.saveAdmin(admin) в виде объекта Admin
      * в теле ResponseEntity
      */
     @Operation(summary ="Создание нового администратора")
     @PostMapping
-    public ResponseEntity<Account> createAdmin(@RequestParam String admin, @RequestBody @NotNull Account adminCreate) {
+    public ResponseEntity<Account> createAdmin(@RequestBody @NotNull Admin adminCreate) {
         log.debug("Старт метода ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) с параметром {}", adminCreate);
 
         ResponseEntity<Account> responseEntity = new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
@@ -83,17 +83,19 @@ public class AdminController {
      * в теле ResponseEntity
      */
     @Operation(summary ="Обновление данных администратора")
-    @PatchMapping
-    public ResponseEntity<Account> updateAdmin(@RequestBody @NotNull Account admin) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Account> updateAdmin(@PathVariable Long id, @RequestBody @NotNull Admin admin) {
         log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", admin);
 
         log.debug("Проверка наличия обновляемого администратора в БД");
-        adminService.getOneAdmin(admin.getId());
-
-        ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.saveAdmin(admin));
-        log.debug("Получили ответ {}", responseEntity);
-
-        return responseEntity;
+        if (adminService.existsById(id) && id.equals(admin.getId())) {
+            ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.updateAdmin(admin));
+            log.debug("Получили ответ {}", responseEntity);
+            return responseEntity;
+        } else {
+            log.debug("Неверно указан id");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**

@@ -109,7 +109,7 @@ public class ModeratorServiceImpl implements ModeratorService {
 
         accountRepository.save(moderator);
 
-        return null;
+        return moderator;
     }
 
     /**
