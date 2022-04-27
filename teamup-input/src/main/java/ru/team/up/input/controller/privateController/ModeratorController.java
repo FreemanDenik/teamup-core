@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
+import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.service.AssignedEventsService;
 import ru.team.up.core.service.ModeratorService;
 
 import javax.validation.constraints.NotNull;
@@ -30,6 +32,8 @@ import java.util.List;
 @RequestMapping("/private/account/moderator")
 public class ModeratorController {
     private ModeratorService moderatorService;
+    private AssignedEventsService assignedEventsService;
+
 
     /**
      * @return Результат работы метода moderatorService.getAllModerators() в виде коллекции модераторов
@@ -109,6 +113,25 @@ public class ModeratorController {
         moderatorService.deleteModerator(id);
 
         ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        log.debug("Получили ответ {}", responseEntity);
+
+        return responseEntity;
+    }
+
+    /**
+     * @param id Значение ID модератора
+     * @return Результат работы метода assignedEventsService.getAllEventsByModeratorId(id) в виде
+     * объекта List<AssignedEvents> в теле ResponseEntity
+     */
+    @Operation(summary ="Получение мероприятий на проверке модератора по его id")
+    @GetMapping("/{id}/events")
+    public ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id) {
+
+        log.debug("Старт метода ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id)" +
+                " с параметром {}", id);
+
+        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(assignedEventsService.getAllEventsByModeratorId(id));
+
         log.debug("Получили ответ {}", responseEntity);
 
         return responseEntity;
