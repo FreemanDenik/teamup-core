@@ -68,7 +68,7 @@ public class TeamupInputAdminPrivateControllerTest {
         Assert.assertEquals(200, adminController.getAllAdmins().getStatusCodeValue());
     }
 
-    @Disabled
+    @Ignore
     @Test
     public void testUpdateAdmin() {
         when(adminService.saveAdmin(admin)).thenReturn(admin);

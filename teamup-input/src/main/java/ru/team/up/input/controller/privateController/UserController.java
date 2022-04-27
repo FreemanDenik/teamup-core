@@ -99,15 +99,13 @@ public class UserController {
     }
 
     /**
-     * @param user Создаваемый объект класса User
+     * @param userCreate Создаваемый объект класса User
      * @return Результат работы метода userService.saveUser(user) в виде объекта User
      * в теле ResponseEntity
      */
     @PostMapping
     @Operation(summary = "Создание юзера")
-    // @RequestParam(required = false) String user пока оставлено из-за того, что используется в тестах
-    public ResponseEntity<Account> createUser(@RequestParam(required = false) String user,
-                                              @RequestBody @NotNull User userCreate) {
+    public ResponseEntity<Account> createUser(@RequestBody @NotNull User userCreate) {
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
@@ -123,19 +121,19 @@ public class UserController {
     }
 
     /**
+     * @param id id обновляемого пользователя
      * @param user Обновляемый объект класса User
      * @return Результат работы метода userService.saveUser(user) в виде объекта User
      * в теле ResponseEntity
      */
-    @PutMapping/*("/{id}")*/
+    @PutMapping("/{id}")
     @Operation(summary = "Обновление юзера")
-    public ResponseEntity<Account> updateUser(/*@PathVariable Long id,*/
-                                                @RequestBody @NotNull User user) {
+    public ResponseEntity<Account> updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
-        Long id = user.getId();
+        Long userId = user.getId();
 
-        if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), id)) {
-            log.debug("Попытка изменить пользователя с id = {}, не имея на это прав", id);
+        if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), userId) || !id.equals(userId)) {
+            log.debug("Попытка изменить пользователя с id = {}, не имея на это прав", userId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

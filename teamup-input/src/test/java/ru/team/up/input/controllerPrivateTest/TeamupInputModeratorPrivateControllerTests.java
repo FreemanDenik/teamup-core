@@ -75,7 +75,7 @@ public class TeamupInputModeratorPrivateControllerTests {
         Assert.assertEquals(200, moderatorController.getAllModerators().getStatusCodeValue());
     }
 
-    @Disabled
+    @Ignore
     @Test
     public void testUpdateModerator() {
 //        when(moderatorService.saveModerator(moderator)).thenReturn(moderator);

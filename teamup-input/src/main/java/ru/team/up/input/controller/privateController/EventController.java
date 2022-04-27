@@ -162,6 +162,7 @@ public class EventController {
     }
 
     /**
+     * @param id id обновляемого ивента
      * @param event Обновляемый объект класса Event
      * @return Результат работы метода eventService.saveEvent(event)) в виде объекта Event
      * в теле ResponseEntity
@@ -179,9 +180,14 @@ public class EventController {
     @ApiResponse(responseCode = "403", description = "Попытка изменения чужого события", content = {
             @Content(mediaType = "application/json")
     })
-    @PutMapping
-    public ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
+
+        if (id.equals(event.getId())) {
+            log.warn("Введен некорректный id");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         try {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.updateEvent(event));
