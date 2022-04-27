@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
@@ -29,6 +30,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ModeratorServiceImpl implements ModeratorService {
     private AccountRepository accountRepository;
+    private BCryptPasswordEncoder encoder;
 
     /**
      * @return Возвращает коллекцию Moderator.
@@ -76,7 +78,7 @@ public class ModeratorServiceImpl implements ModeratorService {
                 .accountCreatedTime(LocalDate.now())
                 .lastAccountActivity(LocalDateTime.now())
                 .role(Role.ROLE_MODERATOR)
-                .password(BCrypt.hashpw(moderator.getPassword(), BCrypt.gensalt(10)))
+                .password(encoder.encode(moderator.getPassword()))
                 .firstName(moderator.getFirstName())
                 .lastName(moderator.getLastName())
                 .middleName(moderator.getMiddleName())
@@ -93,17 +95,17 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Override
     public Moderator updateModerator(Moderator moderator) {
         log.debug("Старт метода Moderator updateModerator(Moderator moderator) с параметром {}", moderator);
+        // accountRepository достает из базы объект Moderator
         Account old = accountRepository.findById(moderator.getId()).get();
-
-        try {
-            Moderator oldModerator = (Moderator) old;
-            Long amountOfClosedRequests = oldModerator.getAmountOfClosedRequests();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         moderator.setAccountCreatedTime(old.getAccountCreatedTime());
         moderator.setLastAccountActivity(LocalDateTime.now());
+        moderator.setRole(Role.ROLE_MODERATOR);
+        if (moderator.getPassword() == null) {
+            moderator.setPassword(old.getPassword());
+        } else {
+            moderator.setPassword(encoder.encode(moderator.getPassword()));
+        }
 
         accountRepository.save(moderator);
 
