@@ -4,12 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.UserRepository;
 import ru.team.up.dto.NotifyDto;
 
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -31,8 +35,10 @@ class UserServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private NotifyService notifyService;
+    @Mock
+    private BCryptPasswordEncoder encoder;
     @InjectMocks
-    private UserService userService = new UserServiceImpl(userRepository, notifyService);
+    private UserService userService = new UserServiceImpl(userRepository, notifyService, encoder);
 
     private User userTest;
     private Set<User> userSetTest;
@@ -74,11 +80,46 @@ class UserServiceImplTest {
     }
 
     @Test
-    void saveUser() {
-        when(userRepository.findUserById(anyLong())).thenReturn(userTest);
+    void shouldSaveUser() {
+        String oldPassword = userTest.getPassword();
+        userTest.setLastAccountActivity(null);
+
+        when(userRepository.save(userTest)).thenReturn(userTest);
         userService.saveUser(userTest);
-        verify(userRepository, atLeastOnce()).findUserById(anyLong());
         verify(userRepository, atLeastOnce()).save(any(User.class));
+        assertNotEquals(oldPassword, userTest.getPassword());
+        assertNotNull(userTest.getLastAccountActivity());
+    }
+
+    @Test
+    void shouldUpdateUser() {
+        // given
+        String oldPassword = userTest.getPassword();
+        userTest.setLastAccountActivity(null);
+        when(userRepository.findUserById(1L)).thenReturn(userTest);
+        // when
+        userService.updateUser(userTest);
+        // then
+        ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(captor.capture());
+        User captorValue = captor.getValue();
+        assertThat(captorValue).isEqualTo(userTest);
+
+        assertNotNull(userTest.getLastAccountActivity());
+        assertNotEquals(oldPassword, userTest.getPassword());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdateUser() {
+        // given
+        when(userRepository.findUserById(1L)).thenReturn(null);
+        // when
+        Exception e = assertThrows(UserNotFoundIDException.class,
+                () -> {
+                    userService.updateUser(userTest);
+                });
+        // then
+        assertTrue(e.getMessage().contains("Пользователь не найден. ID = 1"));
     }
 
     @Test
