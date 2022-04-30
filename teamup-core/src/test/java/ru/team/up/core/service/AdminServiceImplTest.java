@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.entity.Role;
@@ -33,8 +34,11 @@ class AdminServiceImplTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private BCryptPasswordEncoder encoder;
+
     @InjectMocks
-    private AdminService adminService = new AdminServiceImpl(accountRepository);
+    private AdminService adminService = new AdminServiceImpl(accountRepository, encoder);
 
     private Account admin;
 

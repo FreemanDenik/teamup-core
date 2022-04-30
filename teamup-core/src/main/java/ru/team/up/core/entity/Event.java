@@ -1,6 +1,8 @@
 package ru.team.up.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "EVENT")
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id") // аннотация не позволяет уйти в бесконечный цикл при сериализации
 public class Event {
     /**
      * Первичный ключ

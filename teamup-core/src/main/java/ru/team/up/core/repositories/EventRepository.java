@@ -1,6 +1,7 @@
 package ru.team.up.core.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,8 +21,9 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findByEventNameContaining(String eventName);
 
+    @Modifying
     @Query("UPDATE Event SET eventNumberOfParticipant = eventNumberOfParticipant + 1 WHERE id = :id")
-    void updateNumberOfViews(Long id);
+    void updateNumberOfViews(@Param("id") Long id);
 
     List<Event> findAllByCity(String city);
 

@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.repositories.AccountRepository;
@@ -30,9 +31,11 @@ class ModeratorServiceImplTest {
 
     @Mock
     private AccountRepository accountRepository;
+    @Mock
+    private BCryptPasswordEncoder encoder;
 
     @InjectMocks
-    private ModeratorService moderatorService = new ModeratorServiceImpl(accountRepository);
+    private ModeratorService moderatorService = new ModeratorServiceImpl(accountRepository, encoder);
 
     private Account moderatorTest;
     private List<Account> accountListTest;

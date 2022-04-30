@@ -74,10 +74,10 @@ public class ModeratorController {
     @PostMapping
     public ResponseEntity<Account> createModerator(@RequestBody @NotNull Account moderatorCreate) {
         log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
-        ResponseEntity<Account> responseEntity
-                = new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
-        log.debug("Получили ответ {}", responseEntity);
+        ResponseEntity<Account> responseEntity =
+                new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
 
+        log.debug("Получили ответ {}", responseEntity);
         return responseEntity;
     }
 
@@ -88,16 +88,15 @@ public class ModeratorController {
      * в теле ResponseEntity
      */
     @Operation(summary ="Обновление данных модератора")
-    @PatchMapping("/{id}")
-    public ResponseEntity<Account> updateModerator(@RequestBody @NotNull Account moderator,@PathVariable("id") Long moderatorId) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator,@PathVariable("id") Long moderatorId) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
-        ResponseEntity<Account> responseEntity;
-        if(moderatorService.moderatorIsExistsById (moderatorId)){
-            moderator.setId (moderatorId);
-            responseEntity = ResponseEntity.ok(moderatorService.saveModerator (moderator));
+        ResponseEntity<Moderator> responseEntity;
+        if (moderatorService.moderatorIsExistsById(moderatorId) && moderator.getId().equals(moderatorId)) {
+            responseEntity = ResponseEntity.ok(moderatorService.updateModerator(moderator));
             log.debug("Модератор обновлён {}", responseEntity);
-        }else{
-            responseEntity = new ResponseEntity<> (HttpStatus.NO_CONTENT);
+        } else {
+            responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return responseEntity;
     }
