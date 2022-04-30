@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Role;
@@ -35,7 +36,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private NotifyService notifyService;
-    private BCryptPasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     /**
      * @return Возвращает коллекцию User.
@@ -75,28 +76,29 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         log.debug("Старт метода User saveUser(User user) с параметром {}", user);
 
-//        log.debug("Отправляем уведомления пользователю о новых подписчиках, если они есть");
-//        Set<User> newSetOfSubscribers = user.getSubscribers();
-//        newSetOfSubscribers.removeAll(userRepository.findUserById(user.getId()).getSubscribers());
-//        String userEmail = user.getEmail();
-//
-//        notifyService.notify(newSetOfSubscribers.stream().map(s -> {
-//            return NotifyDto.builder()
-//                    .subject("Новый подписчик")
-//                    .text("Пользователь " + s.getUsername() + " подписался на вас")
-//                    .email(userEmail)
-//                    .creationTime(LocalDateTime.now())
-//                    .status(NotifyStatusDto.NOT_SENT)
-//                    .build();
-//        }).collect(Collectors.toSet()));
+        log.debug("Отправляем уведомления пользователю о новых подписчиках, если они есть");
+        Set<User> newSetOfSubscribers = user.getSubscribers();
+        newSetOfSubscribers.removeAll(userRepository.findUserById(user.getId()).getSubscribers());
+        String userEmail = user.getEmail();
+
+        notifyService.notify(newSetOfSubscribers.stream().map(s -> {
+            return NotifyDto.builder()
+                    .subject("Новый подписчик")
+                    .text("Пользователь " + s.getUsername() + " подписался на вас")
+                    .email(userEmail)
+                    .creationTime(LocalDateTime.now())
+                    .status(NotifyStatusDto.NOT_SENT)
+                    .build();
+        }).collect(Collectors.toSet()));
+
         user.setPassword(encoder.encode(user.getPassword()));
         // не стал добавлять в Account аннотации @CreationTimestamp и @UpdateTimestamp чтобы не поломать другой код
         user.setAccountCreatedTime(LocalDate.now());
         user.setLastAccountActivity(LocalDateTime.now());
         user.setRole(Role.ROLE_USER);
         User save = userRepository.save(user);
-        log.debug("Сохранили юзера в БД {}", save);
 
+        log.debug("Сохранили юзера в БД {}", save);
         return save;
     }
 
@@ -104,20 +106,18 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateUser(User user) {
         log.debug("Старт метода User updateUser(User user)");
-        log.debug("Поиск обновляемого пользователя в базе...");
 
+        log.debug("Поиск обновляемого пользователя в базе...");
         Long id = user.getId();
         User oldUser = userRepository.findUserById(id);
         if (oldUser == null) {
             log.error("Пользователь с id = {} не найден", id);
             throw new UserNotFoundIDException(id);
         }
-
         // предполагается, что основная информация (имя, фамилия...) приходят в запросе, кроме коллекций
         user.setPassword(encoder.encode(user.getPassword()));
         user.setAccountCreatedTime(oldUser.getAccountCreatedTime());
         user.setLastAccountActivity(LocalDateTime.now());
-
         user.setUserInterests(oldUser.getUserInterests());
         user.setSubscribers(oldUser.getSubscribers());
         user.setUserEvent(oldUser.getUserEvent());

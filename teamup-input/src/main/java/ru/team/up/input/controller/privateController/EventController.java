@@ -184,7 +184,7 @@ public class EventController {
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
 
-        if (id.equals(event.getId())) {
+        if (!id.equals(event.getId())) {
             log.warn("Введен некорректный id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -193,7 +193,6 @@ public class EventController {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.updateEvent(event));
             log.debug("Сформирован ответ {}", responseEntity);
             return responseEntity;
-
         } catch (PersistenceException e) {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             log.debug("Сформирован ответ {}", responseEntity);

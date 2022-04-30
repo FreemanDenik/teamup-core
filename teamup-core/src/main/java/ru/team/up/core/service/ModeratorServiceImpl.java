@@ -3,8 +3,7 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
@@ -30,7 +29,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ModeratorServiceImpl implements ModeratorService {
     private AccountRepository accountRepository;
-    private BCryptPasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     /**
      * @return Возвращает коллекцию Moderator.
@@ -88,7 +87,6 @@ public class ModeratorServiceImpl implements ModeratorService {
 
         Account save = accountRepository.save(newModerator);
         log.debug("Создали нового модератора в БД {}", save);
-
         return save;
     }
 
@@ -97,10 +95,10 @@ public class ModeratorServiceImpl implements ModeratorService {
         log.debug("Старт метода Moderator updateModerator(Moderator moderator) с параметром {}", moderator);
         // accountRepository достает из базы объект Moderator
         Account old = accountRepository.findById(moderator.getId()).get();
-
         moderator.setAccountCreatedTime(old.getAccountCreatedTime());
         moderator.setLastAccountActivity(LocalDateTime.now());
         moderator.setRole(Role.ROLE_MODERATOR);
+
         if (moderator.getPassword() == null) {
             moderator.setPassword(old.getPassword());
         } else {
@@ -108,7 +106,6 @@ public class ModeratorServiceImpl implements ModeratorService {
         }
 
         accountRepository.save(moderator);
-
         return moderator;
     }
 

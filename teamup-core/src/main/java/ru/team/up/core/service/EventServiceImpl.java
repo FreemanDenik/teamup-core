@@ -106,7 +106,6 @@ public class EventServiceImpl implements EventService {
 
         User userCreatedEventDB = (User) userRepository.findById(event.getAuthorId().getId()).get();
         log.debug("Получили из БД пользователя с ID {}, создавшего мероприятие {}", userCreatedEventDB.getId(), event.getEventName());
-
         if (haveNoRightsToSave(SecurityContextHolder.getContext().getAuthentication(), userCreatedEventDB)) {
             throw new SecurityException("Попытка сохранения события как другой пользователь");
         }
@@ -142,7 +141,6 @@ public class EventServiceImpl implements EventService {
         log.debug("Старт метода сохранения мероприятия");
         Event save = eventRepository.save(event);
         log.debug("Успешно сохранили мероприятие с ID {} в БД ", save.getId());
-
         return save;
     }
 
@@ -172,11 +170,8 @@ public class EventServiceImpl implements EventService {
         event.setStatus(statusRepository.getOne(2L));
 
         log.debug("Старт метода обновления мероприятия {}", event);
-
         Event update = eventRepository.save(event);
-
         log.debug("Успешно сохранили мероприятие с ID {} в БД ", update.getId());
-
         return update;
     }
 
@@ -332,10 +327,8 @@ public class EventServiceImpl implements EventService {
             return false;
         } else if (principal instanceof User) {
             User currentUser = (User) principal;
-
             return !currentUser.getId().equals(user.getId());
         }
-
         return true;
     }
 }

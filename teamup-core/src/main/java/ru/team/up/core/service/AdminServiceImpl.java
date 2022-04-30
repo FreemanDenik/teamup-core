@@ -3,7 +3,7 @@ package ru.team.up.core.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Account;
@@ -28,7 +28,7 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminServiceImpl implements AdminService {
     private AccountRepository accountRepository;
-    private BCryptPasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     /**
      * @return Возвращает коллекцию Admin.
@@ -80,7 +80,6 @@ public class AdminServiceImpl implements AdminService {
 
         Account save = accountRepository.save(admin);
         log.debug("Сохранили админа в БД {}", save);
-
         return save;
     }
 
@@ -99,7 +98,6 @@ public class AdminServiceImpl implements AdminService {
         }
 
         accountRepository.save(admin);
-
         return admin;
     }
 

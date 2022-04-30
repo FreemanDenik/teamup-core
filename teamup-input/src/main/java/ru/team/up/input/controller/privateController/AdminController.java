@@ -70,10 +70,10 @@ public class AdminController {
     @PostMapping
     public ResponseEntity<Account> createAdmin(@RequestBody @NotNull Admin adminCreate) {
         log.debug("Старт метода ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) с параметром {}", adminCreate);
+        ResponseEntity<Account> responseEntity =
+                new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
 
-        ResponseEntity<Account> responseEntity = new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
         log.debug("Получили ответ {}", responseEntity);
-
         return responseEntity;
     }
 

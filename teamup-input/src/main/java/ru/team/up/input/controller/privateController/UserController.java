@@ -115,8 +115,8 @@ public class UserController {
             log.debug(e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Сформирован ответ {}", responseEntity);
 
+        log.debug("Сформирован ответ {}", responseEntity);
         return responseEntity;
     }
 
@@ -130,8 +130,8 @@ public class UserController {
     @Operation(summary = "Обновление юзера")
     public ResponseEntity<Account> updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
-        Long userId = user.getId();
 
+        Long userId = user.getId();
         if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), userId) || !id.equals(userId)) {
             log.debug("Попытка изменить пользователя с id = {}, не имея на это прав", userId);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -143,8 +143,8 @@ public class UserController {
         } catch (PersistenceException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        log.debug("Сформирован ответ {}", responseEntity);
 
+        log.debug("Сформирован ответ {}", responseEntity);
         return responseEntity;
     }
 
@@ -180,14 +180,10 @@ public class UserController {
         Object principal = authentication.getPrincipal();
         if (principal instanceof Admin || principal instanceof Moderator) {
             return true;
-        }
-
-        if (principal instanceof User) {
+        } else if (principal instanceof User) {
             User currentUser = (User) principal;
-
             return currentUser.getId().equals(id);
         }
-
         return false;
     }
 }
