@@ -141,5 +141,10 @@ class CheckRestControllerPublicTest {
 
     @Test
     void isAvailableEmail() {
+        when(userService.getUserByEmail("userka@mail.ru")).thenReturn(userTest);
+        // Проверка, что емаил занят
+        assertEquals(406, checkRestControllerPublic.isAvailableEmail("userka@mail.ru").getStatusCodeValue());
+        // Проверка, что емаил свободен
+        assertEquals(200, checkRestControllerPublic.isAvailableEmail("neo@mail.ru").getStatusCodeValue());
     }
 }

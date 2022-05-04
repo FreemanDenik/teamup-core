@@ -14,7 +14,6 @@ import ru.team.up.core.entity.EventType;
 import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
-import ru.team.up.dto.ReportDto;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
