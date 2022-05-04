@@ -15,6 +15,8 @@ public interface ModeratorService {
 
     Account saveModerator(Account user);
 
+    Moderator updateModerator(Moderator moderator);
+
     void deleteModerator(Long id);
     boolean moderatorIsExistsById(Long id);
 
