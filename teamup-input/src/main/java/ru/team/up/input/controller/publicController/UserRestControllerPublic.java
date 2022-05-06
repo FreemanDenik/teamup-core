@@ -44,7 +44,7 @@ import java.util.Map;
 @RequestMapping("public/user")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserRestControllerPublic {
-    private final UserServiceRest userServiceRest;
+    private UserServiceRest userServiceRest;
     private MonitorProducerService monitoringProducerService;
 
     /**

@@ -25,8 +25,8 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CheckRestControllerPublic {
 
-    private final CityService cityService;
-    private final UserServiceRest userService;
+    private CityService cityService;
+    private UserServiceRest userService;
 
     @Operation(summary ="Поиск города по названию")
     @GetMapping("/city/one/{name}")

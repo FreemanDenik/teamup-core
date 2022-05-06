@@ -21,7 +21,7 @@ import ru.team.up.input.service.InterestServiceRest;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class InterestRestControllerPublic {
 
-    private final InterestServiceRest interestsServiceRest;
+    private InterestServiceRest interestsServiceRest;
 
     /**
      * Метод получения всех интересов
