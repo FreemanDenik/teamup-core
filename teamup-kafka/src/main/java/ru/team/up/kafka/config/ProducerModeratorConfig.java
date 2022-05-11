@@ -10,6 +10,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import ru.team.up.dto.KafkaEventDto;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +39,7 @@ public class ProducerModeratorConfig {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return props;
     }
 
@@ -47,7 +49,7 @@ public class ProducerModeratorConfig {
      * @return возвращает объект org.springframework.kafka.core.DefaultKafkaProducerFactory
      */
     @Bean
-    public ProducerFactory<String, String> producerFactory() {
+    public ProducerFactory<String, KafkaEventDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
@@ -56,7 +58,7 @@ public class ProducerModeratorConfig {
      */
     @Bean
     @Qualifier("kafkaTemplate")
-    public KafkaTemplate<String, String> kafkaTemplate() {
+    public KafkaTemplate<String, KafkaEventDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }
