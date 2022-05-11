@@ -38,7 +38,7 @@ public class KafkaEventDispatcherImpl implements KafkaEventDispatcher{
     public void listen(KafkaEventDto kafkaEvent) {
 
         if (kafkaEventProcessorMap.containsKey(kafkaEvent.getKafkaEventTypeDto())) {
-            kafkaEventProcessorMap.get(kafkaEvent.getKafkaEventTypeDto()).perform(kafkaEvent.getKafkaEventTypeDto());
+            kafkaEventProcessorMap.get(kafkaEvent.getKafkaEventTypeDto()).perform(kafkaEvent);
         } else {
             throw new IncorrectKafkaEventTypeException();
         }

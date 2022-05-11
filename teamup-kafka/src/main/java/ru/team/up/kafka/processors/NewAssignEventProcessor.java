@@ -2,6 +2,7 @@ package ru.team.up.kafka.processors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.team.up.dto.KafkaEventDto;
 import ru.team.up.dto.KafkaEventTypeDto;
 
 /**
@@ -21,7 +22,7 @@ public class NewAssignEventProcessor implements KafkaEventProcessor{
      * Метод обработки события "Назначение нового мероприятия на модератора"
      */
     @Override
-    public void perform(KafkaEventTypeDto supportedType) {
+    public void perform(KafkaEventDto kafkaEventDto) {
         //TODO Добавить в параметры необходимые данные из KafkaEventDto
         //TODO Добавить логику обработки события
     }
