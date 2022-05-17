@@ -36,5 +36,4 @@ public class SupControllerPublic {
                         this.getClass(), null));
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
