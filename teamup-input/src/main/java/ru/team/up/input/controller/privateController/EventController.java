@@ -192,6 +192,7 @@ public class EventController {
         try {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.updateEvent(event));
             log.debug("Сформирован ответ {}", responseEntity);
+
             return responseEntity;
         } catch (PersistenceException e) {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

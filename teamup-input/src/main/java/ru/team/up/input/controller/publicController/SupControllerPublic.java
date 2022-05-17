@@ -6,10 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.dto.ControlDto;
 import ru.team.up.sup.service.KafkaSupService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -18,10 +24,16 @@ import ru.team.up.sup.service.KafkaSupService;
 @RequestMapping("api/public/sup")
 public class SupControllerPublic {
     private KafkaSupService kafkaSupService;
+    private MonitorProducerService monitoringProducerService;
 
     @PostMapping("/get")
     public ResponseEntity get() {
         kafkaSupService.getAllModuleParameters();
+
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), null));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
