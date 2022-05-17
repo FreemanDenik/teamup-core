@@ -21,6 +21,7 @@ import ru.team.up.dto.*;
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,8 +87,8 @@ public class EventController {
                 EventMapper.INSTANCE.mapEventToDto(event)
         );
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID мероприятия ", event.getId());
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("Id мероприятия ", event.getId());
         monitoringParameters.put("Название мероприятия ", event.getEventName());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -115,8 +116,8 @@ public class EventController {
         ResponseEntity<EventDto> responseEntity = new ResponseEntity<>(
                 EventMapper.INSTANCE.mapEventToDto(eventService.getOneEvent(id)), HttpStatus.ACCEPTED);
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID мероприятия ", event.getId());
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("Id мероприятия ", event.getId());
         monitoringParameters.put("Название мероприятия ", event.getEventName());
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -149,6 +150,16 @@ public class EventController {
 
         try {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
+
+            Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+            monitoringParameters.put("Id мероприятия", eventCreate.getId());
+            monitoringParameters.put("Название мероприятия", eventCreate.getEventName());
+
+            monitoringProducerService.send(
+                    monitoringProducerService.constructReportDto(
+                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                            this.getClass(), monitoringParameters));
+
             log.debug("Сформирован ответ {}", responseEntity);
             return responseEntity;
         } catch (PersistenceException e) {
@@ -191,6 +202,16 @@ public class EventController {
 
         try {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.updateEvent(event));
+
+            Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+            monitoringParameters.put("Id мероприятия", event.getId());
+            monitoringParameters.put("Название мероприятия", event.getEventName());
+
+            monitoringProducerService.send(
+                    monitoringProducerService.constructReportDto(
+                            SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                            this.getClass(), monitoringParameters));
+
             log.debug("Сформирован ответ {}", responseEntity);
 
             return responseEntity;
@@ -212,10 +233,22 @@ public class EventController {
     public ResponseEntity<Event> deleteAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> deleteAdmin(@PathVariable Long id) с параметром {}", id);
 
+        Event event = eventService.getOneEvent(id);
+
         eventService.deleteEvent(id);
+        log.debug("Событие с id = {} было успешно удалено", id);
 
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("Id мероприятия", event.getId());
+        monitoringParameters.put("Название мероприятия", event.getEventName());
+
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
 
         return responseEntity;
     }
