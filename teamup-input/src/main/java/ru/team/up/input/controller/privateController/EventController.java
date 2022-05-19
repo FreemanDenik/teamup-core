@@ -17,6 +17,7 @@ import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.EventService;
 import ru.team.up.dto.*;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
@@ -53,6 +54,10 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventDto>> getAllEvents() {
         log.debug("Старт метода ResponseEntity<List<EventDto>> getAllEvents()");
+        if (!ParameterService.getAllEventsEnabled.getValue()) {
+            log.debug("Метод getAllEvents выключен параметром getAllEventsEnabled = false");
+            throw new RuntimeException("Method getAllEvents is disabled by parameter getAllEventsEnabled");
+        }
         List<Event> events = eventService.getAllEvents();
         ResponseEntity<List<EventDto>> responseEntity = ResponseEntity.ok(
                 EventMapper.INSTANCE.mapDtoEventToEvent(events));
@@ -81,6 +86,10 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<EventDto> getOneEvent(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<EventDto> getOneEvent(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.getOneEventEnabled.getValue()) {
+            log.debug("Метод getOneEvent выключен параметром getOneEventEnabled = false");
+            throw new RuntimeException("Method getOneEvent is disabled by parameter getOneEventEnabled");
+        }
         Event event = eventService.getOneEvent(id);
         ResponseEntity<EventDto> responseEntity = ResponseEntity.ok(
                 EventMapper.INSTANCE.mapEventToDto(event)
@@ -110,6 +119,10 @@ public class EventController {
     @GetMapping("viewEvent/{id}")
     public ResponseEntity<EventDto> updateNumberOfParticipants(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> updateNumberOfViews(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.updateNumberOfParticipantsEnabled.getValue()) {
+            log.debug("Метод updateNumberOfParticipants выключен параметром updateNumberOfParticipantsEnabled = false");
+            throw new RuntimeException("Method updateNumberOfParticipants is disabled by parameter updateNumberOfParticipantsEnabled");
+        }
         Event event = eventService.getOneEvent(id);
         eventService.updateNumberOfViews(id);
         ResponseEntity<EventDto> responseEntity = new ResponseEntity<>(
@@ -146,7 +159,10 @@ public class EventController {
     @PostMapping
     public ResponseEntity<Event> createEvent(@RequestBody @NotNull Event eventCreate) {
         log.debug("Старт метода ResponseEntity<Event> createEvent(@RequestBody @NotNull Event event) с параметром {}", eventCreate);
-
+        if (!ParameterService.createEventEnabled.getValue()) {
+            log.debug("Метод createEvent выключен параметром createEventEnabled = false");
+            throw new RuntimeException("Method createEvent is disabled by parameter createEventEnabled");
+        }
         try {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
             log.debug("Сформирован ответ {}", responseEntity);
@@ -183,7 +199,10 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody @NotNull Event event) {
         log.debug("Старт метода ResponseEntity<Event> updateEvent(@RequestBody @NotNull Event event) с параметром {}", event);
-
+        if (!ParameterService.updateEventEnabled.getValue()) {
+            log.debug("Метод updateEvent выключен параметром updateEventEnabled = false");
+            throw new RuntimeException("Method updateEvent is disabled by parameter updateEventEnabled");
+        }
         if (!id.equals(event.getId())) {
             log.warn("Введен некорректный id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -210,6 +229,10 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Event> deleteAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Event> deleteAdmin(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.deleteAdminEnabled.getValue()) {
+            log.debug("Метод deleteAdmin выключен параметром deleteAdminEnabled = false");
+            throw new RuntimeException("Method deleteAdmin is disabled by parameter deleteAdminEnabled");
+        }
 
         eventService.deleteEvent(id);
 
