@@ -44,7 +44,17 @@ public class ParameterServiceImp implements ParameterService {
             getUpdateEventEnabled,
             getDeleteEventEnabled,
             getAddEventParticipantEnabled,
-            getDeleteEventParticipantEnabled);
+            getDeleteEventParticipantEnabled,
+            getInterestsUserByIdEnabled,
+            getEnabled,
+            getUserByEmailEnabled,
+            getUserByUsernameEnabled,
+            getUsersListEnabled,
+            getEventsByOwnerIdEnabled,
+            getEventsBySubscriberIdEnabled,
+            getUpdateUserEnabled,
+            getDeleteUserByIdEnabled,
+            getTopUsersListInCityEnabled);
 
     @PostConstruct
     private void init() {
