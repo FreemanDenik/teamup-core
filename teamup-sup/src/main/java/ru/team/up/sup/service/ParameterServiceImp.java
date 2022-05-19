@@ -34,7 +34,17 @@ public class ParameterServiceImp implements ParameterService {
             getAllCitiesEnabled,
             getSomeCitiesByNameEnabled,
             getIsAvailableUsernameEnabled,
-            getIsAvailableEmailEnabled);
+            getIsAvailableEmailEnabled,
+            getAllEventsEnabled,
+            getAllEventByCityEnabled,
+            getFindEventsByNameEnabled,
+            getFindEventsByAuthorEnabled,
+            getFindEventsByTypeEnabled,
+            getCreateEventEnabled,
+            getUpdateEventEnabled,
+            getDeleteEventEnabled,
+            getAddEventParticipantEnabled,
+            getDeleteEventParticipantEnabled);
 
     @PostConstruct
     private void init() {

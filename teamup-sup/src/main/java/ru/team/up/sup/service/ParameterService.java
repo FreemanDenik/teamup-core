@@ -40,6 +40,36 @@ public interface ParameterService {
     SupParameter<Boolean> getIsAvailableEmailEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_RETURN_AVAILABILITY_CHECK_EMAIL",
             true);
+    SupParameter<Boolean> getAllEventsEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_ALL_EVENTS",
+            true);
+    SupParameter<Boolean> getAllEventByCityEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_ALL_EVENTS_BY_CITY",
+            true);
+    SupParameter<Boolean> getFindEventsByNameEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_EVENTS_BY_NAME",
+            true);
+    SupParameter<Boolean> getFindEventsByAuthorEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_EVENTS_BY_AUTHOR",
+            true);
+    SupParameter<Boolean> getFindEventsByTypeEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_EVENTS_BY_TYPE",
+            true);
+    SupParameter<Boolean> getCreateEventEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_CREATE_EVENT",
+            true);
+    SupParameter<Boolean> getUpdateEventEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_RETURN_UPDATE_EVENT",
+            true);
+    SupParameter<Boolean> getDeleteEventEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_DELETE_EVENT",
+            true);
+    SupParameter<Boolean> getAddEventParticipantEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_ADD_EVENT_PARTICIPANT",
+            true);
+    SupParameter<Boolean> getDeleteEventParticipantEnabled = new SupParameter<>(
+            "TEAMUP_CORE_COUNT_DELETE_EVENT_PARTICIPANT",
+            true);
 
     /**
      * Получение листа текущих параметров из кэша
