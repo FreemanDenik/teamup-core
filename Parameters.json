@@ -1,1 +1,68 @@
-{"list":[{"parameterName":"TEAMUP_CORE_COUNT_RETURN_CITY","parameterValue":10,"parameterType":null,"systemName":"TEAMUP_CORE","updateTime":null},{"parameterName":"TEAMUP_CORE_GET_USER_BY_ID_ENABLED","parameterValue":true,"parameterType":null,"systemName":"TEAMUP_CORE","updateTime":null},{"parameterName":"TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED","parameterValue":true,"parameterType":null,"systemName":"TEAMUP_CORE","updateTime":null}],"moduleName":"TEAMUP_CORE"}
+{
+  "list": [
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_CITY",
+      "parameterValue": 10,
+      "parameterType": "INTEGER",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_GET_USER_BY_ID_ENABLED",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_AVAILABILITY_CHECK_EMAIL",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_CITY_SUITABLE_FOR_TITLE",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_CITY_FOR_TITLE_IN_SUBJECT",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_ALL_CITY",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_CITY_FOR_TITLE",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_AVAILABILITY_CHECK_SURNAME",
+      "parameterValue": true,
+      "parameterType": "BOOLEAN",
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    }
+  ],
+  "moduleName": "TEAMUP_CORE"
+}
