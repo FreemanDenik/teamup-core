@@ -51,7 +51,7 @@ public interface ParameterService {
     SupParameter<Boolean> getUserByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_USER_BY_ID_ENABLED",
             true);
-    SupParameter<Boolean> getAllEventsEnabled = new SupParameter<>(
+    SupParameter<Boolean> getAllEventsPrivateEnabled = new SupParameter<>(
             "TEAMUP_CORE_GET_ALL_EVENTS_ENABLED",
             true);
     SupParameter<Boolean> createEventEnabled = new SupParameter<>(

@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Application;
+import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.service.ApplicationService;
 import ru.team.up.sup.service.ParameterService;
@@ -14,6 +16,7 @@ import ru.team.up.core.service.EventService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.input.payload.request.RequestWrapper;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -35,8 +38,8 @@ public class ApplicationController {
     @GetMapping("/ByEvent/{id}")
     public ResponseEntity<List<Application>> getAllApplicationsByEventId(@PathVariable Long id) {
         if (!ParameterService.getAllApplicationsByEventIdEnabled.getValue()) {
-            log.debug("Метод getAllApplicationsByEventId выключен параметром getAllApplicationsByEventId = false");
-            throw new RuntimeException("Method getAllApplicationsByEventId is disabled by parameter getAllApplicationsByEventId");
+            log.debug("Метод getAllApplicationsByEventId выключен параметром getAllApplicationsByEventIdEnabled = false");
+            throw new RuntimeException("Method getAllApplicationsByEventId is disabled by parameter getAllApplicationsByEventIdEnabled");
         }
         log.debug("Получен запрос на поиск заявок с id мероприятия: {}", id);
 
@@ -87,12 +90,11 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Application> sendApplication(@RequestParam User user, @RequestBody @NotNull Application applicationCreate) {
+    public ResponseEntity<Application> sendApplication(@RequestBody RequestWrapper requestWrapper) {
         if (!ParameterService.sendApplicationEnabled.getValue()) {
             log.debug("Метод sendApplication выключен параметром sendApplicationEnabled = false");
             throw new RuntimeException("Method sendApplication is disabled by parameter sendApplicationEnabled");
         }
-    public ResponseEntity<Application> sendApplication(@RequestBody RequestWrapper requestWrapper) {
         Application applicationCreate = requestWrapper.getApplication();
         User user = requestWrapper.getUser();
 

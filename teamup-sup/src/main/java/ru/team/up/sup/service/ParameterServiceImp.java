@@ -9,7 +9,6 @@ import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
 import ru.team.up.dto.SupParameterType;
-import ru.team.up.dto.SupParameterTypeDto;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
 
@@ -40,14 +39,13 @@ public class ParameterServiceImp implements ParameterService {
             printUserPageEnabled,
             getEventByIdEnabled,
             getUserByIdEnabled,
-            countReturnCity,
             getCityByNameEnabled,
             getCityByNameInSubjectEnabled,
             getAllCitiesEnabled,
             getSomeCitiesByNameEnabled,
             getIsAvailableUsernameEnabled,
             getIsAvailableEmailEnabled,
-            getAllEventsEnabled,
+            getAllEventsPrivateEnabled,
             getAllEventByCityEnabled,
             getFindEventsByNameEnabled,
             getFindEventsByAuthorEnabled,
@@ -125,7 +123,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterType.valueOf(parameter.getValueType()))
+                    .parameterType(SupParameterType.getParameterType(parameter.getValue().getClass().getSimpleName()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

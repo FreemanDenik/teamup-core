@@ -55,9 +55,9 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventDto>> getAllEvents() {
         log.debug("Старт метода ResponseEntity<List<EventDto>> getAllEvents()");
-        if (!ParameterService.getAllEventsEnabled.getValue()) {
-            log.debug("Метод getAllEvents выключен параметром getAllEventsEnabled = false");
-            throw new RuntimeException("Method getAllEvents is disabled by parameter getAllEventsEnabled");
+        if (!ParameterService.getAllEventsPrivateEnabled.getValue()) {
+            log.debug("Метод getAllEvents выключен параметром getAllEventsPrivateEnabled = false");
+            throw new RuntimeException("Method getAllEvents is disabled by parameter getAllEventsPrivateEnabled");
         }
         List<Event> events = eventService.getAllEvents();
         ResponseEntity<List<EventDto>> responseEntity = ResponseEntity.ok(
