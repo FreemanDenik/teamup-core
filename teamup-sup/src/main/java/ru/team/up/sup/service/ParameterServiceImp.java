@@ -9,6 +9,7 @@ import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
 import ru.team.up.dto.SupParameterType;
+import ru.team.up.dto.SupParameterTypeDto;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
 
@@ -40,6 +41,33 @@ public class ParameterServiceImp implements ParameterService {
             getEventByIdEnabled,
             getUserByIdEnabled,
             countReturnCity,
+            getCityByNameEnabled,
+            getCityByNameInSubjectEnabled,
+            getAllCitiesEnabled,
+            getSomeCitiesByNameEnabled,
+            getIsAvailableUsernameEnabled,
+            getIsAvailableEmailEnabled,
+            getAllEventsEnabled,
+            getAllEventByCityEnabled,
+            getFindEventsByNameEnabled,
+            getFindEventsByAuthorEnabled,
+            getFindEventsByTypeEnabled,
+            getCreateEventEnabled,
+            getUpdateEventEnabled,
+            getDeleteEventEnabled,
+            getAddEventParticipantEnabled,
+            getDeleteEventParticipantEnabled,
+            getInterestsUserByIdEnabled,
+            getEnabled,
+            getUserByEmailEnabled,
+            getUserByUsernameEnabled,
+            getUsersListEnabled,
+            getEventsByOwnerIdEnabled,
+            getEventsBySubscriberIdEnabled,
+            getUpdateUserEnabled,
+            getDeleteUserByIdEnabled,
+            getTopUsersListInCityEnabled,
+            countReturnCity,
             createEventEnabled,
             updateNumberOfParticipantsEnabled,
             getOneEventEnabled,
@@ -68,9 +96,9 @@ public class ParameterServiceImp implements ParameterService {
 
     @PostConstruct
     private void init() {
-        createDefaultParamFile();   // создаем дефолтные параметры,
-        parameterSender.sendDefaultsToSup();    // отправляем в SUP
-        kafkaSupService.getAllModuleParameters();   // получаем фидбэк от SUP
+        createDefaultParamFile();
+        parameterSender.sendDefaultsToSup();
+        kafkaSupService.getAllModuleParameters();
     }
 
     @Override
