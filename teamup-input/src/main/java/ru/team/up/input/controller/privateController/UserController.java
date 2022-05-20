@@ -25,6 +25,7 @@ import ru.team.up.input.service.UserServiceRest;
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class UserController {
                 UserDtoResponse.builder().
                         userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
                 HttpStatus.OK);
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
         monitoringParameters.put("ID ", user.getId());
         monitoringParameters.put("Email ", user.getEmail());
         monitoringParameters.put("Имя ", user.getUsername());
@@ -117,6 +118,16 @@ public class UserController {
         }
 
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("ID ", userCreate.getId());
+        monitoringParameters.put("Email ", userCreate.getEmail());
+        monitoringParameters.put("Имя ", userCreate.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
+
         return responseEntity;
     }
 
@@ -145,6 +156,16 @@ public class UserController {
         }
 
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
+
         return responseEntity;
     }
 
@@ -157,6 +178,12 @@ public class UserController {
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> deleteUser(@PathVariable Long id) с параметром {}", id);
 
+        User user = userService.getOneUser(id).orElse(null);
+        if (user == null) {
+            log.error("Пользователя с id = {} не существует", id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
         ResponseEntity<User> responseEntity;
         try {
             userService.deleteUser(id);
@@ -165,6 +192,15 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
 
         return responseEntity;
     }
