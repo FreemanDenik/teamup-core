@@ -15,6 +15,7 @@ import ru.team.up.core.service.ApplicationService;
 import ru.team.up.core.service.EventService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.input.payload.request.RequestWrapper;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
@@ -80,7 +81,10 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ResponseEntity<Application> sendApplication(@RequestParam User user, @RequestBody @NotNull Application applicationCreate) {
+    public ResponseEntity<Application> sendApplication(@RequestBody RequestWrapper requestWrapper) {
+        Application applicationCreate = requestWrapper.getApplication();
+        User user = requestWrapper.getUser();
+
         log.debug("Запрос на отправку зявки {}", applicationCreate);
 
         ResponseEntity<Application> responseEntity = new ResponseEntity<>(applicationService.saveApplication(applicationCreate,user), HttpStatus.CREATED);
