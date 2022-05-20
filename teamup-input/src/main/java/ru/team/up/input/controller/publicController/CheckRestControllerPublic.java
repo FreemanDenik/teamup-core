@@ -14,6 +14,7 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.service.CityService;
 import ru.team.up.input.service.UserServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +26,18 @@ import java.util.Optional;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CheckRestControllerPublic {
 
-    private final CityService cityService;
-    private final UserServiceRest userService;
+    private CityService cityService;
+    private UserServiceRest userService;
 
     @Operation(summary ="Поиск города по названию")
     @GetMapping("/city/one/{name}")
     public ResponseEntity<City> getCityByName(@PathVariable("name") String name) {
         log.debug("Получен запрос на город {}", name);
+
+        if (!ParameterService.getCityByNameEnabled.getValue()) {
+            log.debug("Метод getCityByNameEnabled выключен параметром getCityByNameEnabled = false");
+            throw new RuntimeException("Method findEventById is disabled by parameter getCityByNameEnabled");
+        }
 
         Optional <City> optionalCity = Optional.ofNullable(cityService.findCityByName(name));
 
@@ -51,6 +57,10 @@ public class CheckRestControllerPublic {
     public ResponseEntity<City> getCityByNameAndSubject(@PathVariable("name") String name,
                                                         @PathVariable("subject") String subject) {
         log.debug("Получен запрос на город {} в субъекте {}", name, subject);
+        if (!ParameterService.getCityByNameInSubjectEnabled.getValue()) {
+            log.debug("Метод getCityByNameAndSubject выключен параметром getCityByNameInSubjectEnabled = false");
+            throw new RuntimeException("Method findEventById is disabled by parameter getCityByNameInSubjectEnabled");
+        }
 
         Optional<City> optionalCity = Optional.ofNullable(cityService.findCityByNameAndSubject(name, subject));
 
@@ -69,6 +79,10 @@ public class CheckRestControllerPublic {
     @GetMapping("/city")
     public ResponseEntity<List<City>> getAllCities() {
         log.debug("Получен запрос на список городов");
+        if (!ParameterService.getAllCitiesEnabled.getValue()) {
+            log.debug("Метод getAllCities выключен параметром getAllCitiesEnabled = false");
+            throw new RuntimeException("Method getAllCities is disabled by parameter getAllCitiesEnabled");
+        }
         List<City> cities = cityService.getAllCities();
 
         if (cities.isEmpty()) {
@@ -84,6 +98,10 @@ public class CheckRestControllerPublic {
     @GetMapping("/city/{name}")
     public ResponseEntity<List<City>> getSomeCitiesByName(@PathVariable("name") String name) {
         log.debug("Получен запрос на список городов по имени {}", name);
+        if (!ParameterService.getSomeCitiesByNameEnabled.getValue()) {
+            log.debug("Метод getSomeCitiesByName выключен параметром getSomeCitiesByNameEnabled = false");
+            throw new RuntimeException("Method getSomeCitiesByName is disabled by parameter getSomeCitiesByNameEnabled");
+        }
         List<City> cities = cityService.getSomeCitiesByName(name);
 
         if (cities.isEmpty()) {
@@ -99,6 +117,10 @@ public class CheckRestControllerPublic {
     @GetMapping("/username/{username}")
     public ResponseEntity<String> isAvailableUsername(@PathVariable("username") String username) {
         log.debug("Получен запрос на проверку доступности username {}", username);
+        if (!ParameterService.getIsAvailableUsernameEnabled.getValue()) {
+            log.debug("Метод isAvailableUsername выключен параметром getEventByIdEnabled = false");
+            throw new RuntimeException("Method isAvailableUsername is disabled by parameter isAvailableUsernameEnabled");
+        }
 
         Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByUsername(username));
 
@@ -117,6 +139,10 @@ public class CheckRestControllerPublic {
     @GetMapping("/email/{email}")
     public ResponseEntity<String> isAvailableEmail(@PathVariable("email") String email) {
         log.debug("Получен запрос на проверку доступности email {}", email);
+        if (!ParameterService.getIsAvailableEmailEnabled.getValue()) {
+            log.debug("Метод isAvailableEmail выключен параметром getIsAvailableEmailEnabled = false");
+            throw new RuntimeException("Method isAvailableEmail is disabled by parameter getIsAvailableEmailEnabled");
+        }
 
         Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByEmail(email));
 

@@ -13,6 +13,7 @@ import ru.team.up.core.mappers.InterestsMapper;
 import ru.team.up.input.response.InterestsDtoListResponse;
 import ru.team.up.input.response.InterestsDtoResponse;
 import ru.team.up.input.service.InterestServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 @Slf4j
 @Tag(name = "Interest Public Controller", description = "Interest API")
@@ -21,7 +22,7 @@ import ru.team.up.input.service.InterestServiceRest;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class InterestRestControllerPublic {
 
-    private final InterestServiceRest interestsServiceRest;
+    private InterestServiceRest interestsServiceRest;
 
     /**
      * Метод получения всех интересов
@@ -47,6 +48,10 @@ public class InterestRestControllerPublic {
     @GetMapping("/user/interest/{id}")
     public InterestsDtoResponse getInterestsUserById(@PathVariable("id") Long interestsId) {
         log.debug("Получение запроса на интерес по id: {}", interestsId);
+        if (!ParameterService.getInterestsUserByIdEnabled.getValue()) {
+            log.debug("Метод getInterestsUserById выключен параметром getInterestsUserByIdEnabled = false");
+            throw new RuntimeException("Method getInterestsUserById is disabled by parameter getInterestsUserByIdEnabled");
+        }
 
         return InterestsDtoResponse.builder().interestsDto(
                 InterestsMapper.INSTANCE.mapInterestToDto(

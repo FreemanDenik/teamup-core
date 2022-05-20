@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
+import ru.team.up.dto.SupParameterTypeDto;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
 
@@ -27,7 +28,33 @@ public class ParameterServiceImp implements ParameterService {
     private Set<SupParameter<?>> parameterSet = Set.of(
             getEventByIdEnabled,
             getUserByIdEnabled,
-            countReturnCity);
+            countReturnCity,
+            getCityByNameEnabled,
+            getCityByNameInSubjectEnabled,
+            getAllCitiesEnabled,
+            getSomeCitiesByNameEnabled,
+            getIsAvailableUsernameEnabled,
+            getIsAvailableEmailEnabled,
+            getAllEventsEnabled,
+            getAllEventByCityEnabled,
+            getFindEventsByNameEnabled,
+            getFindEventsByAuthorEnabled,
+            getFindEventsByTypeEnabled,
+            getCreateEventEnabled,
+            getUpdateEventEnabled,
+            getDeleteEventEnabled,
+            getAddEventParticipantEnabled,
+            getDeleteEventParticipantEnabled,
+            getInterestsUserByIdEnabled,
+            getEnabled,
+            getUserByEmailEnabled,
+            getUserByUsernameEnabled,
+            getUsersListEnabled,
+            getEventsByOwnerIdEnabled,
+            getEventsBySubscriberIdEnabled,
+            getUpdateUserEnabled,
+            getDeleteUserByIdEnabled,
+            getTopUsersListInCityEnabled);
 
     @PostConstruct
     private void init() {
@@ -60,6 +87,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
+                    .parameterType(SupParameterTypeDto.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

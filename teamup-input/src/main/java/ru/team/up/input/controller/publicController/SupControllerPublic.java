@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.sup.service.KafkaSupService;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +28,19 @@ public class SupControllerPublic {
     private MonitorProducerService monitoringProducerService;
 
     @PostMapping("/get")
-    public ResponseEntity get() {
+    public ResponseEntity get()
+    {
         kafkaSupService.getAllModuleParameters();
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), null));
+
+        if (!ParameterService.getEnabled.getValue()) {
+            log.debug("Метод get выключен параметром getEnabled = false");
+            throw new RuntimeException("Method get is disabled by parameter getEnabled");
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
