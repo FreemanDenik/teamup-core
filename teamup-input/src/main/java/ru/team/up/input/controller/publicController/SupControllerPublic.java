@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.sup.service.KafkaSupService;
+import ru.team.up.sup.service.ParameterService;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -20,8 +21,13 @@ public class SupControllerPublic {
     private KafkaSupService kafkaSupService;
 
     @PostMapping("/get")
-    public ResponseEntity get() {
+    public ResponseEntity get()
+    {
         kafkaSupService.getAllModuleParameters();
+        if (!ParameterService.getEnabled.getValue()) {
+            log.debug("Метод get выключен параметром getEnabled = false");
+            throw new RuntimeException("Method get is disabled by parameter getEnabled");
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

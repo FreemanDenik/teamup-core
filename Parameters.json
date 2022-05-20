@@ -1,0 +1,26 @@
+{
+  "list": [
+    {
+      "parameterName": "TEAMUP_CORE_GET_EVENT_BY_ID_ENABLED",
+      "parameterValue": true,
+      "parameterType": null,
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_COUNT_RETURN_CITY",
+      "parameterValue": 10,
+      "parameterType": null,
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    },
+    {
+      "parameterName": "TEAMUP_CORE_GET_USER_BY_ID_ENABLED",
+      "parameterValue": true,
+      "parameterType": null,
+      "systemName": "TEAMUP_CORE",
+      "updateTime": null
+    }
+  ],
+  "moduleName": "TEAMUP_CORE"
+}
