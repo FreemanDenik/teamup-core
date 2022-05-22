@@ -16,6 +16,7 @@ import ru.team.up.dto.ControlDto;
 import ru.team.up.input.response.InterestsDtoListResponse;
 import ru.team.up.input.response.InterestsDtoResponse;
 import ru.team.up.input.service.InterestServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +66,10 @@ public class InterestRestControllerPublic {
     @GetMapping("/user/interest/{id}")
     public InterestsDtoResponse getInterestsUserById(@PathVariable("id") Long interestsId) {
         log.debug("Получение запроса на интерес по id: {}", interestsId);
+        if (!ParameterService.getInterestsUserByIdEnabled.getValue()) {
+            log.debug("Метод getInterestsUserById выключен параметром getInterestsUserByIdEnabled = false");
+            throw new RuntimeException("Method getInterestsUserById is disabled by parameter getInterestsUserByIdEnabled");
+        }
 
         InterestsDtoResponse interest = InterestsDtoResponse.builder().interestsDto(
                 InterestsMapper.INSTANCE.mapInterestToDto(
