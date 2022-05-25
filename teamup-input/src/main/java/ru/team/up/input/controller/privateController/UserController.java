@@ -21,6 +21,7 @@ import ru.team.up.core.service.UserService;
 import ru.team.up.dto.*;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,10 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Получение списка всех юзеров")
     public ResponseEntity<List<UserDto>> getAllUsers() {
+        if (!ParameterService.getAllUsersEnabled.getValue()) {
+            log.debug("Метод getAllUsers выключен параметром getAllUsersEnabled = false");
+            throw new RuntimeException("Method getAllUsers is disabled by parameter getAllUsersEnabled");
+        }
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
         List<User> users = userService.getAllUsers();
         ResponseEntity<List<UserDto>> responseEntity;
@@ -83,6 +88,10 @@ public class UserController {
     @Operation(summary = "Получение юзера по id")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.getUserByIdPrivateEnabled.getValue()) {
+            log.debug("Метод getUserById выключен параметром getUserByIdPrivateEnabled = false");
+            throw new RuntimeException("Method getUserById is disabled by parameter getUserByIdPrivateEnabled");
+        }
         User user = userServiceRest.getUserById(id);
         ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
                 UserDtoResponse.builder().
@@ -107,6 +116,10 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Создание юзера")
     public ResponseEntity<Account> createUser(@RequestBody @NotNull User userCreate) {
+        if (!ParameterService.createUserEnabled.getValue()) {
+            log.debug("Метод createUser выключен параметром createUserEnabled = false");
+            throw new RuntimeException("Method createUser is disabled by parameter createUserEnabled");
+        }
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
@@ -141,6 +154,10 @@ public class UserController {
     @Operation(summary = "Обновление юзера")
     public ResponseEntity<Account> updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
+        if (!ParameterService.updateUserEnabled.getValue()) {
+            log.debug("Метод updateUser выключен параметром updateUserEnabled = false");
+            throw new RuntimeException("Method updateUser is disabled by parameter updateUserEnabled");
+        }
 
         Long userId = user.getId();
         if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), userId) || !id.equals(userId)) {
@@ -177,6 +194,10 @@ public class UserController {
     @Operation(summary = "Удаление юзера")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> deleteUser(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.deleteUserEnabled.getValue()) {
+            log.debug("Метод deleteUser выключен параметром deleteUserEnabled = false");
+            throw new RuntimeException("Method deleteUser is disabled by parameter deleteUserEnabled");
+        }
 
         User user = userService.getOneUser(id).orElse(null);
         if (user == null) {

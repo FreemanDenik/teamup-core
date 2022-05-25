@@ -14,9 +14,10 @@ import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.monitoring.service.MonitorProducerServiceImpl;
 import ru.team.up.core.service.EmailUserMessageNotificatorService;
 import ru.team.up.dto.ControlDto;
-
 import javax.security.sasl.SaslClient;
 import java.util.HashMap;
+import ru.team.up.sup.service.ParameterService;
+
 
 /**
  * @author Stepan Glushchenko
@@ -34,6 +35,10 @@ public class EmailUserMessageNotificatorController {
     @GetMapping("/send")
     public ResponseEntity<String> sendEmailUserMessage() {
         log.debug("Начинаю процедуру рассылки уведомлений о новых сообщениях пользователей по электронной почте.");
+        if (!ParameterService.sendEmailUserMessageEnabled.getValue()) {
+            log.debug("Метод sendEmailUserMessage выключен параметром sendEmailUserMessageEnabled = false");
+            throw new RuntimeException("Method sendEmailUserMessage is disabled by parameter sendEmailUserMessageEnabled");
+        }
         emailUserMessageNotificatorService.send();
         log.debug("Рассылка уведомлений о новых сообщениях пользователей по электронной почте завершена.");
 

@@ -3,11 +3,12 @@ package ru.team.up.sup.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
-import ru.team.up.dto.SupParameterTypeDto;
+import ru.team.up.dto.SupParameterType;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
 
@@ -26,16 +27,25 @@ public class ParameterServiceImp implements ParameterService {
     private final ParameterSender parameterSender;
     private final KafkaSupService kafkaSupService;
     private Set<SupParameter<?>> parameterSet = Set.of(
+            loginEnabled,
+            loginByGoogleEnabled,
+            registrationEnabled,
+            printWelcomePageEnabled,
+            printAdminPageEnabled,
+            chooseRoleEnabled,
+            printModeratorPageEnabled,
+            oauth2regUserEnabled,
+            printRegistrationPageEnabled,
+            printUserPageEnabled,
             getEventByIdEnabled,
             getUserByIdEnabled,
-            countReturnCity,
             getCityByNameEnabled,
             getCityByNameInSubjectEnabled,
             getAllCitiesEnabled,
             getSomeCitiesByNameEnabled,
             getIsAvailableUsernameEnabled,
             getIsAvailableEmailEnabled,
-            getAllEventsEnabled,
+            getAllEventsPrivateEnabled,
             getAllEventByCityEnabled,
             getFindEventsByNameEnabled,
             getFindEventsByAuthorEnabled,
@@ -54,7 +64,33 @@ public class ParameterServiceImp implements ParameterService {
             getEventsBySubscriberIdEnabled,
             getUpdateUserEnabled,
             getDeleteUserByIdEnabled,
-            getTopUsersListInCityEnabled);
+            getTopUsersListInCityEnabled,
+            countReturnCity,
+            createEventEnabled,
+            updateNumberOfParticipantsEnabled,
+            getOneEventEnabled,
+            updateEventEnabled,
+            deleteAdminEnabled,
+            sendApplicationEnabled,
+            getAllApplicationsByEventIdEnabled,
+            getAllApplicationsByUserIdEnabled,
+            getAllUsersEnabled,
+            createUserEnabled,
+            getUserByIdPrivateEnabled,
+            updateUserEnabled,
+            getAllModeratorsEnabled,
+            createModeratorEnabled,
+            getOneModeratorEnabled,
+            updateModeratorEnabled,
+            deleteModeratorEnabled,
+            getAssignedEventsOfModeratorEnabled,
+            sendEmailUserMessageEnabled,
+            getAllAdminsEnabled,
+            createAdminEnabled,
+            getOneAdminEnabled,
+            updateAdminEnabled,
+            deleteAdminFromAdminControllerEnabled,
+            getAllEventsEnabled);
 
     @PostConstruct
     private void init() {
@@ -87,7 +123,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterTypeDto.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
+                    .parameterType(SupParameterType.getParameterType(parameter.getValue().getClass().getSimpleName()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

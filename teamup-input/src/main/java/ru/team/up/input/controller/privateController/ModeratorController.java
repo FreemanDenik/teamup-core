@@ -16,7 +16,7 @@ import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.AssignedEventsService;
 import ru.team.up.core.service.ModeratorService;
 import ru.team.up.dto.ControlDto;
-
+import ru.team.up.sup.service.ParameterService;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +49,10 @@ public class ModeratorController {
     @GetMapping
     public ResponseEntity<List<Account>> getAllModerators() {
         log.debug("Старт метода ResponseEntity<List<Moderator>> getAllModerators()");
+        if (!ParameterService.getAllModeratorsEnabled.getValue()) {
+            log.debug("Метод getAllModerators выключен параметром getAllModeratorsEnabled = false");
+            throw new RuntimeException("Method getAllModerators is disabled by parameter getAllModeratorsEnabled");
+        }
 
         List<Account> allModerators = moderatorService.getAllModerators();
 
@@ -76,6 +80,10 @@ public class ModeratorController {
     @GetMapping("/{id}")
     public ResponseEntity<Account> getOneModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.getOneModeratorEnabled.getValue()) {
+            log.debug("Метод getOneModerator выключен параметром getOneModeratorEnabled = false");
+            throw new RuntimeException("Method getOneModerator is disabled by parameter getOneModeratorEnabled");
+        }
 
         Account moderator = moderatorService.getOneModerator(id);
         ResponseEntity<Account> responseEntity = ResponseEntity.ok(moderator);
@@ -103,6 +111,10 @@ public class ModeratorController {
     @PostMapping
     public ResponseEntity<Account> createModerator(@RequestBody @NotNull Account moderatorCreate) {
         log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
+        if (!ParameterService.createModeratorEnabled.getValue()) {
+            log.debug("Метод createModerator выключен параметром createModeratorEnabled = false");
+            throw new RuntimeException("Method createModerator is disabled by parameter createModeratorEnabled");
+        }
         ResponseEntity<Account> responseEntity =
                 new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
 
@@ -132,6 +144,10 @@ public class ModeratorController {
     @PutMapping("/{id}")
     public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator, @PathVariable("id") Long moderatorId) {
         log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
+        if (!ParameterService.updateModeratorEnabled.getValue()) {
+            log.debug("Метод updateModerator выключен параметром updateModeratorEnabled = false");
+            throw new RuntimeException("Method updateModerator is disabled by parameter updateModeratorEnabled");
+        }
         ResponseEntity<Moderator> responseEntity;
         if (moderatorService.moderatorIsExistsById(moderatorId) && moderator.getId().equals(moderatorId)) {
             responseEntity = ResponseEntity.ok(moderatorService.updateModerator(moderator));
@@ -163,6 +179,10 @@ public class ModeratorController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Moderator> deleteModerator(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.deleteModeratorEnabled.getValue()) {
+            log.debug("Метод deleteModerator выключен параметром deleteModeratorEnabled = false");
+            throw new RuntimeException("Method deleteModerator is disabled by parameter deleteModeratorEnabled");
+        }
 
         moderatorService.deleteModerator(id);
 
@@ -191,8 +211,13 @@ public class ModeratorController {
     public ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id)" +
                 " с параметром {}", id);
-        List<Event> allEvents = assignedEventsService.getAllEventsByModeratorId(id);
 
+        if (!ParameterService.getAssignedEventsOfModeratorEnabled.getValue()) {
+            log.debug("Метод getAssignedEventsOfModerator выключен параметром getAssignedEventsOfModeratorEnabled = false");
+            throw new RuntimeException("Method getAssignedEventsOfModerator is disabled by parameter getAssignedEventsOfModeratorEnabled");
+        }
+
+        List<Event> allEvents = assignedEventsService.getAllEventsByModeratorId(id);
         ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(allEvents);
         log.debug("Получили ответ {}", responseEntity);
 
