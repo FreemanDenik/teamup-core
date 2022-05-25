@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Admin;
 import ru.team.up.core.service.AdminService;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -38,6 +39,10 @@ public class AdminController {
     @GetMapping
     public ResponseEntity<List<Account>> getAllAdmins() {
         log.debug("Старт метода ResponseEntity<List<Admin>> getAllAdmins()");
+        if (!ParameterService.getAllAdminsEnabled.getValue()) {
+            log.debug("Метод getAllAdmins выключен параметром getAllAdminsEnabled = false");
+            throw new RuntimeException("Method getAllAdmins is disabled by parameter getAllAdminsEnabled");
+        }
 
         ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(adminService.getAllAdmins());
         log.debug("Получили ответ {}", responseEntity);
@@ -54,6 +59,10 @@ public class AdminController {
     @GetMapping("/{id}")
     public ResponseEntity<Account> getOneAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Admin> getOneAdmin(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.getOneAdminEnabled.getValue()) {
+            log.debug("Метод getOneAdmin выключен параметром getOneAdminEnabled = false");
+            throw new RuntimeException("Method getOneAdmin is disabled by parameter getOneAdminEnabled");
+        }
 
         ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.getOneAdmin(id));
         log.debug("Получили ответ {}", responseEntity);
@@ -70,6 +79,10 @@ public class AdminController {
     @PostMapping
     public ResponseEntity<Account> createAdmin(@RequestBody @NotNull Admin adminCreate) {
         log.debug("Старт метода ResponseEntity<Admin> createAdmin(@RequestBody @NotNull Admin admin) с параметром {}", adminCreate);
+        if (!ParameterService.createAdminEnabled.getValue()) {
+            log.debug("Метод createAdmin выключен параметром createAdminEnabled = false");
+            throw new RuntimeException("Method createAdmin is disabled by parameter createAdminEnabled");
+        }
         ResponseEntity<Account> responseEntity =
                 new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
 
@@ -86,6 +99,10 @@ public class AdminController {
     @PutMapping("/{id}")
     public ResponseEntity<Account> updateAdmin(@PathVariable Long id, @RequestBody @NotNull Admin admin) {
         log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", admin);
+        if (!ParameterService.updateAdminEnabled.getValue()) {
+            log.debug("Метод updateAdmin выключен параметром updateAdminEnabled = false");
+            throw new RuntimeException("Method updateAdmin is disabled by parameter updateAdminEnabled");
+        }
 
         log.debug("Проверка наличия обновляемого администратора в БД");
         if (adminService.existsById(id) && id.equals(admin.getId())) {
@@ -106,6 +123,10 @@ public class AdminController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Admin> deleteAdmin(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<Admin> updateAdmin(@RequestBody @NotNull Admin admin) с параметром {}", id);
+        if (!ParameterService.deleteAdminFromAdminControllerEnabled.getValue()) {
+            log.debug("Метод deleteAdmin выключен параметром deleteAdminFromAdminControllerEnabled = false");
+            throw new RuntimeException("Method deleteAdmin is disabled by parameter deleteAdminFromAdminControllerEnabled");
+        }
 
         adminService.deleteAdmin(id);
 
