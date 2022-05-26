@@ -50,6 +50,12 @@ public class Account implements UserDetails {
     private String middleName;
 
     /**
+     * Изображения акаунта
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    private Image image;
+
+    /**
      * Логин
      */
     @Column(name = "USERNAME", nullable = false, unique = true)
