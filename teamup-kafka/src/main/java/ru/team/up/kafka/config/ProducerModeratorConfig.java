@@ -24,16 +24,11 @@ import java.util.Map;
 @PropertySource("classpath:kafka.properties")
 public class ProducerModeratorConfig {
     /**
-     * Адрес bootstrap сервера kafka
+     * Адрес сервера kafka
      */
     @Value(value = "${kafka.server.address}")
     private String kafkaServer;
 
-    /**
-     * Метод конфигурации producer
-     *
-     * @return возвращает мапу с настройками producer
-     */
     @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
@@ -43,21 +38,13 @@ public class ProducerModeratorConfig {
         return props;
     }
 
-    /**
-     * Метод создает фабрику producer
-     *
-     * @return возвращает объект org.springframework.kafka.core.DefaultKafkaProducerFactory
-     */
     @Bean
     public ProducerFactory<String, KafkaEventDto> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
-    /**
-     * @return возвращает объект org.springframework.kafka.core.KafkaTemplate
-     */
+
     @Bean
-    @Qualifier("kafkaTemplate")
     public KafkaTemplate<String, KafkaEventDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }

@@ -29,16 +29,12 @@ public class ConsumerModeratorConfig {
     @Value(value = "${kafka.group.id}")
     private String kafkaGroupId;
     /**
-     * Адрес bootstrap сервера kafka
+     * Адрес сервера kafka
      */
     @Value(value = "${kafka.server.address}")
     private String kafkaServer;
 
-    /**
-     * Метод конфигурации consumer
-     *
-     * @return возвращает мапу с настройками consumer
-     */
+    @Bean
     public Map<String, Object> consumerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaServer);
@@ -49,19 +45,11 @@ public class ConsumerModeratorConfig {
         return props;
     }
 
-    /**
-     * Метод создает фабрику consumer
-     *
-     * @return возвращает объект org.springframework.kafka.core.DefaultKafkaConsumerFactory
-     */
     @Bean
     public ConsumerFactory<String, KafkaEventDto> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
-    /**
-     * @return возвращает объект org.springframework.kafka.core.KafkaListenerContainerFactory
-     */
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, KafkaEventDto> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, KafkaEventDto> factory =

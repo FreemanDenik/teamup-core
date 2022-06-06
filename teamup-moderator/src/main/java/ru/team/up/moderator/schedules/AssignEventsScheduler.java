@@ -1,17 +1,18 @@
 package ru.team.up.moderator.schedules;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Moderator;
@@ -19,15 +20,20 @@ import ru.team.up.core.service.*;
 import ru.team.up.dto.KafkaEventDto;
 import ru.team.up.dto.KafkaEventTypeDto;
 import ru.team.up.moderator.payload.AssignedEventPayload;
-import ru.team.up.payload.Payload;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @PropertySource("classpath:app.properties")
 @Slf4j
-@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AssignEventsScheduler {
+
+    @Value(value = "${kafka.server.address}")
+    private String kafkaServer;
+
+    @Value("${spring.kafka.template.moderator.topic.name}")
+    private String topic;
 
     private final AssignedEventsServiceImpl assignedEventsServiceImpl;
     private final ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl;
@@ -35,8 +41,20 @@ public class AssignEventsScheduler {
     private final EventService eventService;
     private final KafkaTemplate<String, KafkaEventDto> kafkaTemplate;
 
-    @Value("${spring.kafka.template.moderator.topic.name}")
-    private String topic;
+    @Autowired
+    public AssignEventsScheduler(AssignedEventsServiceImpl assignedEventsServiceImpl, ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl, ModeratorService moderatorService, EventService eventService) {
+        this.assignedEventsServiceImpl = assignedEventsServiceImpl;
+        this.moderatorSessionsServiceImpl = moderatorSessionsServiceImpl;
+        this.moderatorService = moderatorService;
+        this.eventService = eventService;
+        // Исправить на автоматичесоке внедрение (без new) kafkaTemplate в дальнейшем
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
+    }
 
     /**
      * Метод проверяет по расписанию наличие новых мероприятий в статусе "на проверке"
@@ -46,7 +64,17 @@ public class AssignEventsScheduler {
     @Scheduled(fixedDelayString = "${eventsScan.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
-        log.debug("Получение списка новых мероприятий");
+        log.debug("Получение списка0 новых мероприятий");
+        log.info("Отправка произошла1!!!");
+        KafkaEventDto kafkaEventDto0 = new KafkaEventDto();
+        kafkaEventDto0.setKafkaEventTypeDto(KafkaEventTypeDto.NEW_ASSIGN_EVENT);
+        kafkaEventDto0.setPayload(new AssignedEventPayload(new Moderator(), new Event()));
+        try {
+            kafkaTemplate.send(topic, kafkaEventDto0);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        log.info("Отправка произошла2!!!");
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
 
         if (!newEventsIdList.isEmpty()) {

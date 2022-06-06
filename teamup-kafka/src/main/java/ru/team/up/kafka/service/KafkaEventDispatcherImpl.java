@@ -36,6 +36,7 @@ public class KafkaEventDispatcherImpl implements KafkaEventDispatcher{
     @Override
     @KafkaListener(topics = "${kafka.topic.name}", containerFactory = "kafkaListenerContainerFactory")
     public void listen(KafkaEventDto kafkaEvent) {
+        log.info("New mestage: {}", kafkaEvent.toString());
 
         if (kafkaEventProcessorMap.containsKey(kafkaEvent.getKafkaEventTypeDto())) {
             kafkaEventProcessorMap.get(kafkaEvent.getKafkaEventTypeDto()).perform(kafkaEvent);
