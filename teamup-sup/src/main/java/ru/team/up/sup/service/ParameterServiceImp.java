@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
 import ru.team.up.dto.SupParameterDto;
-import ru.team.up.dto.SupParameterTypeDto;
+import ru.team.up.dto.SupParameterType;
 import ru.team.up.sup.entity.SupParameter;
 import ru.team.up.sup.repository.ParameterDao;
 
@@ -87,7 +87,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterTypeDto.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
+                    .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

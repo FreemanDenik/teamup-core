@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.CityService;
 import ru.team.up.input.service.UserServiceRest;
 

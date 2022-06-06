@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.team.up.core.entity.Interests;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.input.service.InterestServiceRest;
 
 import java.util.ArrayList;
