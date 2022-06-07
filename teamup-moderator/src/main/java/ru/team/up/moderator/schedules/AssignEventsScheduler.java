@@ -42,18 +42,15 @@ public class AssignEventsScheduler {
     private final KafkaTemplate<String, KafkaEventDto> kafkaTemplate;
 
     @Autowired
-    public AssignEventsScheduler(AssignedEventsServiceImpl assignedEventsServiceImpl, ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl, ModeratorService moderatorService, EventService eventService) {
+    public AssignEventsScheduler(AssignedEventsServiceImpl assignedEventsServiceImpl,
+                                 ModeratorsSessionsServiceImpl moderatorSessionsServiceImpl,
+                                 ModeratorService moderatorService, EventService eventService,
+                                 KafkaTemplate kafkaTemplate) {
         this.assignedEventsServiceImpl = assignedEventsServiceImpl;
         this.moderatorSessionsServiceImpl = moderatorSessionsServiceImpl;
         this.moderatorService = moderatorService;
         this.eventService = eventService;
-        // Исправить на автоматичесоке внедрение (без new) kafkaTemplate в дальнейшем
-        Map<String, Object> props = new HashMap<>();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-
-        kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
+        this.kafkaTemplate = kafkaTemplate;
     }
 
     /**
@@ -64,17 +61,8 @@ public class AssignEventsScheduler {
     @Scheduled(fixedDelayString = "${eventsScan.delay}")
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void assignEvents() {
-        log.debug("Получение списка0 новых мероприятий");
-        log.info("Отправка произошла1!!!");
-        KafkaEventDto kafkaEventDto0 = new KafkaEventDto();
-        kafkaEventDto0.setKafkaEventTypeDto(KafkaEventTypeDto.NEW_ASSIGN_EVENT);
-        kafkaEventDto0.setPayload(new AssignedEventPayload(new Moderator(), new Event()));
-        try {
-            kafkaTemplate.send(topic, kafkaEventDto0);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        log.info("Отправка произошла2!!!");
+        log.debug("Получение списка новых мероприятий");
+
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
 
         if (!newEventsIdList.isEmpty()) {

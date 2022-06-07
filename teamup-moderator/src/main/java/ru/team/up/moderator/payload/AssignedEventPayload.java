@@ -1,7 +1,6 @@
 package ru.team.up.moderator.payload;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.team.up.core.entity.Event;

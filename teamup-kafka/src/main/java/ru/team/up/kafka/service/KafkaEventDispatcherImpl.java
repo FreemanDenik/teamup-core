@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import ru.team.up.dto.KafkaEventDto;
 import ru.team.up.dto.KafkaEventTypeDto;
@@ -36,7 +37,7 @@ public class KafkaEventDispatcherImpl implements KafkaEventDispatcher{
     @Override
     @KafkaListener(topics = "${kafka.topic.name}", containerFactory = "kafkaListenerContainerFactory")
     public void listen(KafkaEventDto kafkaEvent) {
-        log.info("New mestage: {}", kafkaEvent.toString());
+        log.debug("New kafka message: {}", kafkaEvent.toString());
 
         if (kafkaEventProcessorMap.containsKey(kafkaEvent.getKafkaEventTypeDto())) {
             kafkaEventProcessorMap.get(kafkaEvent.getKafkaEventTypeDto()).perform(kafkaEvent);
