@@ -3,8 +3,6 @@ package ru.team.up.core.service;
 import reactor.core.publisher.Flux;
 import ru.team.up.dto.NotifyDto;
 
-import java.util.List;
-
 /**
  * Author Nail Faizullin, Dmitry Koryanov
  * интерфейс для отправки уведомлений

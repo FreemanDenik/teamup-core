@@ -21,10 +21,12 @@ import ru.team.up.core.service.UserService;
 import ru.team.up.dto.*;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.persistence.PersistenceException;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +55,10 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Получение списка всех юзеров")
     public ResponseEntity<List<UserDto>> getAllUsers() {
+        if (!ParameterService.getAllUsersEnabled.getValue()) {
+            log.debug("Метод getAllUsers выключен параметром getAllUsersEnabled = false");
+            throw new RuntimeException("Method getAllUsers is disabled by parameter getAllUsersEnabled");
+        }
         log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
         List<User> users = userService.getAllUsers();
         ResponseEntity<List<UserDto>> responseEntity;
@@ -82,12 +88,16 @@ public class UserController {
     @Operation(summary = "Получение юзера по id")
     public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.getUserByIdPrivateEnabled.getValue()) {
+            log.debug("Метод getUserById выключен параметром getUserByIdPrivateEnabled = false");
+            throw new RuntimeException("Method getUserById is disabled by parameter getUserByIdPrivateEnabled");
+        }
         User user = userServiceRest.getUserById(id);
         ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
                 UserDtoResponse.builder().
                         userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
                 HttpStatus.OK);
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
         monitoringParameters.put("ID ", user.getId());
         monitoringParameters.put("Email ", user.getEmail());
         monitoringParameters.put("Имя ", user.getUsername());
@@ -106,6 +116,10 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Создание юзера")
     public ResponseEntity<Account> createUser(@RequestBody @NotNull User userCreate) {
+        if (!ParameterService.createUserEnabled.getValue()) {
+            log.debug("Метод createUser выключен параметром createUserEnabled = false");
+            throw new RuntimeException("Method createUser is disabled by parameter createUserEnabled");
+        }
         log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
 
         ResponseEntity<Account> responseEntity;
@@ -117,6 +131,16 @@ public class UserController {
         }
 
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("ID ", userCreate.getId());
+        monitoringParameters.put("Email ", userCreate.getEmail());
+        monitoringParameters.put("Имя ", userCreate.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
+
         return responseEntity;
     }
 
@@ -130,6 +154,10 @@ public class UserController {
     @Operation(summary = "Обновление юзера")
     public ResponseEntity<Account> updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
         log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
+        if (!ParameterService.updateUserEnabled.getValue()) {
+            log.debug("Метод updateUser выключен параметром updateUserEnabled = false");
+            throw new RuntimeException("Method updateUser is disabled by parameter updateUserEnabled");
+        }
 
         Long userId = user.getId();
         if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), userId) || !id.equals(userId)) {
@@ -145,6 +173,16 @@ public class UserController {
         }
 
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
+
         return responseEntity;
     }
 
@@ -156,6 +194,16 @@ public class UserController {
     @Operation(summary = "Удаление юзера")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<User> deleteUser(@PathVariable Long id) с параметром {}", id);
+        if (!ParameterService.deleteUserEnabled.getValue()) {
+            log.debug("Метод deleteUser выключен параметром deleteUserEnabled = false");
+            throw new RuntimeException("Method deleteUser is disabled by parameter deleteUserEnabled");
+        }
+
+        User user = userService.getOneUser(id).orElse(null);
+        if (user == null) {
+            log.error("Пользователя с id = {} не существует", id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
         ResponseEntity<User> responseEntity;
         try {
@@ -165,6 +213,15 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, Object> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("ID ", user.getId());
+        monitoringParameters.put("Email ", user.getEmail());
+        monitoringParameters.put("Имя ", user.getUsername());
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
 
         return responseEntity;
     }
