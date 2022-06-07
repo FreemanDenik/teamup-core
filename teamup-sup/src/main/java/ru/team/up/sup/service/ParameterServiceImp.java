@@ -54,7 +54,8 @@ public class ParameterServiceImp implements ParameterService {
             getEventsBySubscriberIdEnabled,
             getUpdateUserEnabled,
             getDeleteUserByIdEnabled,
-            getTopUsersListInCityEnabled);
+            getTopUsersListInCityEnabled,
+            getModeratorDisconnectTimeout);
 
     @PostConstruct
     private void init() {

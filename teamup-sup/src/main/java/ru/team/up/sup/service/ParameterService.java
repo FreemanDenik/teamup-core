@@ -100,6 +100,9 @@ public interface ParameterService {
     SupParameter<Boolean> getTopUsersListInCityEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_TOP_USERS_IN_CITY",
             true);
+    SupParameter<Integer> getModeratorDisconnectTimeout = new SupParameter<>(
+            "TEAMUP_CORE_MODERATOR_DISCONNECT_TIMEOUT",
+            30);
 
     /**
      * Получение листа текущих параметров из кэша
