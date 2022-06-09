@@ -103,6 +103,9 @@ public interface ParameterService {
     SupParameter<Integer> getModeratorDisconnectTimeout = new SupParameter<>(
             "TEAMUP_CORE_MODERATOR_DISCONNECT_TIMEOUT",
             30);
+    SupParameter<Integer> getModeratorEventLimitation = new SupParameter<>(
+            "TEAMUP_CORE_MODERATOR_EVENT_LIMITATION",
+            3);
 
     /**
      * Получение листа текущих параметров из кэша
