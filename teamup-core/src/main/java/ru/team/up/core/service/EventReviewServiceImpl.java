@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.EventReview;
 import ru.team.up.core.entity.User;
-import ru.team.up.core.entity.UserMessage;
 import ru.team.up.core.repositories.EventReviewRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;

@@ -17,7 +17,6 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.dto.EventDto;
-import ru.team.up.dto.ReportDto;
 import ru.team.up.dto.UserDto;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
@@ -27,9 +26,7 @@ import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.sup.service.ParameterService;
 
 import java.util.HashMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map;
 
 /**

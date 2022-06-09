@@ -3,6 +3,7 @@ package ru.team.up.sup.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
@@ -26,6 +27,16 @@ public class ParameterServiceImp implements ParameterService {
     private final ParameterSender parameterSender;
     private final KafkaSupService kafkaSupService;
     private Set<SupParameter<?>> parameterSet = Set.of(
+            loginEnabled,
+            loginByGoogleEnabled,
+            registrationEnabled,
+            printWelcomePageEnabled,
+            printAdminPageEnabled,
+            chooseRoleEnabled,
+            printModeratorPageEnabled,
+            oauth2regUserEnabled,
+            printRegistrationPageEnabled,
+            printUserPageEnabled,
             getEventByIdEnabled,
             getUserByIdEnabled,
             countReturnCity,
@@ -35,7 +46,7 @@ public class ParameterServiceImp implements ParameterService {
             getSomeCitiesByNameEnabled,
             getIsAvailableUsernameEnabled,
             getIsAvailableEmailEnabled,
-            getAllEventsEnabled,
+            getAllEventsPrivateEnabled,
             getAllEventByCityEnabled,
             getFindEventsByNameEnabled,
             getFindEventsByAuthorEnabled,
@@ -54,9 +65,7 @@ public class ParameterServiceImp implements ParameterService {
             getEventsBySubscriberIdEnabled,
             getUpdateUserEnabled,
             getDeleteUserByIdEnabled,
-            getTopUsersListInCityEnabled,
-            getModeratorDisconnectTimeout,
-            getModeratorEventLimitation);
+            getTopUsersListInCityEnabled);
 
     @PostConstruct
     private void init() {
@@ -89,7 +98,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
+                    .parameterType(SupParameterTypeDto.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

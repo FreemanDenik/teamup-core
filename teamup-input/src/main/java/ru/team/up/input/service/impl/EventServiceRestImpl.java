@@ -12,7 +12,6 @@ import ru.team.up.core.entity.User;
 import ru.team.up.core.repositories.EventRepository;
 import ru.team.up.core.repositories.UserRepository;
 import ru.team.up.core.service.NotifyService;
-import ru.team.up.core.service.UserService;
 import ru.team.up.dto.NotifyDto;
 import ru.team.up.dto.NotifyStatusDto;
 import ru.team.up.input.service.EventServiceRest;
