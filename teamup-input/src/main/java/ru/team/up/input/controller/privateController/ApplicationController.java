@@ -11,6 +11,7 @@ import ru.team.up.core.entity.Application;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.service.ApplicationService;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.sup.service.ParameterService;
 import ru.team.up.core.service.EventService;
 import ru.team.up.core.service.UserService;
@@ -48,9 +49,26 @@ public class ApplicationController {
         List<Application> applications = applicationService.getAllApplicationsByEventId(id);
 
         Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("Id мероприятия: ", event.getId());
-        monitoringParameters.put("Название мероприятия: ", event.getEventName());
-        monitoringParameters.put("Количество заявок у мероприятия ", applications.size());
+
+        ParametersDto eventId = ParametersDto.builder()
+                .description("Id мероприятия: ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventName = ParametersDto.builder()
+                .description("Название мероприятия: ")
+                .value(event.getEventName())
+                .build();
+
+        ParametersDto applicationSize = ParametersDto.builder()
+                .description("Количество заявок у мероприятия ")
+                .value(applications.size())
+                .build();
+
+
+        monitoringParameters.put("Id мероприятия: ", eventId);
+        monitoringParameters.put("Название мероприятия: ", eventName);
+        monitoringParameters.put("Количество заявок у мероприятия ", applicationSize);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -100,7 +118,7 @@ public class ApplicationController {
 
         log.debug("Запрос на отправку зявки {}", applicationCreate);
 
-        ResponseEntity<Application> responseEntity = new ResponseEntity<>(applicationService.saveApplication(applicationCreate,user), HttpStatus.CREATED);
+        ResponseEntity<Application> responseEntity = new ResponseEntity<>(applicationService.saveApplication(applicationCreate, user), HttpStatus.CREATED);
 
         Map<String, Object> monitoringParameters = new LinkedHashMap<>();
         monitoringParameters.put("Id пользователя:", user.getId());
