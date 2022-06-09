@@ -92,7 +92,7 @@ public class AdminController {
             throw new RuntimeException("Method getOneAdmin is disabled by parameter getOneAdminEnabled");
         }
 
-        ResponseEntity<Account> responseEntity = ResponseEntity.ok(admin);
+        //ResponseEntity<Account> responseEntity = ResponseEntity.ok(admin);
         log.debug("Получили ответ {}", responseEntity);
 
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
