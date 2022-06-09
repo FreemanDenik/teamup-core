@@ -48,7 +48,7 @@ public class ApplicationController {
 
         List<Application> applications = applicationService.getAllApplicationsByEventId(id);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
         ParametersDto eventId = ParametersDto.builder()
                 .description("Id мероприятия: ")
@@ -93,11 +93,26 @@ public class ApplicationController {
         }
 
         List<Application> applications = applicationService.getAllApplicationsByUserId(id);
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
-        monitoringParameters.put("Id пользователя ", user.getId());
-        monitoringParameters.put("Имя пользователя ", user.getUsername());
-        monitoringParameters.put("Количество заявок у пользователя ", applications.size());
+        ParametersDto userId = ParametersDto.builder()
+                .description("Id пользователя ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userName = ParametersDto.builder()
+                .description("Имя пользователя ")
+                .value(user.getUsername())
+                .build();
+
+        ParametersDto userApplicationSize = ParametersDto.builder()
+                .description("Количество заявок у пользователя ")
+                .value(applications.size())
+                .build();
+
+        monitoringParameters.put("Id пользователя ", userId);
+        monitoringParameters.put("Имя пользователя ", userName);
+        monitoringParameters.put("Количество заявок у пользователя ", userApplicationSize);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -120,10 +135,26 @@ public class ApplicationController {
 
         ResponseEntity<Application> responseEntity = new ResponseEntity<>(applicationService.saveApplication(applicationCreate, user), HttpStatus.CREATED);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("Id пользователя:", user.getId());
-        monitoringParameters.put("Email пользователя:", user.getEmail());
-        monitoringParameters.put("Id заявки:", applicationCreate.getId());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto userId = ParametersDto.builder()
+                .description("Id пользователя: ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmail = ParametersDto.builder()
+                .description("IEmail пользователя: ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto applicationId = ParametersDto.builder()
+                .description("Id заявки: ")
+                .value(applicationCreate.getId())
+                .build();
+
+        monitoringParameters.put("Id пользователя:",userId);
+        monitoringParameters.put("Email пользователя:", userEmail);
+        monitoringParameters.put("Id заявки:", applicationId);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
