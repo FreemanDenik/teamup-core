@@ -15,6 +15,7 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.AdminService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.dto.UserDto;
 import ru.team.up.sup.service.ParameterService;
 
@@ -56,8 +57,13 @@ public class AdminController {
         ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(allAdmins);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество админов", allAdmins.size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+        ParametersDto amountAdmins = ParametersDto.builder()
+                .description("Количество админов")
+                .value(allAdmins.size())
+                .build();
+        monitoringParameters.put("Количество админов", amountAdmins);
+
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -89,10 +95,25 @@ public class AdminController {
         ResponseEntity<Account> responseEntity = ResponseEntity.ok(admin);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", admin.getId());
-        monitoringParameters.put("Email", admin.getEmail());
-        monitoringParameters.put("Имя", admin.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+        ParametersDto accaountId = ParametersDto.builder()
+                .description("ID")
+                .value(admin.getId())
+                .build();
+
+        ParametersDto accountEmail = ParametersDto.builder()
+                .description("Email")
+                .value(admin.getEmail())
+                .build();
+
+        ParametersDto accountUsername = ParametersDto.builder()
+                .description("Имя")
+                .value(admin.getUsername())
+                .build();
+
+        monitoringParameters.put("ID",accaountId);
+        monitoringParameters.put("Email",accountEmail);
+        monitoringParameters.put("Имя",accountUsername);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -120,10 +141,21 @@ public class AdminController {
                 new ResponseEntity<>(adminService.saveAdmin(adminCreate), HttpStatus.CREATED);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", adminCreate.getId());
-        monitoringParameters.put("Email", adminCreate.getEmail());
-        monitoringParameters.put("Имя", adminCreate.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+        ParametersDto accaountId = ParametersDto.builder()
+                .description("ID")
+                .value(adminCreate.getId())
+                .build();
+
+        ParametersDto accountEmail = ParametersDto.builder()
+                .description("Email")
+                .value(adminCreate.getEmail())
+                .build();
+
+        ParametersDto accountUsername = ParametersDto.builder()
+                .description("Имя")
+                .value(adminCreate.getUsername())
+                .build();
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
