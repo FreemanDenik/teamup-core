@@ -186,10 +186,27 @@ public class AdminController {
             ResponseEntity<Account> responseEntity = ResponseEntity.ok(adminService.updateAdmin(admin));
             log.debug("Получили ответ {}", responseEntity);
 
-            Map<String, Object> monitoringParameters = new HashMap<>();
-            monitoringParameters.put("ID", admin.getId());
-            monitoringParameters.put("Email", admin.getEmail());
-            monitoringParameters.put("Имя", admin.getUsername());
+            Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+            ParametersDto accaountId = ParametersDto.builder()
+                    .description("ID")
+                    .value(admin.getId())
+                    .build();
+
+            ParametersDto accountEmail = ParametersDto.builder()
+                    .description("Email")
+                    .value(admin.getEmail())
+                    .build();
+
+            ParametersDto accountUsername = ParametersDto.builder()
+                    .description("Имя")
+                    .value(admin.getUsername())
+                    .build();
+
+            monitoringParameters.put("ID",accaountId);
+            monitoringParameters.put("Email",accountEmail);
+            monitoringParameters.put("Имя",accountUsername);
+
+
 
             monitorProducerService.send(
                     monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
