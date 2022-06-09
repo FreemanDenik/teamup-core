@@ -111,9 +111,9 @@ public class AdminController {
                 .value(admin.getUsername())
                 .build();
 
-        monitoringParameters.put("ID",accaountId);
-        monitoringParameters.put("Email",accountEmail);
-        monitoringParameters.put("Имя",accountUsername);
+        monitoringParameters.put("ID", accaountId);
+        monitoringParameters.put("Email", accountEmail);
+        monitoringParameters.put("Имя", accountUsername);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -202,10 +202,9 @@ public class AdminController {
                     .value(admin.getUsername())
                     .build();
 
-            monitoringParameters.put("ID",accaountId);
-            monitoringParameters.put("Email",accountEmail);
-            monitoringParameters.put("Имя",accountUsername);
-
+            monitoringParameters.put("ID", accaountId);
+            monitoringParameters.put("Email", accountEmail);
+            monitoringParameters.put("Имя", accountUsername);
 
 
             monitorProducerService.send(
@@ -240,8 +239,13 @@ public class AdminController {
         ResponseEntity<Admin> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", id);
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+        ParametersDto administratorId = ParametersDto.builder()
+                .description("ID")
+                .value(id)
+                .build();
+
+        monitoringParameters.put("ID", administratorId);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
