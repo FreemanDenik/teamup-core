@@ -69,9 +69,15 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество всех пользователей ",
-                users.size());
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto userSize = ParametersDto.builder()
+                .description("Количество всех пользователей ")
+                .value(users.size())
+                .build();
+
+        monitoringParameters.put("Количество всех пользователей ", userSize);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -97,10 +103,26 @@ public class UserController {
                 UserDtoResponse.builder().
                         userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
                 HttpStatus.OK);
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto userId = ParametersDto.builder()
+                .description("ID")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmail = ParametersDto.builder()
+                .description("Email")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userName = ParametersDto.builder()
+                .description("Имя")
+                .value(user.getUsername())
+                .build();
+
+        monitoringParameters.put("ID ", userId);
+        monitoringParameters.put("Email ", userEmail);
+        monitoringParameters.put("Имя ", userName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -132,10 +154,26 @@ public class UserController {
 
         log.debug("Сформирован ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID ", userCreate.getId());
-        monitoringParameters.put("Email ", userCreate.getEmail());
-        monitoringParameters.put("Имя ", userCreate.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto userId = ParametersDto.builder()
+                .description("ID")
+                .value(userCreate.getId())
+                .build();
+
+        ParametersDto userEmail = ParametersDto.builder()
+                .description("Email")
+                .value(userCreate.getEmail())
+                .build();
+
+        ParametersDto userName = ParametersDto.builder()
+                .description("Имя")
+                .value(userCreate.getUsername())
+                .build();
+
+        monitoringParameters.put("ID ", userId);
+        monitoringParameters.put("Email ", userEmail);
+        monitoringParameters.put("Имя ", userName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -145,7 +183,7 @@ public class UserController {
     }
 
     /**
-     * @param id id обновляемого пользователя
+     * @param id   id обновляемого пользователя
      * @param user Обновляемый объект класса User
      * @return Результат работы метода userService.saveUser(user) в виде объекта User
      * в теле ResponseEntity
@@ -174,10 +212,27 @@ public class UserController {
 
         log.debug("Сформирован ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto userIdUpdate = ParametersDto.builder()
+                .description("ID")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailUpdate = ParametersDto.builder()
+                .description("Email")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameUpdate = ParametersDto.builder()
+                .description("Имя")
+                .value(user.getUsername())
+                .build();
+
+        monitoringParameters.put("ID ", userIdUpdate);
+        monitoringParameters.put("Email ", userEmailUpdate);
+        monitoringParameters.put("Имя ", userNameUpdate);
+
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -214,10 +269,27 @@ public class UserController {
         }
         log.debug("Сформирован ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto userId = ParametersDto.builder()
+                .description("ID")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmail = ParametersDto.builder()
+                .description("Email")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userName = ParametersDto.builder()
+                .description("Имя")
+                .value(user.getUsername())
+                .build();
+
+        monitoringParameters.put("ID ", userId);
+        monitoringParameters.put("Email ", userEmail);
+        monitoringParameters.put("Имя ", userName);
+
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -230,7 +302,7 @@ public class UserController {
      * Метод проверки права пользователя на редактирование информации
      *
      * @param authentication параметр из SecurityContext текущей сессии
-     * @param id id редактируемого пользователя из запроса
+     * @param id             id редактируемого пользователя из запроса
      * @return true, если изменения производит админ, модератор, или юзер сам над собой
      */
     private boolean haveRightsToUpdate(Authentication authentication, Long id) {
