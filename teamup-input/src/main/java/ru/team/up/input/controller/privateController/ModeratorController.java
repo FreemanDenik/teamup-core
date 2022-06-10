@@ -16,7 +16,9 @@ import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.AssignedEventsService;
 import ru.team.up.core.service.ModeratorService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.sup.service.ParameterService;
+
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,6 @@ import java.util.Map;
 
 /**
  * @author Alexey Tkachenko
- *
  * @link localhost:8080/swagger-ui.html
  * @link http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
  * Документация API
@@ -59,8 +60,14 @@ public class ModeratorController {
         ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(allModerators);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество модераторов", allModerators.size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto allModeratorsParam = ParametersDto.builder()
+                .description("Количество модераторов ")
+                .value(allModerators.size())
+                .build();
+
+        monitoringParameters.put("Количество модераторов", allModeratorsParam);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -89,10 +96,26 @@ public class ModeratorController {
         ResponseEntity<Account> responseEntity = ResponseEntity.ok(moderator);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", moderator.getId());
-        monitoringParameters.put("Email", moderator.getEmail());
-        monitoringParameters.put("Имя", moderator.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto moderatorId = ParametersDto.builder()
+                .description("ID")
+                .value(moderator.getId())
+                .build();
+
+        ParametersDto moderatorEmail = ParametersDto.builder()
+                .description("Email")
+                .value(moderator.getEmail())
+                .build();
+
+        ParametersDto moderatorName = ParametersDto.builder()
+                .description("Имя")
+                .value(moderator.getUsername())
+                .build();
+
+        monitoringParameters.put("ID", moderatorId);
+        monitoringParameters.put("Email", moderatorEmail);
+        monitoringParameters.put("Имя", moderatorName);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -120,10 +143,26 @@ public class ModeratorController {
 
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", moderatorCreate.getId());
-        monitoringParameters.put("Email", moderatorCreate.getEmail());
-        monitoringParameters.put("Имя", moderatorCreate.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto moderatorId = ParametersDto.builder()
+                .description("ID")
+                .value(moderatorCreate.getId())
+                .build();
+
+        ParametersDto moderatorEmail = ParametersDto.builder()
+                .description("Email")
+                .value(moderatorCreate.getEmail())
+                .build();
+
+        ParametersDto moderatorName = ParametersDto.builder()
+                .description("Имя")
+                .value(moderatorCreate.getUsername())
+                .build();
+
+        monitoringParameters.put("ID", moderatorId);
+        monitoringParameters.put("Email", moderatorEmail);
+        monitoringParameters.put("Имя", moderatorName);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -153,10 +192,26 @@ public class ModeratorController {
             responseEntity = ResponseEntity.ok(moderatorService.updateModerator(moderator));
             log.debug("Модератор обновлён {}", responseEntity);
 
-            Map<String, Object> monitoringParameters = new HashMap<>();
-            monitoringParameters.put("ID", moderator.getId());
-            monitoringParameters.put("Email", moderator.getEmail());
-            monitoringParameters.put("Имя", moderator.getUsername());
+            Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+            ParametersDto moderatorIdUpdate = ParametersDto.builder()
+                    .description("ID")
+                    .value(moderator.getId())
+                    .build();
+
+            ParametersDto moderatorEmailUpdate = ParametersDto.builder()
+                    .description("Email")
+                    .value(moderator.getEmail())
+                    .build();
+
+            ParametersDto moderatorNameUpdate = ParametersDto.builder()
+                    .description("Имя")
+                    .value(moderator.getUsername())
+                    .build();
+
+            monitoringParameters.put("ID", moderatorIdUpdate);
+            monitoringParameters.put("Email", moderatorEmailUpdate);
+            monitoringParameters.put("Имя", moderatorNameUpdate);
 
             monitorProducerService.send(
                     monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -189,8 +244,13 @@ public class ModeratorController {
         ResponseEntity<Moderator> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", id);
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto deleteModeratorId = ParametersDto.builder()
+                .description("ID")
+                .value(id)
+                .build();
+        monitoringParameters.put("ID", deleteModeratorId);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -221,8 +281,13 @@ public class ModeratorController {
         ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(allEvents);
         log.debug("Получили ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество мероприятий", allEvents.size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto allEventsOfModerator = ParametersDto.builder()
+                .description("Количество мероприятий ")
+                .value(allEvents.size())
+                .build();
+        monitoringParameters.put("Количество мероприятий", allEventsOfModerator);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
