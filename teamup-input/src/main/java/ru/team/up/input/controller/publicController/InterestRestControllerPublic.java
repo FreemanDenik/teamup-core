@@ -32,6 +32,11 @@ public class InterestRestControllerPublic {
     private InterestServiceRest interestsServiceRest;
     private MonitorProducerService monitorProducerService;
 
+    //Добавил новый конструктор, т.к. в тесте возникала ошибка
+    public InterestRestControllerPublic(InterestServiceRest interestsServiceRest) {
+        this.interestsServiceRest = interestsServiceRest;
+    }
+
     /**
      * Метод получения всех интересов
      *
