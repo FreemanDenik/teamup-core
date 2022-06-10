@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.core.mappers.InterestsMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.input.response.InterestsDtoListResponse;
 import ru.team.up.input.response.InterestsDtoResponse;
 import ru.team.up.input.service.InterestServiceRest;
@@ -45,8 +46,13 @@ public class InterestRestControllerPublic {
                 InterestsMapper.INSTANCE.mapInterestsToDtoList(
                         interestsServiceRest.getAllInterests())).build();
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество интересов", interests.getInterestsDtoList().size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto interestsDoList = ParametersDto.builder()
+                .description("Количество интересов ")
+                .value(interests.getInterestsDtoList().size())
+                .build();
+        monitoringParameters.put("Количество интересов", interestsDoList);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -75,9 +81,20 @@ public class InterestRestControllerPublic {
                 InterestsMapper.INSTANCE.mapInterestToDto(
                         interestsServiceRest.getInterestById(interestsId))).build();
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID", interest.getInterestsDto().getId());
-        monitoringParameters.put("Название", interest.getInterestsDto().getTitle());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto interestsIdParam = ParametersDto.builder()
+                .description("ID")
+                .value(interest.getInterestsDto().getId())
+                .build();
+
+        ParametersDto interestsNameParam = ParametersDto.builder()
+                .description("Название ")
+                .value(interest.getInterestsDto().getTitle())
+                .build();
+
+        monitoringParameters.put("ID", interestsIdParam);
+        monitoringParameters.put("Название", interestsNameParam);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
