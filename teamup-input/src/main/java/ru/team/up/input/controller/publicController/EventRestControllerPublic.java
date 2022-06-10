@@ -16,6 +16,7 @@ import ru.team.up.core.mappers.EventMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.input.exception.EventCheckException;
 import ru.team.up.input.exception.EventCreateRequestException;
 import ru.team.up.input.payload.request.EventRequest;
@@ -69,8 +70,14 @@ public class EventRestControllerPublic {
         EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEvents()))
                 .build();
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество всех мероприятий ", eventDtoListResponse.getEventDtoList().size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto amountEvents = ParametersDto.builder()
+                .description("Количество всех мероприятий ")
+                .value(eventDtoListResponse.getEventDtoList().size())
+                .build();
+
+        monitoringParameters.put("Количество всех мероприятий ", amountEvents);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -93,12 +100,23 @@ public class EventRestControllerPublic {
             throw new RuntimeException("Method findEventById is disabled by parameter getEventByIdEnabled");
         }
         EventDtoResponse eventDtoResponse = EventDtoResponse.builder().eventDto(
-                    EventMapper.INSTANCE.mapEventToDto(
-                            eventServiceRest.getEventById(eventId))).build();
+                EventMapper.INSTANCE.mapEventToDto(
+                        eventServiceRest.getEventById(eventId))).build();
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия", eventDtoResponse.getEventDto().getId());
-        monitoringParameters.put("Название мероприятия", eventDtoResponse.getEventDto().getEventName());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto findEventId = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(eventDtoResponse.getEventDto().getId())
+                .build();
+
+        ParametersDto eventName = ParametersDto.builder()
+                .description("азвание мероприятия ")
+                .value(eventDtoResponse.getEventDto().getEventName())
+                .build();
+
+        monitoringParameters.put("ID мероприятия", findEventId);
+        monitoringParameters.put("Название мероприятия", eventName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -123,9 +141,16 @@ public class EventRestControllerPublic {
         EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCity(city)))
                 .build();
-        Map<String, Object> monitoringParameters = new HashMap<>();
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto eventList = ParametersDto.builder()
+                .description("Количество всех мероприятий по городу: " + city)
+                .value(eventDtoListResponse.getEventDtoList().size())
+                .build();
+
         monitoringParameters.put("Количество всех мероприятий по городу: " + city,
-                eventDtoListResponse.getEventDtoList().size());
+                eventList);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -151,9 +176,14 @@ public class EventRestControllerPublic {
         EventDtoListResponse eventDtoListResponse = EventDtoListResponse.builder().eventDtoList(
                         EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getEventByName(eventName)))
                 .build();
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto eventListByName = ParametersDto.builder()
+                .description("Количество всех мероприятий по названию: " + eventName)
+                .value(eventDtoListResponse.getEventDtoList().size())
+                .build();
         monitoringParameters.put("Количество всех мероприятий по названию: " + eventName,
-                eventDtoListResponse.getEventDtoList().size());
+                eventListByName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -176,13 +206,18 @@ public class EventRestControllerPublic {
             throw new RuntimeException("Method findEventsByAuthor is disabled by parameter getFindEventsByAuthorEnabled");
         }
         List<Event> events = eventServiceRest.getAllEventsByAuthor(author.getUser().getId());
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto eventListByAuthor = ParametersDto.builder()
+                .description("Количество всех мероприятий по автору: " + author)
+                .value(events.size())
+                .build();
         if (events.isEmpty()) {
             log.error("Мероприятия по указанному автору {} не найдены", author);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         log.debug("Мероприятия от автора {} найдены", author);
-        monitoringParameters.put("Количество всех мероприятий по автору: " + author, events.size());
+        monitoringParameters.put("Количество всех мероприятий по автору: " + author, eventListByAuthor);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -205,14 +240,19 @@ public class EventRestControllerPublic {
             throw new RuntimeException("Method findEventsByType is disabled by parameter getFindEventsByTypeEnabled");
         }
         List<Event> events = eventServiceRest.getAllEventsByEventType(eventType);
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto eventListByType = ParametersDto.builder()
+                .description("Количество всех мероприятий по типу: " + eventType)
+                .value(events.size())
+                .build();
         if (events.isEmpty()) {
             log.error("Мероприятия с типом {} не найдены", eventType);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         log.debug("Мероприятия с типом: {} найдены", eventType);
         monitoringParameters.put("Количество всех мероприятий по типу: " + eventType,
-                events.size());
+                eventListByType);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -240,9 +280,20 @@ public class EventRestControllerPublic {
         Event upcomingEvent = eventServiceRest.saveEvent(event.getEvent());
         log.debug("Мероприятие создано");
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия ", upcomingEvent.getId());
-        monitoringParameters.put("Название мероприятия ", upcomingEvent.getEventName());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventIdNew = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(upcomingEvent.getId())
+                .build();
+
+        ParametersDto eventNameNew = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(upcomingEvent.getEventName())
+                .build();
+
+        monitoringParameters.put("ID мероприятия ", eventIdNew);
+        monitoringParameters.put("Название мероприятия ", eventNameNew);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -273,9 +324,19 @@ public class EventRestControllerPublic {
         Event newEvent = eventServiceRest.updateEvent(eventId, event.getEvent());
         log.debug("Мероприятие {} обновлено", event);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия ", newEvent.getId());
-        monitoringParameters.put("Название мероприятия ", newEvent.getEventName());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventIdUpdate = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(newEvent.getId())
+                .build();
+
+        ParametersDto eventNameUpdate = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(newEvent.getEventName())
+                .build();
+        monitoringParameters.put("ID мероприятия ", eventIdUpdate);
+        monitoringParameters.put("Название мероприятия ", eventNameUpdate);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -310,9 +371,20 @@ public class EventRestControllerPublic {
         eventServiceRest.deleteEvent(eventId);
         log.debug("Мероприятие с id: {} успешно удалено", eventId);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия ", event.getId());
-        monitoringParameters.put("Название мероприятия ", event.getEventName());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventIdDel = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventNameDel = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        monitoringParameters.put("ID мероприятия ", eventIdDel);
+        monitoringParameters.put("Название мероприятия ", eventNameDel);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -342,12 +414,38 @@ public class EventRestControllerPublic {
         User user = userService.getOneUser(userId).orElse(null);
         log.debug("Участник успешно добавлен");
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия ", event.getId());
-        monitoringParameters.put("Название мероприятия ", event.getEventName());
-        monitoringParameters.put("ID участника ", user.getId());
-        monitoringParameters.put("Email участника ", user.getEmail());
-        monitoringParameters.put("Имя участника ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventIdAdd = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventNameAdd = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        ParametersDto userIdAdd = ParametersDto.builder()
+                .description("ID участника ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailAdd = ParametersDto.builder()
+                .description("Email участника ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameAdd = ParametersDto.builder()
+                .description("Имя участника ")
+                .value(user.getUsername())
+                .build();
+
+        monitoringParameters.put("ID мероприятия ", eventIdAdd);
+        monitoringParameters.put("Название мероприятия ", eventNameAdd);
+        monitoringParameters.put("ID участника ", userIdAdd);
+        monitoringParameters.put("Email участника ", userEmailAdd);
+        monitoringParameters.put("Имя участника ", userNameAdd);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
@@ -382,12 +480,40 @@ public class EventRestControllerPublic {
         Event event = eventServiceRest.deleteParticipant(joinRequest.getEventId(), joinRequest.getUserId());
         log.debug("Участник успешно удален");
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("ID мероприятия ", event.getId());
-        monitoringParameters.put("Название мероприятия ", event.getEventName());
-        monitoringParameters.put("ID участника ", user.getId());
-        monitoringParameters.put("Email участника ", user.getEmail());
-        monitoringParameters.put("Имя участника ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventIdDel = ParametersDto.builder()
+                .description("ID мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventNameDel = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        ParametersDto userIdDel = ParametersDto.builder()
+                .description("ID участника ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailDel = ParametersDto.builder()
+                .description("Email участника ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameDel = ParametersDto.builder()
+                .description("Имя участника ")
+                .value(user.getUsername())
+                .build();
+
+        monitoringParameters.put("ID мероприятия ", eventIdDel);
+        monitoringParameters.put("Название мероприятия ", eventNameDel);
+        monitoringParameters.put("ID участника ", userIdDel);
+        monitoringParameters.put("Email участника ", userEmailDel);
+        monitoringParameters.put("Имя участника ", userNameDel);
+
+
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(

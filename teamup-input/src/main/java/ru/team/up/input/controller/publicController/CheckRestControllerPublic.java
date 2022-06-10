@@ -17,6 +17,7 @@ import ru.team.up.core.entity.City;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.CityService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.sup.service.ParameterService;
 
@@ -46,14 +47,19 @@ public class CheckRestControllerPublic {
             throw new RuntimeException("Method findEventById is disabled by parameter getCityByNameEnabled");
         }
 
-        Optional <City> optionalCity = Optional.ofNullable(cityService.findCityByName(name));
+        Optional<City> optionalCity = Optional.ofNullable(cityService.findCityByName(name));
 
         return optionalCity
                 .map(city -> {
                     log.debug("Город с названием: {} найден", name);
 
-                    Map<String, Object> monitoringParameters = new HashMap<>();
-                    monitoringParameters.put("Название города", name);
+                    Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+                    ParametersDto cityName = ParametersDto.builder()
+                            .description("Название города ")
+                            .value(name)
+                            .build();
+                    monitoringParameters.put("Название города", cityName);
 
                     monitorProducerService.send(
                             monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -85,8 +91,13 @@ public class CheckRestControllerPublic {
                 .map(city -> {
                     log.debug("Город с названием: {} и субъектом {} найден", name, subject);
 
-                    Map<String, Object> monitoringParameters = new HashMap<>();
-                    monitoringParameters.put("Название города", name);
+                    Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+                    ParametersDto cityName = ParametersDto.builder()
+                            .description("Название города ")
+                            .value(name)
+                            .build();
+                    monitoringParameters.put("Название города", cityName);
 
                     monitorProducerService.send(
                             monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -119,8 +130,13 @@ public class CheckRestControllerPublic {
 
         log.debug("Список городов получен");
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество городов", cities.size());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto countCity = ParametersDto.builder()
+                .description("Количество городов ")
+                .value(cities.size())
+                .build();
+        monitoringParameters.put("Количество городов ", countCity);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -148,8 +164,13 @@ public class CheckRestControllerPublic {
 
         log.debug("Список городов получен");
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("10 городов по имени", name);
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto listCity = ParametersDto.builder()
+                .description("10 городов по имени")
+                .value(name)
+                .build();
+        monitoringParameters.put("10 городов по имени", listCity);
 
         monitorProducerService.send(
                 monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -179,8 +200,13 @@ public class CheckRestControllerPublic {
                 .orElseGet(() -> {
                     log.debug("Значение username {} доступно", username);
 
-                    Map<String, Object> monitoringParameters = new HashMap<>();
-                    monitoringParameters.put("Значение username доступно", username);
+                    Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+                    ParametersDto isAvailableUsernmaeParam = ParametersDto.builder()
+                            .description("Значение username доступно")
+                            .value(username)
+                            .build();
+                    monitoringParameters.put("Значение username доступно", isAvailableUsernmaeParam);
 
                     monitorProducerService.send(
                             monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
@@ -211,8 +237,14 @@ public class CheckRestControllerPublic {
                 .orElseGet(() -> {
                     log.debug("Значение email {} доступно", email);
 
-                    Map<String, Object> monitoringParameters = new HashMap<>();
-                    monitoringParameters.put("Значение email доступно", email);
+                    Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+                    ParametersDto isAvailableEmailParam = ParametersDto.builder()
+                            .description("Значение email доступно ")
+                            .value(email)
+                            .build();
+
+                    monitoringParameters.put("Значение email доступно", isAvailableEmailParam);
 
                     monitorProducerService.send(
                             monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
