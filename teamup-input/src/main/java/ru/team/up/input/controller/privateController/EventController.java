@@ -63,9 +63,16 @@ public class EventController {
         ResponseEntity<List<EventDto>> responseEntity = ResponseEntity.ok(
                 EventMapper.INSTANCE.mapDtoEventToEvent(events));
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Количество всех мероприятий ",
-                events.size());
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto eventsSize = ParametersDto.builder()
+                .description("Количество всех мероприятий")
+                .value(events.size())
+                .build();
+
+        monitoringParameters.put("Количество всех мероприятий ", eventsSize);
+
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -96,9 +103,21 @@ public class EventController {
                 EventMapper.INSTANCE.mapEventToDto(event)
         );
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("Id мероприятия ", event.getId());
-        monitoringParameters.put("Название мероприятия ", event.getEventName());
+
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto oneEventId = ParametersDto.builder()
+                .description("Id мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto oneEventName = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        monitoringParameters.put("Id мероприятия ", oneEventId);
+        monitoringParameters.put("Название мероприятия ", oneEventName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -129,9 +148,21 @@ public class EventController {
         ResponseEntity<EventDto> responseEntity = new ResponseEntity<>(
                 EventMapper.INSTANCE.mapEventToDto(eventService.getOneEvent(id)), HttpStatus.ACCEPTED);
         log.debug("Сформирован ответ {}", responseEntity);
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("Id мероприятия ", event.getId());
-        monitoringParameters.put("Название мероприятия ", event.getEventName());
+
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventId = ParametersDto.builder()
+                .description("Id мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventName = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        monitoringParameters.put("Id мероприятия ", eventId);
+        monitoringParameters.put("Название мероприятия ", eventName);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -167,9 +198,21 @@ public class EventController {
         try {
             ResponseEntity<Event> responseEntity = new ResponseEntity<>(eventService.saveEvent(eventCreate), HttpStatus.CREATED);
 
-            Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-            monitoringParameters.put("Id мероприятия", eventCreate.getId());
-            monitoringParameters.put("Название мероприятия", eventCreate.getEventName());
+            Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+            ParametersDto eventId = ParametersDto.builder()
+                    .description("Id мероприятия ")
+                    .value(eventCreate.getId())
+                    .build();
+
+            ParametersDto eventName = ParametersDto.builder()
+                    .description("Название мероприятия ")
+                    .value(eventCreate.getEventName())
+                    .build();
+
+            monitoringParameters.put("Id мероприятия ", eventId);
+            monitoringParameters.put("Название мероприятия ", eventName);
+
 
             monitoringProducerService.send(
                     monitoringProducerService.constructReportDto(
@@ -189,7 +232,7 @@ public class EventController {
     }
 
     /**
-     * @param id id обновляемого ивента
+     * @param id    id обновляемого ивента
      * @param event Обновляемый объект класса Event
      * @return Результат работы метода eventService.saveEvent(event)) в виде объекта Event
      * в теле ResponseEntity
@@ -222,9 +265,20 @@ public class EventController {
         try {
             ResponseEntity<Event> responseEntity = ResponseEntity.ok(eventService.updateEvent(event));
 
-            Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-            monitoringParameters.put("Id мероприятия", event.getId());
-            monitoringParameters.put("Название мероприятия", event.getEventName());
+            Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+            ParametersDto eventId = ParametersDto.builder()
+                    .description("Id мероприятия ")
+                    .value(event.getId())
+                    .build();
+
+            ParametersDto eventName = ParametersDto.builder()
+                    .description("Название мероприятия ")
+                    .value(event.getEventName())
+                    .build();
+
+            monitoringParameters.put("Id мероприятия ", eventId);
+            monitoringParameters.put("Название мероприятия ", eventName);
 
             monitoringProducerService.send(
                     monitoringProducerService.constructReportDto(
@@ -264,9 +318,20 @@ public class EventController {
         ResponseEntity<Event> responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
         log.debug("Сформирован ответ {}", responseEntity);
 
-        Map<String, Object> monitoringParameters = new LinkedHashMap<>();
-        monitoringParameters.put("Id мероприятия", event.getId());
-        monitoringParameters.put("Название мероприятия", event.getEventName());
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventId = ParametersDto.builder()
+                .description("Id мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventName = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        monitoringParameters.put("Id мероприятия ", eventId);
+        monitoringParameters.put("Название мероприятия ", eventName);
 
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
