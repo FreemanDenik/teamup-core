@@ -44,9 +44,12 @@ class CheckRestControllerPublicTest {
     @Mock
     private UserServiceRest userService;
 
+    @Mock
+    private MonitorProducerService monitorProducerService;
+
     @InjectMocks
     private CheckRestControllerPublic checkRestControllerPublic =
-            new CheckRestControllerPublic(cityService, userService);
+            new CheckRestControllerPublic(cityService, userService, monitorProducerService);
 
     private City cityTest1;
     private City cityTest2;

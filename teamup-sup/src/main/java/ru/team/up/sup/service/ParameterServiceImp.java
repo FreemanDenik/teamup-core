@@ -3,7 +3,6 @@ package ru.team.up.sup.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
@@ -65,7 +64,8 @@ public class ParameterServiceImp implements ParameterService {
             getEventsBySubscriberIdEnabled,
             getUpdateUserEnabled,
             getDeleteUserByIdEnabled,
-            getTopUsersListInCityEnabled);
+            getTopUsersListInCityEnabled,
+            getSupDefaultParamURL);
 
     @PostConstruct
     private void init() {
@@ -98,7 +98,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterTypeDto.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
+                    .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);

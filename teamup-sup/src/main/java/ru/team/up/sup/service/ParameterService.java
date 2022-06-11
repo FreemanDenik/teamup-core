@@ -217,6 +217,13 @@ public interface ParameterService {
     SupParameter<Integer> getModeratorEventLimitation = new SupParameter<>(
             "TEAMUP_CORE_MODERATOR_EVENT_LIMITATION",
             3);
+    SupParameter<String> getSupDefaultParamURL = new SupParameter<>(
+            "TEAMUP_CORE_DEFAULT_PARAM_URL",
+            "http://localhost:8083/public/api/update/TEAMUP_CORE/");
+    SupParameter<String> getNotificationUriHost = new SupParameter<>(
+            "TEAMUP_CORE_NOTIFICATION_URI_HOST",
+            "http://localhost:8085"
+    );
 
     /**
      * Получение листа текущих параметров из кэша

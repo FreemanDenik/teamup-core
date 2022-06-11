@@ -25,9 +25,12 @@ class InterestRestControllerPublicTest {
     @Mock
     private InterestServiceRest interestsServiceRest;
 
+    @Mock
+    private MonitorProducerService monitorProducerService;
+
     @InjectMocks
     private InterestRestControllerPublic interestRestControllerPublic =
-            new InterestRestControllerPublic(interestsServiceRest);
+            new InterestRestControllerPublic(interestsServiceRest, monitorProducerService);
 
     private Interests art;
     private List<Interests> interests;

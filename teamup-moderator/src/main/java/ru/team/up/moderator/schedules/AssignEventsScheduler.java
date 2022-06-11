@@ -36,7 +36,8 @@ public class AssignEventsScheduler {
         if (!newEventsIdList.isEmpty()) {
 
             log.debug("Получение id свободного модератора");
-            Long moderatorId = moderatorSessionsServiceImpl.getFreeModeratorWithLimitedEvents(ParameterService.getModeratorEventLimitation.getValue());
+            Long moderatorId = moderatorSessionsServiceImpl.getFreeModeratorWithLimitedEvents(ParameterService
+                    .getModeratorEventLimitation.getValue());
             if (moderatorId != null) {
 
                 newEventsIdList.forEach(eventId -> {
