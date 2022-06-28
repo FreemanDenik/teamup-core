@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.entity.AssignedEvents;
 import ru.team.up.core.service.AssignedEventsServiceImpl;
 import ru.team.up.core.service.ModeratorsSessionsServiceImpl;
+import ru.team.up.sup.service.ParameterService;
 
 import java.util.List;
 
@@ -33,17 +34,21 @@ public class AssignEventsScheduler {
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
 
         if (!newEventsIdList.isEmpty()) {
-            if (moderatorSessionsServiceImpl.getFreeModerator() != null) {
+
+            log.debug("Получение id свободного модератора");
+            Long moderatorId = moderatorSessionsServiceImpl.getFreeModeratorWithLimitedEvents(ParameterService
+                    .getModeratorEventLimitation.getValue());
+            if (moderatorId != null) {
 
                 newEventsIdList.forEach(eventId -> {
                     assignedEventsServiceImpl.saveAssignedEvent(AssignedEvents.builder()
                             .eventId(eventId)
-                            .moderatorId(moderatorSessionsServiceImpl.getFreeModerator())
+                            .moderatorId(moderatorId)
                             .build());
                 });
                 log.debug("Новые мероприятия получены и распределены на модераторов");
             } else {
-                log.debug("Нет активных модераторов");
+                log.debug("Нет активных модераторов или у них максимальное количество мероприятий");
             }
         } else {
             log.debug("Список новых мероприятий пуст");

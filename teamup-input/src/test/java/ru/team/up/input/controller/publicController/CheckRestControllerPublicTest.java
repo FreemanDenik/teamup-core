@@ -15,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.CityService;
 import ru.team.up.input.service.UserServiceRest;
 
@@ -43,9 +44,12 @@ class CheckRestControllerPublicTest {
     @Mock
     private UserServiceRest userService;
 
+    @Mock
+    private MonitorProducerService monitorProducerService;
+
     @InjectMocks
     private CheckRestControllerPublic checkRestControllerPublic =
-            new CheckRestControllerPublic(cityService, userService);
+            new CheckRestControllerPublic(cityService, userService, monitorProducerService);
 
     private City cityTest1;
     private City cityTest2;

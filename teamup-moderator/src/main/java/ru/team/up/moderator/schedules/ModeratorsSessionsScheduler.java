@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.team.up.core.service.AssignedEventsServiceImpl;
 import ru.team.up.core.service.ModeratorsSessionsServiceImpl;
+import ru.team.up.sup.service.ParameterService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,12 +30,10 @@ public class ModeratorsSessionsScheduler {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void removeModeratorSession() {
 
-        // Длительность неактивной сессии модератора перед удалением (в минутах)
-        final long downtime = 30L;
-
         log.debug("Получение листа ID неактивных модераторов");
         List<Long> listInactiveModeratorsId = moderatorSessionsServiceImpl
-                .getInactiveModerators(LocalDateTime.now().minusMinutes(downtime));
+                // Длительность неактивной сессии модератора перед удалением (в минутах) получаемая из СУП
+                .getInactiveModerators(LocalDateTime.now().minusMinutes(ParameterService.getModeratorDisconnectTimeout.getValue()));
 
         if (!listInactiveModeratorsId.isEmpty()) {
             listInactiveModeratorsId
