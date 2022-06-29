@@ -17,6 +17,7 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.dto.UserDto;
 import ru.team.up.sup.service.ParameterService;
 
@@ -53,11 +54,15 @@ public class AuthController {
 
         String token = jwtProvider.generateToken(user.getEmail());
 
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("Email", user.getEmail());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+        monitoringParameters.put("Email", ParametersDto.builder()
+                        .description("Почта")
+                        .value(user.getEmail())
+                .build());
 
         monitorProducerService.send(
-                monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                monitorProducerService.constructReportDto(SecurityContextHolder.getContext()
+                                .getAuthentication().getPrincipal(),
                         ControlDto.MANUAL,
                         this.getClass(),
                         monitoringParameters)
@@ -85,11 +90,15 @@ public class AuthController {
                     userDto = UserMapper.INSTANCE.mapAdminToDto((Admin) account);
                 }
 
-                Map<String, Object> monitoringParameters = new HashMap<>();
-                monitoringParameters.put("Email", account.getEmail());
+                Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+                monitoringParameters.put("Email", ParametersDto.builder()
+                        .description("Почта")
+                        .value(userDto.getEmail())
+                        .build());
 
                 monitorProducerService.send(
-                        monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                        monitorProducerService.constructReportDto(SecurityContextHolder.getContext()
+                                        .getAuthentication().getPrincipal(),
                                 ControlDto.MANUAL,
                                 this.getClass(),
                                 monitoringParameters)
@@ -118,8 +127,11 @@ public class AuthController {
                 } else if (account instanceof Admin) {
                     userDto = UserMapper.INSTANCE.mapAdminToDto((Admin) account);
                 }
-                Map<String, Object> monitoringParameters = new HashMap<>();
-                monitoringParameters.put("Email", account.getEmail());
+                Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+                monitoringParameters.put("Email", ParametersDto.builder()
+                        .description("Почта")
+                        .value(account.getEmail())
+                        .build());
 
                 monitorProducerService.send(
                         monitorProducerService.constructReportDto(SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
