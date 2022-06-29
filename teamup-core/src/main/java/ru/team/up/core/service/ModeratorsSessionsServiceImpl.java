@@ -95,6 +95,13 @@ public class ModeratorsSessionsServiceImpl implements ModeratorsSessionsService 
 
     @Transactional
     @Override
+    public Long getFreeModeratorWithLimitedEvents(int eventLimitation) {
+        log.debug("Получение свободного модератора c максимальным количеством мероприятий = {}", eventLimitation);
+        return moderatorSessionRepository.getFreeModeratorWithLimitedEvents(eventLimitation);
+    }
+
+    @Transactional
+    @Override
     public List<Long> getInactiveModerators(LocalDateTime downtime) {
         log.debug("Получение неактивных модераторов");
         return moderatorSessionRepository.getInactiveModerators(downtime);

@@ -24,7 +24,7 @@ public class MonitorProducerServiceImpl implements MonitorProducerService {
 
 
     @Override
-    public ReportDto constructReportDto(Object principal, ControlDto control, Class cl, Map<String, Object> params) {
+    public ReportDto constructReportDto(Object principal, ControlDto control, Class cl, Map<String, ParametersDto> params) {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         ReportDto reportDto = ReportDto.builder()
                 .control(control)

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.tags.Param;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.mappers.EventMapper;
@@ -17,6 +18,7 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.dto.EventDto;
+import ru.team.up.dto.ParametersDto;
 import ru.team.up.dto.UserDto;
 import ru.team.up.input.payload.request.UserRequest;
 import ru.team.up.input.response.EventDtoListResponse;
@@ -60,10 +62,25 @@ public class UserRestControllerPublic {
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserById(userId));
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto userIdParam = ParametersDto.builder()
+                .description("ID ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailParam = ParametersDto.builder()
+                .description("Email ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameParam = ParametersDto.builder()
+                .description("Имя ")
+                .value(user.getUsername())
+                .build();
+        monitoringParameters.put("ID ", userIdParam);
+        monitoringParameters.put("Email ", userEmailParam);
+        monitoringParameters.put("Имя ", userNameParam);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -89,10 +106,27 @@ public class UserRestControllerPublic {
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserByEmail(userEmail));
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto userIdParam = ParametersDto.builder()
+                .description("ID ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailParam = ParametersDto.builder()
+                .description("Email ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameParam = ParametersDto.builder()
+                .description("Имя ")
+                .value(user.getUsername())
+                .build();
+        monitoringParameters.put("ID ", userIdParam);
+        monitoringParameters.put("Email ", userEmailParam);
+        monitoringParameters.put("Имя ", userNameParam);
+
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -118,10 +152,27 @@ public class UserRestControllerPublic {
         }
         UserDto user = UserMapper.INSTANCE
                 .mapUserToDto(userServiceRest.getUserByUsername(userUsername));
-        Map<String, Object> monitoringParameters = new HashMap<>();
-        monitoringParameters.put("ID ", user.getId());
-        monitoringParameters.put("Email ", user.getEmail());
-        monitoringParameters.put("Имя ", user.getUsername());
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto userIdParam = ParametersDto.builder()
+                .description("ID ")
+                .value(user.getId())
+                .build();
+
+        ParametersDto userEmailParam = ParametersDto.builder()
+                .description("Email ")
+                .value(user.getEmail())
+                .build();
+
+        ParametersDto userNameParam = ParametersDto.builder()
+                .description("Имя ")
+                .value(user.getUsername())
+                .build();
+        monitoringParameters.put("ID ", userIdParam);
+        monitoringParameters.put("Email ", userEmailParam);
+        monitoringParameters.put("Имя ", userNameParam);
+
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -145,12 +196,19 @@ public class UserRestControllerPublic {
             throw new RuntimeException("Method getUsersList is disabled by parameter getUsersListEnabled");
         }
         List<User> users = userServiceRest.getAllUsers();
-        Map<String, Object> monitoringParameters = new HashMap<>();
+
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
+        ParametersDto usersSize = ParametersDto.builder()
+                .description("Количество всех пользователей ")
+                .value(users.size())
+                .build();
+
         if (users.isEmpty()) {
             log.error("Список пользователей пуст");
             throw new RuntimeException("Список пользователей пуст");
         }
-        monitoringParameters.put("Количество всех пользователей ", users.size());
+        monitoringParameters.put("Количество всех пользователей ", usersSize);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -173,10 +231,17 @@ public class UserRestControllerPublic {
             log.debug("Метод getEventsByOwnerId выключен параметром getEventsByOwnerIdEnabled = false");
             throw new RuntimeException("Method getEventsByOwnerId is disabled by parameter getEventsByOwnerIdEnabled");
         }
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
+
         List<EventDto> eventList = EventMapper.INSTANCE
                 .mapDtoEventToEvent(userServiceRest.getEventsByOwnerId(id));
-        monitoringParameters.put("Количество всех мероприятий по id пользователя " + id, eventList.size());
+
+        ParametersDto eventListParam = ParametersDto.builder()
+                .description("Количество всех мероприятий по id пользователя " + id)
+                .value(eventList.size())
+                .build();
+
+        monitoringParameters.put("Количество всех мероприятий по id пользователя " + id, eventListParam);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
@@ -199,10 +264,16 @@ public class UserRestControllerPublic {
             log.debug("Метод getEventsBySubscriberId выключен параметром getEventsBySubscriberIdEnabled = false");
             throw new RuntimeException("Method getEventsBySubscriberId is disabled by parameter getEventsBySubscriberIdEnabled");
         }
-        Map<String, Object> monitoringParameters = new HashMap<>();
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
         List<EventDto> eventList = EventMapper.INSTANCE
                 .mapDtoEventToEvent(userServiceRest.getEventsBySubscriberId(id));
-        monitoringParameters.put("Количество мероприятий, на которые подписан пользователь id " + id, eventList.size());
+
+        ParametersDto eventListParam = ParametersDto.builder()
+                .description("Количество мероприятий, на которые подписан пользователь id " + id)
+                .value(eventList.size())
+                .build();
+
+        monitoringParameters.put("Количество мероприятий, на которые подписан пользователь id " + id, eventListParam);
         monitoringProducerService.send(
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,

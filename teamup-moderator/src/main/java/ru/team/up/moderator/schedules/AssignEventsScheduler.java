@@ -21,6 +21,10 @@ import ru.team.up.dto.KafkaEventDto;
 import ru.team.up.dto.KafkaEventTypeDto;
 import ru.team.up.moderator.payload.AssignedEventPayload;
 import java.util.HashMap;
+import ru.team.up.core.service.AssignedEventsServiceImpl;
+import ru.team.up.core.service.ModeratorsSessionsServiceImpl;
+import ru.team.up.sup.service.ParameterService;
+
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +70,11 @@ public class AssignEventsScheduler {
         List<Long> newEventsIdList = assignedEventsServiceImpl.getIdNotAssignedEvents();
 
         if (!newEventsIdList.isEmpty()) {
-            if (moderatorSessionsServiceImpl.getFreeModerator() != null) {
+
+            log.debug("Получение id свободного модератора");
+            Long moderatorId = moderatorSessionsServiceImpl.getFreeModeratorWithLimitedEvents(ParameterService
+                    .getModeratorEventLimitation.getValue());
+            if (moderatorId != null) {
 
                 newEventsIdList.forEach(eventId -> {
                     Long freeModeratorId = moderatorSessionsServiceImpl.getFreeModerator();
@@ -81,7 +89,7 @@ public class AssignEventsScheduler {
                 });
                 log.debug("Новые мероприятия получены и распределены на модераторов");
             } else {
-                log.debug("Нет активных модераторов");
+                log.debug("Нет активных модераторов или у них максимальное количество мероприятий");
             }
         } else {
             log.debug("Список новых мероприятий пуст");

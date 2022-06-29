@@ -18,8 +18,6 @@ import java.io.IOException;
 public class ParameterSenderImpl implements ParameterSender {
 
     private final RestTemplate restTemplate;
-    @Value("${sup.default.param.url}")
-    private String supUrl;
 
     @Autowired
     public ParameterSenderImpl(RestTemplate restTemplate) {
@@ -39,7 +37,7 @@ public class ParameterSenderImpl implements ParameterSender {
         }
         HttpEntity<ListSupParameterDto> request = new HttpEntity<>(listToSend);
         try {
-            restTemplate.postForObject(supUrl, request, ListSupParameterDto.class);
+            restTemplate.postForObject(ParameterService.getSupDefaultParamURL.getValue(), request, ListSupParameterDto.class);
         } catch (ResourceAccessException e) {
             log.debug("Не удалось отправить параметры по умолчанию");
         }
