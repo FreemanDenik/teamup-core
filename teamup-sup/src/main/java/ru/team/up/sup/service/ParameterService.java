@@ -184,33 +184,46 @@ public interface ParameterService {
     SupParameter<Boolean> getInterestsUserByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_RETUTN_INTEREST_USERS_BY_ID",
             true);
- SupParameter<Boolean> getEnabled = new SupParameter<>(
+    SupParameter<Boolean> getEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_RETUTN_ALL_MODULE_PARAMETERS",
             true);
- SupParameter<Boolean> getUserByEmailEnabled = new SupParameter<>(
+    SupParameter<Boolean> getUserByEmailEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_USER_BY_EMAIL",
             true);
- SupParameter<Boolean> getUserByUsernameEnabled = new SupParameter<>(
+    SupParameter<Boolean> getUserByUsernameEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_USER_BY_USERNAME",
             true);
- SupParameter<Boolean> getUsersListEnabled = new SupParameter<>(
+    SupParameter<Boolean> getUsersListEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_ALL_USERS",
             true);
- SupParameter<Boolean> getEventsByOwnerIdEnabled = new SupParameter<>(
+    SupParameter<Boolean> getEventsByOwnerIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_EVENTS_BY_ID_USERS",
             true);
- SupParameter<Boolean> getEventsBySubscriberIdEnabled = new SupParameter<>(
+    SupParameter<Boolean> getEventsBySubscriberIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_EVENTS_BY_SUBSCRIBER_ID_USER",
             true);
- SupParameter<Boolean> getUpdateUserEnabled = new SupParameter<>(
+    SupParameter<Boolean> getUpdateUserEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_UPDATE_USER",
             true);
- SupParameter<Boolean> getDeleteUserByIdEnabled = new SupParameter<>(
+    SupParameter<Boolean> getDeleteUserByIdEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_DELETE_USER",
             true);
- SupParameter<Boolean> getTopUsersListInCityEnabled = new SupParameter<>(
+    SupParameter<Boolean> getTopUsersListInCityEnabled = new SupParameter<>(
             "TEAMUP_CORE_COUNT_TOP_USERS_IN_CITY",
             true);
+    SupParameter<Integer> getModeratorDisconnectTimeout = new SupParameter<>(
+            "TEAMUP_CORE_MODERATOR_DISCONNECT_TIMEOUT",
+            30);
+    SupParameter<Integer> getModeratorEventLimitation = new SupParameter<>(
+            "TEAMUP_CORE_MODERATOR_EVENT_LIMITATION",
+            3);
+    SupParameter<String> getSupDefaultParamURL = new SupParameter<>(
+            "TEAMUP_CORE_DEFAULT_PARAM_URL",
+            "http://localhost:8083/public/api/update/TEAMUP_CORE/");
+    SupParameter<String> getNotificationUriHost = new SupParameter<>(
+            "TEAMUP_CORE_NOTIFICATION_URI_HOST",
+            "http://localhost:8085"
+    );
 
     /**
      * Получение листа текущих параметров из кэша

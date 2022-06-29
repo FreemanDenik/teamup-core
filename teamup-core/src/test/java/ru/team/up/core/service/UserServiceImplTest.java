@@ -14,7 +14,6 @@ import ru.team.up.core.entity.Role;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.exception.UserNotFoundIDException;
 import ru.team.up.core.repositories.UserRepository;
-import ru.team.up.dto.NotifyDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

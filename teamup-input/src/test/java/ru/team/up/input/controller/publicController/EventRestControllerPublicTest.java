@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import ru.team.up.core.entity.*;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.core.service.UserService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.dto.ReportDto;
 import ru.team.up.input.exception.EventCheckException;
@@ -45,10 +46,13 @@ class EventRestControllerPublicTest {
     @Mock
     private MonitorProducerService monitoringProducerService;
 
+    @Mock
+    private UserService userService;
+
     @Spy
     @InjectMocks
     private EventRestControllerPublic eventRestControllerPublic =
-            new EventRestControllerPublic(eventServiceRest, wordMatcher, monitoringProducerService);
+            new EventRestControllerPublic(eventServiceRest, wordMatcher, userService, monitoringProducerService);
 
     private List<Event> events;
     private JoinRequest joinRequest;
