@@ -6,19 +6,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.reactive.function.client.WebClient;
+import ru.team.up.sup.service.ParameterService;
 
 @Slf4j
 @Configuration
-@PropertySource("classpath:notification.properties")
 public class WebClientConfiguration {
 
-    @Value("${notification.uri.host}")
-    private String notificationUriHost;
-
     @Bean
-    public WebClient webClient(){
-        log.debug("Создаём WebClient для отправки запросов по адресу {}",notificationUriHost);
+    public WebClient webClient() {
+        String notificationUriHost = ParameterService.getNotificationUriHost.getValue();
+
+        log.debug("Создаём WebClient для отправки запросов по адресу {}", notificationUriHost);
         return WebClient.create(notificationUriHost);
     }
-
 }

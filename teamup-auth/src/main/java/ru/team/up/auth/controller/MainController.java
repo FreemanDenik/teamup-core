@@ -17,6 +17,7 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
 import org.springframework.security.core.Authentication;
 import ru.team.up.core.repositories.ModeratorSessionRepository;
+import ru.team.up.sup.service.ParameterService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
@@ -79,6 +80,10 @@ public class MainController {
      */
     @GetMapping(value = "")
     public String printWelcomePage() {
+        if (!ParameterService.printWelcomePageEnabled.getValue()) {
+            log.debug("Метод printWelcomePage выключен параметром printWelcomePageEnabled = false");
+            throw new RuntimeException("Method printWelcomePage is disabled by parameter printWelcomePageEnabled");
+        }
         return "welcome";
     }
 
@@ -87,6 +92,10 @@ public class MainController {
      */
     @GetMapping(value = "/user")
     public String printUserPage(Model model) {
+        if (!ParameterService.printUserPageEnabled.getValue()) {
+            log.debug("Метод printUserPage выключен параметром printUserPageEnabled = false");
+            throw new RuntimeException("Method printUserPage is disabled by parameter printUserPageEnabled");
+        }
         model.addAttribute("loggedUser", getCurrentAccount());
         return "user";
     }
@@ -96,6 +105,10 @@ public class MainController {
      */
     @GetMapping(value = "/admin")
     public String printAdminPage(Model model) {
+        if (!ParameterService.printAdminPageEnabled.getValue()) {
+            log.debug("Метод printAdminPage выключен параметром printAdminPageEnabled = false");
+            throw new RuntimeException("Method printAdminPage is disabled by parameter printAdminPageEnabled");
+        }
         model.addAttribute("loggedUser", getCurrentAccount());
         return "admin";
     }
@@ -106,6 +119,10 @@ public class MainController {
      */
     @GetMapping(value = "/moderator")
     public String printModeratorPage(Model model) {
+        if (!ParameterService.printModeratorPageEnabled.getValue()) {
+            log.debug("Метод printModeratorPage выключен параметром printModeratorPageEnabled = false");
+            throw new RuntimeException("Method printModeratorPage is disabled by parameter printModeratorPageEnabled");
+        }
         model.addAttribute("loggedUser", getCurrentAccount());
         return "moderator";
     }
@@ -118,6 +135,10 @@ public class MainController {
      */
     @GetMapping(value = "/registration")
     public String printRegistrationPage(Model model) {
+        if (!ParameterService.printRegistrationPageEnabled.getValue()) {
+            log.debug("Метод printRegistrationPage выключен параметром printRegistrationPageEnabled = false");
+            throw new RuntimeException("Method printRegistrationPage is disabled by parameter printRegistrationPageEnabled");
+        }
         model.addAttribute("user", new User());
         return "registration";
     }
@@ -156,7 +177,10 @@ public class MainController {
      */
     @GetMapping(value = "/authority")
     public String chooseRole() {
-
+        if (!ParameterService.chooseRoleEnabled.getValue()) {
+            log.debug("Метод chooseRole выключен параметром chooseRoleEnabled = false");
+            throw new RuntimeException("Method chooseRole is disabled by parameter chooseRoleEnabled");
+        }
         String role = getCurrentAccount().getAuthorities()
                 .stream()
                 .map(a -> a.getAuthority())
@@ -187,6 +211,10 @@ public class MainController {
      */
     @GetMapping(value = "/oauth2reg")
     public String user(Model model, Authentication authentication) {
+        if (!ParameterService.oauth2regUserEnabled.getValue()) {
+            log.debug("Метод user выключен параметром oauth2regUserEnabled = false");
+            throw new RuntimeException("Method user is disabled by parameter oauth2regUserEnabled");
+        }
 
         DefaultOidcUser principal = (DefaultOidcUser) authentication.getPrincipal();
         User user = new User();

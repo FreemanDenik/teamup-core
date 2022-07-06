@@ -11,15 +11,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.support.ClientResponseWrapper;
 import reactor.core.Disposable;
-import reactor.core.publisher.Flux;
 import ru.team.up.dto.NotifyDto;
-
-import java.net.http.HttpResponse;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @Slf4j
 @RunWith(MockitoJUnitRunner.class)

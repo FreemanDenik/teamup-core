@@ -12,7 +12,6 @@ import ru.team.up.core.entity.*;
 import ru.team.up.core.repositories.EventReviewRepository;
 import ru.team.up.core.repositories.StatusRepository;
 import ru.team.up.core.repositories.UserMessageRepository;
-import ru.team.up.dto.NotifyDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

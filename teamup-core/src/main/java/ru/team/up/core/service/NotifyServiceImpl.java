@@ -8,8 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import ru.team.up.dto.NotifyDto;
 
-import java.util.List;
-
 /**
  * Author Nail Faizullin, Dmitry Koryanov
  * сервис-класс для отправки уведомлений
