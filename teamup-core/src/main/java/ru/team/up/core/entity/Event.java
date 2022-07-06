@@ -57,6 +57,12 @@ public class Event {
     private String placeEvent;
 
     /**
+     * Изображения мероприятия
+     */
+    @OneToOne(fetch = FetchType.EAGER)
+    private Image image;
+
+    /**
      * Город проведения мероприятия
      */
     @Column(name = "CITY_EVENT", nullable = false)
