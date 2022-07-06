@@ -3,7 +3,6 @@ package ru.team.up.sup.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import ru.team.up.dto.AppModuleNameDto;
 import ru.team.up.dto.ListSupParameterDto;
@@ -39,6 +38,7 @@ public class ParameterServiceImp implements ParameterService {
             printUserPageEnabled,
             getEventByIdEnabled,
             getUserByIdEnabled,
+            countReturnCity,
             getCityByNameEnabled,
             getCityByNameInSubjectEnabled,
             getAllCitiesEnabled,
@@ -65,32 +65,7 @@ public class ParameterServiceImp implements ParameterService {
             getUpdateUserEnabled,
             getDeleteUserByIdEnabled,
             getTopUsersListInCityEnabled,
-            countReturnCity,
-            createEventEnabled,
-            updateNumberOfParticipantsEnabled,
-            getOneEventEnabled,
-            updateEventEnabled,
-            deleteAdminEnabled,
-            sendApplicationEnabled,
-            getAllApplicationsByEventIdEnabled,
-            getAllApplicationsByUserIdEnabled,
-            getAllUsersEnabled,
-            createUserEnabled,
-            getUserByIdPrivateEnabled,
-            updateUserEnabled,
-            getAllModeratorsEnabled,
-            createModeratorEnabled,
-            getOneModeratorEnabled,
-            updateModeratorEnabled,
-            deleteModeratorEnabled,
-            getAssignedEventsOfModeratorEnabled,
-            sendEmailUserMessageEnabled,
-            getAllAdminsEnabled,
-            createAdminEnabled,
-            getOneAdminEnabled,
-            updateAdminEnabled,
-            deleteAdminFromAdminControllerEnabled,
-            getAllEventsEnabled);
+            getSupDefaultParamURL);
 
     @PostConstruct
     private void init() {
@@ -123,7 +98,7 @@ public class ParameterServiceImp implements ParameterService {
                     .parameterName(parameter.getName())
                     .systemName(AppModuleNameDto.TEAMUP_CORE)
                     .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterType.getParameterType(parameter.getValue().getClass().getSimpleName()))
+                    .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                     .build();
             parameterDao.add(dto);
             defaultList.addParameter(dto);
