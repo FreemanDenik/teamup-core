@@ -58,9 +58,14 @@
 <!--            <artifactId>teamup-external-impl</artifactId>-->
 <!--            <version>${project.version}</version>-->
 <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>ru.team.up</groupId>-->
+<!--            <artifactId>teamup-external-api</artifactId>-->
+<!--            <version>${project.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>ru.team.up</groupId>
-            <artifactId>teamup-external-api</artifactId>
+            <artifactId>teamup-external-new</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

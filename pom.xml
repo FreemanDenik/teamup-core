@@ -30,6 +30,7 @@
         <module>teamup-moderator</module>
         <module>teamup-monitoring</module>
         <module>teamup-websocket</module>
+        <module>teamup-external-new</module>
     </modules>
 
     <dependencyManagement>
