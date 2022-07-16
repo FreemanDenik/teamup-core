@@ -29,7 +29,7 @@ public class ImageController {
      * @param image Изображение добавляемое в аккаунт
      * @return Результат работы метода imageService.saveImageForAccount(image) в теле ResponseEntity
      */
-    @PostMapping("/{email}")
+    @PostMapping("/account/{email}")
     @Operation(summary = "Добавление изображения аккаунта")
     public ResponseEntity<Image> createImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
         log.debug("Старт метода saveImageForAccount");
@@ -50,7 +50,7 @@ public class ImageController {
      * @param image Изображение добавляемое в аккаунт
      * @return Результат работы метода imageService.updateImageForAccount(image) в теле ResponseEntity
      */
-    @PutMapping("/{email}")
+    @PutMapping("/account/{email}")
     @Operation(summary = "Обновление изображения аккаунта")
     public ResponseEntity<Image> updateImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
         log.debug("Старт метода updateImageForAccount");
@@ -71,7 +71,7 @@ public class ImageController {
      * @param image Изображение добавляемое в аккаунт
      * @return Результат работы метода imageService.saveImageForEvent(image) в теле ResponseEntity
      */
-    @PostMapping("/{eventId}")
+    @PostMapping("/event/{eventId}")
     @Operation(summary = "Добавление изображения мероприятия")
     public ResponseEntity<Image> saveImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
         log.debug("Старт метода добавления изображения для мероприятия");
@@ -90,7 +90,7 @@ public class ImageController {
      * @param image Изображение добавляемое в аккаунт
      * @return Результат работы метода imageService.saveImageForAccount(image) в теле ResponseEntity
      */
-    @PutMapping("/{eventId}")
+    @PutMapping("/event/{eventId}")
     @Operation(summary = "Обновление изображения мероприятия")
     public ResponseEntity<Image> updateImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
         log.debug("Старт метода обновления изображения для мероприятия");
