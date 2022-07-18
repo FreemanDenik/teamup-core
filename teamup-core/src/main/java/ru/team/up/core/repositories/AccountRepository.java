@@ -7,6 +7,7 @@ import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Role;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
@@ -14,4 +15,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByEmail(String email);
 
     List<Account> findAllByRole(Role role);
+
+    @Query("FROM Account WHERE username LIKE %?1%")
+    Account findByUserName (String userName);
+
+
+
+
 }
