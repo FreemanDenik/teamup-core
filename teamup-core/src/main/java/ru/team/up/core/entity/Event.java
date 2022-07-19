@@ -104,7 +104,7 @@ public class Event {
      * Количество просмотров мероприятия
      */
     @Value("1")
-    @Column(name = "COUNT_VIEW_EVENT")
+    @Column(name = "COUNT_VIEW_EVENT", nullable = false)
     private Integer countViewEvent;
 
     /**

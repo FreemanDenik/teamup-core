@@ -41,6 +41,8 @@ public interface EventService {
 
     void updateNumberOfViews(Long id);
 
+    void incrementCountViewEvent(Long id);
+
     List<Event> getAllEventsBySubscriberId(Long subscriberId);
 
     /**
