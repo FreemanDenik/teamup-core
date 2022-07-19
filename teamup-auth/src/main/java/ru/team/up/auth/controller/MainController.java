@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import ru.team.up.auth.config.CustomOAuth2User;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
@@ -20,6 +21,7 @@ import ru.team.up.core.repositories.ModeratorSessionRepository;
 import ru.team.up.sup.service.ParameterService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.stream.Collectors;
 
 
@@ -46,11 +48,16 @@ public class MainController {
         if (SecurityContextHolder.getContext().getAuthentication().toString().contains("given_name")) {
             email = ((DefaultOidcUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
         } else {
-            email = ((Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Account account = (Account) auth.getPrincipal();
+            email =account.getEmail();
         }
         return (Account) userDetails.loadUserByUsername(email);
     }
-
+    @GetMapping("/login")
+    public String getLoginPage(Model model) {
+        return "login";
+    }
 
     private void autoLogin(String email, String password, HttpServletRequest request) {
         UserDetails user = userDetails.loadUserByUsername(email);
@@ -143,32 +150,6 @@ public class MainController {
         return "registration";
     }
 
-    /**
-     * Метод для сохранения регистрации пользователя
-     *
-     * @param model - сущность для обмена информацией между методом и html.
-     * @param user  - юзер, желающий зарегистрироваться.
-     * @return В случае успешной регистрации нового пользователя автоматический вход в защищеную область в соотвествии
-     * с максимальной ролью пользователя,
-     * в ином случае - registration.html
-     */
-    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос уже обрабатывается в AuthController
-//    @PostMapping(value = "/registration")
-//    public String registrationNewUser(@ModelAttribute User user, Model model, HttpServletRequest request, BindingResult result) {
-//        String password = user.getPassword();
-//
-//        if(userServiceAuth.checkLogin(user.getUsername())) {
-//            ObjectError error = new ObjectError("login", "Такой никнейм уже занят");
-//            result.addError(error);
-//        }
-//        if (result.hasErrors()) {
-//            return "/registration";
-//        }
-//        userServiceAuth.saveUser(user);
-//        autoLogin(user.getEmail(), password, request);
-//        return "redirect:/authority";
-//    }
-
 
     /**
      * Метод для определения защищеной области для входа зарегистрированного пользоватлея
@@ -196,11 +177,6 @@ public class MainController {
         }
     }
 
-    //TODO Аргунов М.С. Не забыть удалить, так как данный запрос не нужен
-//    @GetMapping(value = "/login")
-//    public String loginPage(Model model) {
-//        return "login";
-//    }
 
     /**
      * Метод для подстановки в поля формы регистрации данных полученных от сервера аутентификции (Google)
@@ -216,11 +192,11 @@ public class MainController {
             throw new RuntimeException("Method user is disabled by parameter oauth2regUserEnabled");
         }
 
-        DefaultOidcUser principal = (DefaultOidcUser) authentication.getPrincipal();
+        CustomOAuth2User principal = (CustomOAuth2User) authentication.getPrincipal();
         User user = new User();
         user.setEmail(principal.getEmail());
-        user.setFirstName(principal.getGivenName());
-        user.setLastName(principal.getFamilyName());
+        user.setFirstName(principal.getName());
+        user.setLastName(principal.getlastName());
 
 
         model.addAttribute("user", user);
