@@ -1,8 +1,10 @@
 package ru.team.up.auth.controller.authController;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.security.core.context.SecurityContextHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import ru.team.up.sup.service.ParameterService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,19 +38,21 @@ public class AuthController {
     private MonitorProducerService monitorProducerService;
 
     @PostMapping("/registration")
-    public AuthResponse registration(@RequestBody RegistrationRequest registrationRequest) {
+    public AuthResponse registration(UserDto userDto , String password, String birthday) {
         if (!ParameterService.registrationEnabled.getValue()) {
             log.debug("Метод registration выключен параметром registrationEnabled = false");
             throw new RuntimeException("Method registration is disabled by parameter registrationEnabled");
         }
-        UserDto userDto = registrationRequest.getUserDto();
+//        UserDto userDto = registrationRequest.getUserDto();
         User user = UserMapper.INSTANCE.mapUserFromDto(userDto);
-        user.setPassword(BCrypt.hashpw(registrationRequest.getPassword(), BCrypt.gensalt(10)));
+        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt(10)));
         user.setRole(Role.ROLE_USER);
         user.setAccountCreatedTime(LocalDate.now());
         user.setLastAccountActivity(LocalDateTime.now());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        user.setBirthday(LocalDate.parse(birthday, formatter));
 
-        Account newUser = userService.saveUser(user);
+        UserDetails newUser = userService.saveUser(user);
 
         String token = jwtProvider.generateToken(user.getEmail());
 
@@ -65,6 +70,7 @@ public class AuthController {
                         monitoringParameters)
         );
         return AuthResponse.builder().token(token).userDto(UserMapper.INSTANCE.mapUserToDto((User) newUser)).build();
+
     }
 
     @PostMapping("/login")
