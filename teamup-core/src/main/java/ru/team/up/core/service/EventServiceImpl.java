@@ -274,11 +274,20 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public void updateNumberOfViews(Long id) {
 
-        log.debug("Обновляем количество просмотров мероприятия {} по ID", id);
+        log.debug("Обновляем количество участников мероприятия {} по ID", id);
         eventRepository.updateNumberOfViews(id);
-        log.debug("Обновили количество просмотров мероприятия {} по ID", id);
+        log.debug("Обновили количество участников мероприятия {} по ID", id);
     }
 
+
+    @Override
+    @Transactional
+    public void incrementCountViewEvent(Long id) {
+
+        log.debug("Увеличиваем количество просмотров мероприятия на 1 {} по ID", id);
+        eventRepository.incrementCountViewEvent(id);
+        log.debug("Увеличили количество просмотров мероприятия на 1 {} по ID", id);
+    }
     /**
      * @param subscriberId Id пользователя
      * @return Поиск мероприятий на которые подписан пользователь

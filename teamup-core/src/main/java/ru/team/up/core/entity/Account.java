@@ -74,7 +74,7 @@ public class Account implements UserDetails {
     /**
      * Пароль
      */
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(name = "PASSWORD")
     private String password;
 
     /**

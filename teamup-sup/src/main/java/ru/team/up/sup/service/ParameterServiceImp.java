@@ -67,6 +67,9 @@ public class ParameterServiceImp implements ParameterService {
             getTopUsersListInCityEnabled,
             getSupDefaultParamURL);
 
+    /**
+     * метод  для инициализации методов аннотацией  @PostConstruct
+     */
     @PostConstruct
     private void init() {
         createDefaultParamFile();
@@ -74,6 +77,9 @@ public class ParameterServiceImp implements ParameterService {
         kafkaSupService.getAllModuleParameters();
     }
 
+    /**
+     * метод  для получения всех параметров
+     */
     @Override
     public List<SupParameterDto<?>> getAll() {
         return parameterDao.findAll();
@@ -84,24 +90,24 @@ public class ParameterServiceImp implements ParameterService {
         return parameterDao.findByName(name);
     }
 
+    /**
+     * метод  для добавления параметры в дао и обновления статических полей параметра
+     */
     @Override
     public void addParam(SupParameterDto<?> parameter) {
         parameterDao.add(parameter);
         updateStaticField(parameter);
     }
 
+    /**
+     * метод  для создания дефаулт параметр файла
+     */
     private void createDefaultParamFile() {
         ListSupParameterDto defaultList = new ListSupParameterDto();
         ObjectMapper mapper = new ObjectMapper();
         for (SupParameter<?> parameter : parameterSet) {
-            SupParameterDto<?> dto = SupParameterDto.builder()
-                    .parameterName(parameter.getName())
-                    .systemName(AppModuleNameDto.TEAMUP_CORE)
-                    .parameterValue(parameter.getValue())
-                    .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
-                    .build();
-            parameterDao.add(dto);
-            defaultList.addParameter(dto);
+            parameterDao.add(createSupParameterDto(parameter));
+            defaultList.addParameter(createSupParameterDto(parameter));
         }
         try {
             mapper.writeValue(new File("./Parameters.json"), defaultList);
@@ -110,6 +116,23 @@ public class ParameterServiceImp implements ParameterService {
         }
     }
 
+    /**
+     * метод возращающий dto необходимый для создания дефаулт параметр файла
+     */
+    private SupParameterDto<?> createSupParameterDto(SupParameter<?> parameter) {
+        return SupParameterDto.builder()
+                .parameterName(parameter.getName())
+                .systemName(AppModuleNameDto.TEAMUP_CORE)
+                .parameterValue(parameter.getValue())
+                .isList(parameter.getIsList())
+                .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
+                .build();
+
+    }
+
+    /**
+     * метод для обновления статических полей
+     */
     private void updateStaticField(SupParameterDto<?> newParam) {
         for (SupParameter oldParam : parameterSet) {
             if (newParam.getParameterName().equals(oldParam.getName())) {

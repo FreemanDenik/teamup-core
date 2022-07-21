@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.team.up.auth.config.SuccessHandler;
 import ru.team.up.auth.config.jwt.JwtProvider;
 import ru.team.up.core.entity.*;
@@ -71,16 +68,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
+    public AuthResponse login( @RequestParam Map<String, String> request ) {
         if (!ParameterService.loginEnabled.getValue()) {
             log.debug("Метод login выключен параметром loginEnabled = false");
             throw new RuntimeException("Method login is disabled by parameter loginEnabled");
         }
         String token = null;
         UserDto userDto = null;
-        Account account = (Account) userDetailsService.loadUserByUsername(request.getUsername());
+        Account account = (Account) userDetailsService.loadUserByUsername(request.get("auth_email"));
         if (Objects.nonNull(account)) {
-            if (passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+            if (passwordEncoder.matches(request.get("auth_password"), account.getPassword())) {
                 token = jwtProvider.generateToken(account.getEmail());
                 if (account instanceof User) {
                     userDto = UserMapper.INSTANCE.mapUserToDto((User) account);

@@ -340,4 +340,47 @@ public class EventController {
 
         return responseEntity;
     }
+
+    /**
+     * @param id Значение ID мероприятия
+     * @return Результат работы метода eventService.incrementCountViewEvent(id)
+     * в виде объекта ResponseEntity со статусом OK
+     */
+    @Operation(
+            summary = "Увеличение количества просмотров мероприятия на 1"
+    )
+    @ApiResponse(responseCode = "202", description = "Количество просмотров мероприятитя увеличено на 1", content = {
+            @Content(mediaType = "application/json", schema = @Schema(implementation = EventDto.class))
+    })
+    @GetMapping("countEvent/{id}")
+    public ResponseEntity<EventDto> incrementCountViewEvent(@PathVariable Long id) {
+        log.debug("Старт метода ResponseEntity<Event> incrementCountViewEvent(@PathVariable Long id) с параметром {}", id);
+
+        Event event = eventService.getOneEvent(id);
+        eventService.incrementCountViewEvent(id);
+        ResponseEntity<EventDto> responseEntity = new ResponseEntity<>(
+                EventMapper.INSTANCE.mapEventToDto(eventService.getOneEvent(id)), HttpStatus.ACCEPTED);
+        log.debug("Сформирован ответ {}", responseEntity);
+
+        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+
+        ParametersDto eventId = ParametersDto.builder()
+                .description("Id мероприятия ")
+                .value(event.getId())
+                .build();
+
+        ParametersDto eventName = ParametersDto.builder()
+                .description("Название мероприятия ")
+                .value(event.getEventName())
+                .build();
+
+        monitoringParameters.put("Id мероприятия ", eventId);
+        monitoringParameters.put("Название мероприятия ", eventName);
+        monitoringProducerService.send(
+                monitoringProducerService.constructReportDto(
+                        SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
+                        this.getClass(), monitoringParameters));
+        return responseEntity;
+    }
+
 }
