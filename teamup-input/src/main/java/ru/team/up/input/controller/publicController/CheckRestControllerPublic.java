@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.City;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
+import ru.team.up.core.repositories.AccountRepository;
+import ru.team.up.core.service.AccountService;
 import ru.team.up.core.service.CityService;
 import ru.team.up.dto.ControlDto;
 import ru.team.up.dto.ParametersDto;
@@ -36,6 +38,10 @@ public class CheckRestControllerPublic {
     private CityService cityService;
     private UserServiceRest userService;
     private MonitorProducerService monitorProducerService;
+    private AccountService accountService;
+
+    public CheckRestControllerPublic(CityService cityService, UserServiceRest userService, MonitorProducerService monitorProducerService) {
+    }
 
     @Operation(summary = "Поиск города по названию")
     @GetMapping("/city/one/{name}")
@@ -189,13 +195,13 @@ public class CheckRestControllerPublic {
             log.debug("Метод isAvailableUsername выключен параметром getEventByIdEnabled = false");
             throw new RuntimeException("Method isAvailableUsername is disabled by parameter isAvailableUsernameEnabled");
         }
-
-        Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByUsername(username));
+        Optional<Account> optionalUser = accountService.findByUserName(username);
 
         return optionalUser
                 .map(user -> {
                     log.debug("Username {} занят другим пользователем, значение недоступно", username);
-                    return new ResponseEntity<>("Username (" + username + ") IS NOT available", HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity<>("Username (" + username + ") IS NOT available"
+                            , HttpStatus.FOUND);
                 })
                 .orElseGet(() -> {
                     log.debug("Значение username {} доступно", username);
@@ -213,7 +219,8 @@ public class CheckRestControllerPublic {
                                     ControlDto.MANUAL,
                                     this.getClass(),
                                     monitoringParameters)
-                    );
+                );
+
                     return new ResponseEntity<>("Username (" + username + ") is available", HttpStatus.OK);
                 });
     }
@@ -227,12 +234,12 @@ public class CheckRestControllerPublic {
             throw new RuntimeException("Method isAvailableEmail is disabled by parameter getIsAvailableEmailEnabled");
         }
 
-        Optional<Account> optionalUser = Optional.ofNullable(userService.getUserByEmail(email));
+        Optional<Account> optionalUser = accountService.getUserByEmail(email);
 
         return optionalUser
                 .map(user -> {
                     log.debug("Email {} занят другим пользователем, значение недоступно", email);
-                    return new ResponseEntity<>("Email (" + email + ") IS NOT available", HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity<>("Email (" + email + ") IS NOT available", HttpStatus.FOUND);
                 })
                 .orElseGet(() -> {
                     log.debug("Значение email {} доступно", email);

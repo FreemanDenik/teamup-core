@@ -15,6 +15,7 @@ public interface UserRepository extends AccountRepository {
 
     User findByEmail(String email);
 
+
     User findByUsername(String username);
 
     List<User> findAllUsersByRole(Role role);

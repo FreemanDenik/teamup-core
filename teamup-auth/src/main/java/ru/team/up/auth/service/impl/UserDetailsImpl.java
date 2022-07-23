@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service ("userDetailsImpl")
 @Slf4j
 public class UserDetailsImpl implements UserDetailsService {
     private final AccountRepository accountRepository;
