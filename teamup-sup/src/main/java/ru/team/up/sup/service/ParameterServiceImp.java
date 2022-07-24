@@ -124,7 +124,7 @@ public class ParameterServiceImp implements ParameterService {
                 .parameterName(parameter.getName())
                 .systemName(AppModuleNameDto.TEAMUP_CORE)
                 .parameterValue(parameter.getValue())
-                .isList(parameter.getIsList())
+                //.isList(parameter.getIsList())
                 .parameterType(SupParameterType.valueOf(parameter.getValue().getClass().getSimpleName().toUpperCase()))
                 .build();
 
