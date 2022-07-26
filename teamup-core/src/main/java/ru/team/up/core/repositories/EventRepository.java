@@ -31,12 +31,15 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     List<Event> findAllByCity(String city);
 
+    @Query(value = "SELECT * FROM Event e WHERE e.city_event = :city ORDER BY e.city_event LIMIT :limit", nativeQuery = true)
+    List<Event> findAllByCityByLimit(@Param("city") String city, @Param("limit") int limit);
+
     @Query("FROM Event e join e.participantsEvent p where p.id = :subscriberId")
     List<Event> getAllEventsBySubscriberId(@Param("subscriberId") Long subscriberId);
 
-    @Query(value = "select uae.user_id " +
-            "from event e inner join user_account_event uae on e.id = uae.event_id " +
-            "where e.id = ?1", nativeQuery = true)
+    @Query(value = "SELECT uae.user_id " +
+            "FROM event e INNER JOIN user_account_event uae ON e.id = uae.event_id " +
+            "WHERE e.id = ?1", nativeQuery = true)
     List<Long> getEventUserIds(Long eventId);
 
     List<Event> findByTimeEventBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);

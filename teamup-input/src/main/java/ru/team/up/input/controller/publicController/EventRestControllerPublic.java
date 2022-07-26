@@ -159,6 +159,21 @@ public class EventRestControllerPublic {
     }
 
     /**
+     * Метод поиска мероприятий по городу с лимитом
+     *
+     * @param city название города
+     * @param limit лимит на отображение
+     * @return список мероприятий в городе учитывая лимит
+     */
+    @Operation(summary = "Поиск мероприятий по city с limit")
+    @GetMapping(value = "/city/{city}/{limit}")
+    public EventDtoListResponse getAllEventByCityByLimit(@PathVariable String city, @PathVariable int limit) {
+        return EventDtoListResponse.builder().eventDtoList(
+                        EventMapper.INSTANCE.mapDtoEventToEvent(eventServiceRest.getAllEventsByCityByLimit(city, limit)))
+                .build();
+    }
+
+    /**
      * Метод получения мероприятий по названию
      *
      * @param eventName Название мероприятия

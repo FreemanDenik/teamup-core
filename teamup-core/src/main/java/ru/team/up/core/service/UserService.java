@@ -25,4 +25,6 @@ public interface UserService {
     Optional<User> findByUsername(String username);
 
     List<User> getTopUsersInCity(String city);
+
+    List<User> getAllUsersByCityByLimit(String city, int limit);
 }

@@ -199,6 +199,17 @@ class EventRestControllerPublicTest {
     }
 
     @Test
+    void getAllEventsByCityByLimit() {
+        when(eventServiceRest.getAllEventsByCityByLimit("Санкт-Петербург", 1)).thenReturn(events);
+        // не тестировал
+        assertEquals(2, eventRestControllerPublic.getAllEventByCityByLimit("Санкт-Петербург", 1).getEventDtoList().size());
+        // не тестировал
+        assertNotEquals(5, eventRestControllerPublic.getAllEventByCityByLimit("Санкт-Петербург", 1).getEventDtoList().size());
+        // не тестировал
+        assertNotEquals(2, eventRestControllerPublic.getAllEventByCityByLimit("Санкт-Петербург", 1).getEventDtoList().size());
+    }
+
+    @Test
     void findEventsByName() {
         when(eventServiceRest.getEventByName("Event")).thenReturn(events);
         // OK

@@ -200,6 +200,17 @@ class UserRestControllerPublicTest {
         assertEquals(1, userRestControllerPublic.getTopUsersListInCity("Сочи").getUserDtoList().size());
         // Not OK
         assertEquals(0, userRestControllerPublic.getTopUsersListInCity("Москва").getUserDtoList().size());
+    }
 
+    @Test
+    void getAllUsersByCityByLimit() {
+        when(userServiceRest.getAllUsersByCityByLimit("Санкт-Петербург", 1)).thenReturn(userList);
+//      не тестировал
+        assertEquals(0, userRestControllerPublic.getAllUsersByCityByLimit("Санкт-Петербург", 1).getUserDtoList().size());
+        userList.add(testUser);
+//      не тестировал
+        assertEquals(1, userRestControllerPublic.getAllUsersByCityByLimit("Санкт-Петербург", 1).getUserDtoList().size());
+//      не тестировал
+        assertEquals(0, userRestControllerPublic.getAllUsersByCityByLimit("Санкт-Петербург", 1).getUserDtoList().size());
     }
 }

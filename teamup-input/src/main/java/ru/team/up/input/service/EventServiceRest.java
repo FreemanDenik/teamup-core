@@ -98,4 +98,11 @@ public interface EventServiceRest {
      * @return Получение всех мероприятий в городе
      */
     List<Event> getAllEventsByCity(String city);
+
+    /**
+     * @param city город проведения мероприятий
+     * @param limit лимит на отображение
+     * @return Получение всех мероприятий в городе с лимитом отображение на страницу
+     */
+    List<Event> getAllEventsByCityByLimit(String city, int limit);
 }

@@ -89,4 +89,13 @@ public interface UserServiceRest {
      * @return Список "Топ популярных пользователей в городе"
      */
     List<User> getTopUsersInCity(String city);
+
+    /**
+     * Метод поиска пользователя по городам с лимитом
+     *
+     * @param city название города
+     * @param limit ограничение на количество отображения
+     * @return Список "Пользователей по городам с лимитом"
+     */
+    List<User> getAllUsersByCityByLimit(String city, int limit);
 }
