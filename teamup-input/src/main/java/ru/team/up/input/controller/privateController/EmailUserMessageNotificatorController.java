@@ -10,11 +10,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.EmailUserMessageNotificatorService;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
-import ru.team.up.core.monitoring.service.MonitorProducerServiceImpl;
-import ru.team.up.core.service.EmailUserMessageNotificatorService;
 import ru.team.up.dto.ControlDto;
-import javax.security.sasl.SaslClient;
+
 import java.util.HashMap;
 import ru.team.up.sup.service.ParameterService;
 
