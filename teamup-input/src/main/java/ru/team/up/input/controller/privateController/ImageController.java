@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Image;
 import ru.team.up.core.service.ImageService;
@@ -24,85 +22,75 @@ import javax.validation.constraints.NotNull;
 public class ImageController {
     private ImageService imageService;
 
-
     /**
      * @param image Изображение добавляемое в аккаунт
-     * @return Результат работы метода imageService.saveImageForAccount(image) в теле ResponseEntity
+     * @return Результат работы метода imageService.saveImageForAccount(image,email)
      */
     @PostMapping("/account/{email}")
     @Operation(summary = "Добавление изображения аккаунта")
-    public ResponseEntity<Image> createImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
+    public Image createImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
         log.debug("Старт метода saveImageForAccount");
-        ResponseEntity<Image>responseEntity;
         try{
             imageService.saveImageForAccount(image,email);
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (PersistenceException e){
             log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+            throw new RuntimeException("Ошибка при сохранении изображения");
         }
-        log.debug("Сформирован ответ {}", responseEntity);
-        return responseEntity;
+        log.debug("Изображение к аккаунту добавлено");
+        return image;
     }
 
     /**
      * @param image Изображение добавляемое в аккаунт
-     * @return Результат работы метода imageService.updateImageForAccount(image) в теле ResponseEntity
+     * @return Результат работы метода imageService.updateImageForAccount(image,email)
      */
     @PutMapping("/account/{email}")
     @Operation(summary = "Обновление изображения аккаунта")
-    public ResponseEntity<Image> updateImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
+    public Image updateImageForAccount(@PathVariable @NotNull String email, @RequestBody Image image) {
         log.debug("Старт метода updateImageForAccount");
-        ResponseEntity<Image>responseEntity;
         try{
             imageService.updateImageForAccount(image,email);
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (PersistenceException e){
             log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
+            throw new RuntimeException("Ошибка при обновлении изображения");
         }
-        log.debug("Сформирован ответ {}", responseEntity);
-        return responseEntity;
+        log.debug("Изображение у аккаунта обновлено");
+        return image;
     }
 
     /**
      * @param image Изображение добавляемое в аккаунт
-     * @return Результат работы метода imageService.saveImageForEvent(image) в теле ResponseEntity
+     * @return Результат работы метода imageService.saveImageForEvent(image,eventId)
      */
     @PostMapping("/event/{eventId}")
     @Operation(summary = "Добавление изображения мероприятия")
-    public ResponseEntity<Image> saveImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
+    public Image saveImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
         log.debug("Старт метода добавления изображения для мероприятия");
-        ResponseEntity<Image>responseEntity;
         try{
             imageService.saveImageForEvent(image,eventId);
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (PersistenceException e){
             log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("Ошибка при добавлении изображения");
         }
-        log.debug("Сформирован ответ {}", responseEntity);
-        return responseEntity;
+        log.debug("Изображение к мероприятию добавлено");
+        return image;
     }
+
     /**
      * @param image Изображение добавляемое в аккаунт
-     * @return Результат работы метода imageService.saveImageForAccount(image) в теле ResponseEntity
+     * @return Результат работы метода imageService.saveImageForAccount(image,eventId)
      */
     @PutMapping("/event/{eventId}")
     @Operation(summary = "Обновление изображения мероприятия")
-    public ResponseEntity<Image> updateImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
+    public Image updateImageForEvent(@PathVariable Long eventId , @RequestBody @NotNull Image image) {
         log.debug("Старт метода обновления изображения для мероприятия");
-        ResponseEntity<Image>responseEntity;
         try{
             imageService.updateImageForEvent(image,eventId);
-            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } catch (PersistenceException e){
             log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("Ошибка при обновлении изображения");
         }
-        log.debug("Сформирован ответ {}", responseEntity);
-        return responseEntity;
+        log.debug("Изображение у мероприятия обновлено");
+        return image;
     }
 }
