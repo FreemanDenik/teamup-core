@@ -97,19 +97,19 @@ public class TeamupInputEventPrivateControllerTests {
     @Test
     public void testCreateEvents() {
         when(eventService.saveEvent(event)).thenReturn(event);
-        Assert.assertEquals(201, eventController.createEvent(event).getStatusCodeValue());
+        Assert.assertEquals(201, eventController.createEvent(event));
     }
     @Test
     public void testCreateEmptyEvents() {
         when(eventService.saveEvent(emptyEvent)).thenThrow(new PersistenceException());
-        Assert.assertEquals(400, eventController.createEvent( emptyEvent).getStatusCodeValue());
+        Assert.assertEquals(400, eventController.createEvent(emptyEvent));
     }
 
     @Ignore
     @Test
     public void testGetOneById() {
         when(eventService.getOneEvent(event.getId())).thenReturn(event);
-        Assert.assertEquals(200, eventController.getOneEvent(event.getId()).getStatusCodeValue());
+        Assert.assertEquals(200, eventController.getOneEvent(event.getId()));
     }
 
     @Ignore
@@ -117,21 +117,21 @@ public class TeamupInputEventPrivateControllerTests {
     public void testGetAllEvents(){
         listEvent.add(event);
         when(eventService.getAllEvents()).thenReturn(listEvent);
-        Assert.assertEquals(200, eventController.getAllEvents().getStatusCodeValue());
+        Assert.assertEquals(200, eventController.getAllEvents());
     }
 
     @Ignore
     @Test
     public void testUpdateEvents() {
         when(eventService.saveEvent(event)).thenReturn(event);
-        Assert.assertEquals(200, eventController.updateEvent(event.getId(), event).getStatusCodeValue());
+        Assert.assertEquals(200, eventController.updateEvent(event.getId(), event));
     }
 
     @Ignore
     @Test
     public void testUpdateEmptyEvents() {
         when(eventService.saveEvent(emptyEvent)).thenThrow(new PersistenceException());
-        Assert.assertEquals(400, eventController.updateEvent(event.getId(), emptyEvent).getStatusCodeValue());
+        Assert.assertEquals(400, eventController.updateEvent(event.getId(), emptyEvent));
     }
     @Test
     public void testDeleteEvents() {
