@@ -113,4 +113,9 @@ public class EventServiceRestImpl implements EventServiceRest {
     public List<Event> getAllEventsByCity(String city) {
         return eventRepository.findAllByCity(city);
     }
+
+    @Override
+    public List<Event> getAllEventsByCityByLimit(String city, int limit) {
+        return eventRepository.findAllByCityByLimit(city, limit);
+    }
 }
