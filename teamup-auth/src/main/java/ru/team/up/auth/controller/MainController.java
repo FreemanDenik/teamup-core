@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import ru.team.up.auth.config.CustomOAuth2User;
+import ru.team.up.auth.models.CustomOAuth2User;
 import ru.team.up.auth.service.impl.UserDetailsImpl;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.User;
@@ -21,7 +21,6 @@ import ru.team.up.core.repositories.ModeratorSessionRepository;
 import ru.team.up.sup.service.ParameterService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.stream.Collectors;
 
 
@@ -196,7 +195,7 @@ public class MainController {
         User user = new User();
         user.setEmail(principal.getEmail());
         user.setFirstName(principal.getName());
-        user.setLastName(principal.getlastName());
+        user.setLastName(principal.getLastName());
 
 
         model.addAttribute("user", user);

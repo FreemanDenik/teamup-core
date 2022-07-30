@@ -30,6 +30,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 import ru.team.up.auth.config.jwt.JwtFilter;
+import ru.team.up.auth.converters.CustomTokenResponseConverter;
+import ru.team.up.auth.service.CustomOAuth2UserService;
 
 import java.util.Arrays;
 import java.util.List;
