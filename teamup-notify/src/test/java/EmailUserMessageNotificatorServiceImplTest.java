@@ -57,8 +57,8 @@ class EmailUserMessageNotificatorServiceImplTest {
     void send() {
         List<UserMessage> userMessageList = new LinkedList<>();
         userMessageList.add(userMessage);
-        Mockito.when(userMessageRepository.findAllByMessageType(UserMessageType.NOT_SENT)).thenReturn(userMessageList);
+        when(userMessageRepository.findAllByMessageType(UserMessageType.NOT_SENT)).thenReturn(userMessageList);
         emailUserMessageNotificatorService.send();
-        Assertions.assertEquals(UserMessageType.SENT , userMessage.getMessageType());
+        assertEquals(UserMessageType.SENT, userMessage.getMessageType());
     }
 }
