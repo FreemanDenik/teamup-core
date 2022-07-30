@@ -1,4 +1,4 @@
-package ru.team.up.core.service;
+package ru;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

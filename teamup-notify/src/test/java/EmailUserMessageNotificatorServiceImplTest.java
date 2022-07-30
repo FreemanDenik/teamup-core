@@ -1,14 +1,16 @@
-package ru.team.up.core.service;
-
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mail.javamail.JavaMailSender;
+import ru.EmailUserMessageNotificatorService;
+import ru.EmailUserMessageNotificatorServiceImpl;
 import ru.team.up.core.entity.Status;
 import ru.team.up.core.entity.User;
 import ru.team.up.core.entity.UserMessage;
@@ -57,6 +59,6 @@ class EmailUserMessageNotificatorServiceImplTest {
         userMessageList.add(userMessage);
         when(userMessageRepository.findAllByMessageType(UserMessageType.NOT_SENT)).thenReturn(userMessageList);
         emailUserMessageNotificatorService.send();
-        assertEquals(UserMessageType.SENT , userMessage.getMessageType());
+        assertEquals(UserMessageType.SENT, userMessage.getMessageType());
     }
 }

@@ -1,4 +1,4 @@
-package ru.team.up.core.service;
+package ru;
 
 
 /**
