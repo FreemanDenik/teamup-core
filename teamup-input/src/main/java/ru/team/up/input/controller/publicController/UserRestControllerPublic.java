@@ -349,4 +349,19 @@ public class UserRestControllerPublic {
                         UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getTopUsersInCity(city)))
                 .build();
     }
+
+    /**
+     * Метод поиска пользователей в городе с указанием лимита
+     *
+     * @param city название города
+     * @param limit ограничение на количество отображения
+     * @return Список UserDto
+     */
+    @Operation(summary = "Получение списка пользователей в городе с указанием лимита")
+    @GetMapping(value = "/{city}/{limit}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDtoListResponse getAllUsersByCityByLimit(@PathVariable String city, @PathVariable int limit) {
+        return UserDtoListResponse.builder().userDtoList(
+                        UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getAllUsersByCityByLimit(city, limit)))
+                .build();
+    }
 }

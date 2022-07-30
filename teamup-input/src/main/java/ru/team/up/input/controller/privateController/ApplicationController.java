@@ -1,16 +1,18 @@
 package ru.team.up.input.controller.privateController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Application;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.User;
+import ru.team.up.core.mappers.ApplicationMapper;
 import ru.team.up.core.service.ApplicationService;
+import ru.team.up.dto.ApplicationDto;
 import ru.team.up.dto.ParametersDto;
 import ru.team.up.sup.service.ParameterService;
 import ru.team.up.core.service.EventService;
@@ -27,6 +29,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("private/application")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@Tag(name = "Application Private Controller", description = "Приватный адрес для работы с заявками")
 public class ApplicationController {
 
     private ApplicationService applicationService;
@@ -34,8 +37,12 @@ public class ApplicationController {
     private EventService eventService;
     private UserService userService;
 
+    /**
+     * @return Результат работы метода getAllApplicationsByEventId в виде коллекции ApplicationDto
+     */
+    @Operation(summary = "Поиск заявок по id мероприятия")
     @GetMapping("/ByEvent/{id}")
-    public ResponseEntity<List<Application>> getAllApplicationsByEventId(@PathVariable Long id) {
+    public List<ApplicationDto> getAllApplicationsByEventId(@PathVariable Long id) {
         if (!ParameterService.getAllApplicationsByEventIdEnabled.getValue()) {
             log.debug("Метод getAllApplicationsByEventId выключен параметром getAllApplicationsByEventIdEnabled = false");
             throw new RuntimeException("Method getAllApplicationsByEventId is disabled by parameter getAllApplicationsByEventIdEnabled");
@@ -45,6 +52,8 @@ public class ApplicationController {
         Event event = eventService.getOneEvent(id);
 
         List<Application> applications = applicationService.getAllApplicationsByEventId(id);
+        List<ApplicationDto> applicationsDtoId =
+                ApplicationMapper.INSTANCE.ApplicationsToDtoList(applications);
 
         Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
@@ -73,11 +82,15 @@ public class ApplicationController {
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
 
-        return ResponseEntity.ok(applications);
+        return applicationsDtoId;
     }
 
+    /**
+     * @return Результат работы метода getAllApplicationsByUserId в виде коллекции ApplicationDto
+     */
+    @Operation(summary = "Поиск заявок по id пользователя")
     @GetMapping("/ByUser/{id}")
-    public ResponseEntity<List<Application>> getAllApplicationsByUserId(@PathVariable Long id) {
+    public List<ApplicationDto> getAllApplicationsByUserId(@PathVariable Long id) {
         if (!ParameterService.getAllApplicationsByUserIdEnabled.getValue()) {
             log.debug("Метод getAllApplicationsByUserId выключен параметром getAllApplicationsByUserIdEnabled = false");
             throw new RuntimeException("Method getAllApplicationsByUserId is disabled by parameter getAllApplicationsByUserIdEnabled");
@@ -87,10 +100,13 @@ public class ApplicationController {
         User user = userService.getOneUser(id).orElse(null);
         if (user == null) {
             log.error("Пользвателя с id {} не существует", id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            throw new RuntimeException("Пользвателя с id не существует");
         }
 
         List<Application> applications = applicationService.getAllApplicationsByUserId(id);
+        List<ApplicationDto> applicationsDtoByUserId =
+                ApplicationMapper.INSTANCE.ApplicationsToDtoList(applications);
+
         Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
         ParametersDto userId = ParametersDto.builder()
@@ -117,11 +133,15 @@ public class ApplicationController {
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
 
-        return ResponseEntity.ok(applications);
+        return applicationsDtoByUserId;
     }
 
+    /**
+     * @return Результат работы метода sendApplication в виде объекта ApplicationDto
+     */
+    @Operation(summary = "Запрос на отправку зявки")
     @PostMapping
-    public ResponseEntity<Application> sendApplication(@RequestBody RequestWrapper requestWrapper) {
+    public ApplicationDto sendApplication(@RequestBody RequestWrapper requestWrapper) {
         if (!ParameterService.sendApplicationEnabled.getValue()) {
             log.debug("Метод sendApplication выключен параметром sendApplicationEnabled = false");
             throw new RuntimeException("Method sendApplication is disabled by parameter sendApplicationEnabled");
@@ -131,7 +151,9 @@ public class ApplicationController {
 
         log.debug("Запрос на отправку зявки {}", applicationCreate);
 
-        ResponseEntity<Application> responseEntity = new ResponseEntity<>(applicationService.saveApplication(applicationCreate, user), HttpStatus.CREATED);
+        Application application = applicationService.saveApplication(applicationCreate, user);
+        ApplicationDto applicationDto =
+                ApplicationMapper.INSTANCE.ApplicationToDto(application);
 
         Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
@@ -159,6 +181,6 @@ public class ApplicationController {
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
 
-        return responseEntity;
+        return applicationDto;
     }
 }

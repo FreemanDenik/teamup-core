@@ -172,4 +172,17 @@ public class UserServiceImpl implements UserService {
                 limit(10).
                 collect(Collectors.toList());
     }
+
+    /**
+     * @param city наименование города
+     * @param limit ограничение на количество отображения
+     * @return Список "Поиск пользователей по городу с указанием лимита на страницу"
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getAllUsersByCityByLimit(String city, int limit) {
+        return userRepository.findUsersByCity(city).stream().
+                limit(limit).
+                collect(Collectors.toList());
+    }
 }

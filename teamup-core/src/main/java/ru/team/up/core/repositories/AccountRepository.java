@@ -15,7 +15,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByEmail(String email);
 
     List<Account> findAllByRole(Role role);
-
+    boolean existsByEmail(String email);
     @Query("FROM Account WHERE username LIKE %?1%")
     Account findByUserName (String userName);
 

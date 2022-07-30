@@ -80,4 +80,9 @@ public class UserServiceRestImpl implements UserServiceRest {
     public List<User> getTopUsersInCity(String city) {
         return userService.getTopUsersInCity(city);
     }
+
+    @Override
+    public List<User> getAllUsersByCityByLimit(String city, int limit) {
+        return userService.getAllUsersByCityByLimit(city, limit);
+    }
 }

@@ -38,4 +38,7 @@ public class UserDetailsImpl implements UserDetailsService {
             return userDetailsAccount;
         }
     }
+    public boolean existsByEmail(String email){
+        return accountRepository.existsByEmail(email);
+    }
 }
