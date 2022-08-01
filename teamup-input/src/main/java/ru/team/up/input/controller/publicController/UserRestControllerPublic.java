@@ -289,6 +289,7 @@ public class UserRestControllerPublic {
      * @param userId идентификатор пользователя
      * @return Ответ обновления и статус проверки
      */
+    //TODO методы изменения и сохранения юзера не работают
     @Operation(summary = "Изменение пользователя")
     @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Account updateUser(@RequestBody UserRequest user, @PathVariable("id") Long userId) {

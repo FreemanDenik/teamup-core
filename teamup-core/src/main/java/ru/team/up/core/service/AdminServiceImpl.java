@@ -41,7 +41,7 @@ public class AdminServiceImpl implements AdminService {
 
         List<Account> admins = accountRepository.findAllByRole(Role.ROLE_ADMIN);
 
-        if (admins.isEmpty()){
+        if (admins.isEmpty()) {
             throw new NoContentException();
         }
         log.debug("Получили список всех админов из БД {}", admins);
@@ -58,7 +58,6 @@ public class AdminServiceImpl implements AdminService {
     @Transactional(readOnly = true)
     public Account getOneAdmin(Long id) throws UserNotFoundIDException {
         log.debug("Старт метода Admin getOneAdmin(Long id) с параметром {}", id);
-
         Account admin = Optional.of(accountRepository.findById(id).orElseThrow(() -> new UserNotFoundIDException(id))).get();
         log.debug("Получили админа из БД {}", admin);
 
@@ -77,7 +76,6 @@ public class AdminServiceImpl implements AdminService {
         admin.setLastAccountActivity(LocalDateTime.now());
         admin.setPassword(encoder.encode(admin.getPassword()));
         admin.setRole(Role.ROLE_ADMIN);
-
         Account save = accountRepository.save(admin);
         log.debug("Сохранили админа в БД {}", save);
         return save;
@@ -96,7 +94,6 @@ public class AdminServiceImpl implements AdminService {
         } else {
             admin.setPassword(encoder.encode(admin.getPassword()));
         }
-
         accountRepository.save(admin);
         return admin;
     }

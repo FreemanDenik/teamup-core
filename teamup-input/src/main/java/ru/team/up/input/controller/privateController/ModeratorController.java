@@ -12,11 +12,19 @@ import org.springframework.web.bind.annotation.*;
 import ru.team.up.core.entity.Account;
 import ru.team.up.core.entity.Event;
 import ru.team.up.core.entity.Moderator;
+import ru.team.up.core.exception.UserNotFoundIDException;
+import ru.team.up.core.mappers.EventMapper;
+import ru.team.up.core.mappers.ModeratorMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.AssignedEventsService;
 import ru.team.up.core.service.ModeratorService;
 import ru.team.up.dto.ControlDto;
+import ru.team.up.dto.EventDto;
+import ru.team.up.dto.ModeratorDto;
 import ru.team.up.dto.ParametersDto;
+import ru.team.up.input.response.EventDtoListResponse;
+import ru.team.up.input.response.ModeratorDtoListResponse;
+import ru.team.up.input.response.ModeratorDtoResponse;
 import ru.team.up.sup.service.ParameterService;
 
 import javax.validation.constraints.NotNull;
@@ -43,22 +51,20 @@ public class ModeratorController {
     private MonitorProducerService monitorProducerService;
 
     /**
-     * @return Результат работы метода moderatorService.getAllModerators() в виде коллекции модераторов
-     * в теле ResponseEntity
+     * @return Результат работы метода moderatorService.getAllModerators() в виде коллекции модераторов,
+     * возвращаемых в ModeratorDtoListResponse
      */
     @Operation(summary = "Получение списка всех модераторов")
     @GetMapping
-    public ResponseEntity<List<Account>> getAllModerators() {
-        log.debug("Старт метода ResponseEntity<List<Moderator>> getAllModerators()");
+    public ModeratorDtoListResponse getAllModerators() {
+        log.debug("Старт метода List<Moderator> getAllModerators()");
         if (!ParameterService.getAllModeratorsEnabled.getValue()) {
             log.debug("Метод getAllModerators выключен параметром getAllModeratorsEnabled = false");
             throw new RuntimeException("Method getAllModerators is disabled by parameter getAllModeratorsEnabled");
         }
 
-        List<Account> allModerators = moderatorService.getAllModerators();
-
-        ResponseEntity<List<Account>> responseEntity = ResponseEntity.ok(allModerators);
-        log.debug("Получили ответ {}", responseEntity);
+        List<ModeratorDto> allModerators = ModeratorMapper.INSTANCE.mapAccountListToModeratorDtoList(moderatorService.getAllModerators());
+        log.debug("Получили ответ {}", allModerators);
 
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
@@ -75,26 +81,24 @@ public class ModeratorController {
                         this.getClass(),
                         monitoringParameters)
         );
-        return responseEntity;
+        return ModeratorDtoListResponse.builder().moderatorDtoList(allModerators).build();
     }
 
     /**
      * @param id Значение ID модератора
-     * @return Результат работы метода moderatorService.getOneModerator(id) в виде объекта Moderator
-     * в теле ResponseEntity
+     * @return Результат работы метода moderatorService.getOneModerator(id) в виде объекта ModeratorDtoResponse
      */
     @Operation(summary = "Получение модератора по id")
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getOneModerator(@PathVariable Long id) {
-        log.debug("Старт метода ResponseEntity<Moderator> getOneModerator(@PathVariable Long id) с параметром {}", id);
+    public ModeratorDtoResponse getOneModerator(@PathVariable Long id) {
+        log.debug("Старт метода ModeratorDtoResponse getOneModerator(@PathVariable Long id) с параметром {}", id);
         if (!ParameterService.getOneModeratorEnabled.getValue()) {
             log.debug("Метод getOneModerator выключен параметром getOneModeratorEnabled = false");
             throw new RuntimeException("Method getOneModerator is disabled by parameter getOneModeratorEnabled");
         }
 
-        Account moderator = moderatorService.getOneModerator(id);
-        ResponseEntity<Account> responseEntity = ResponseEntity.ok(moderator);
-        log.debug("Получили ответ {}", responseEntity);
+        ModeratorDto moderator = ModeratorMapper.INSTANCE.mapAccountToDto(moderatorService.getOneModerator(id));
+        log.debug("Получили ответ {}");
 
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
@@ -123,25 +127,24 @@ public class ModeratorController {
                         this.getClass(),
                         monitoringParameters)
         );
-        return responseEntity;
+        return ModeratorDtoResponse.builder().moderatorDto(moderator).build();
     }
 
     /**
-     * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта Moderator
-     * в теле ResponseEntity
+     * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта
+     * ModeratorDtoResponse
      */
     @Operation(summary = "Создание нового модератора")
     @PostMapping
-    public ResponseEntity<Account> createModerator(@RequestBody @NotNull Account moderatorCreate) {
-        log.debug("Старт метода ResponseEntity<Moderator> createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
+    public ModeratorDtoResponse createModerator(@RequestBody @NotNull Account moderatorCreate) {
+        log.debug("Старт метода ModeratorDtoResponse createModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderatorCreate);
         if (!ParameterService.createModeratorEnabled.getValue()) {
             log.debug("Метод createModerator выключен параметром createModeratorEnabled = false");
             throw new RuntimeException("Method createModerator is disabled by parameter createModeratorEnabled");
         }
-        ResponseEntity<Account> responseEntity =
-                new ResponseEntity<>(moderatorService.saveModerator(moderatorCreate), HttpStatus.CREATED);
+        ModeratorDto moderatorDto = ModeratorMapper.INSTANCE.mapAccountToDto(moderatorService.saveModerator(moderatorCreate));
 
-        log.debug("Получили ответ {}", responseEntity);
+        log.debug("Получили ответ {}", moderatorDto);
 
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
@@ -170,27 +173,27 @@ public class ModeratorController {
                         this.getClass(),
                         monitoringParameters)
         );
-        return responseEntity;
+        return ModeratorDtoResponse.builder().moderatorDto(moderatorDto).build();
     }
 
     /**
      * @param moderator   Обновляемый объект класса Moderator
      * @param moderatorId id модератора
-     * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта Moderator
-     * в теле ResponseEntity
+     * @return Результат работы метода moderatorService.saveModerator(moderator) в виде объекта
+     * ModeratorDtoResponse
      */
     @Operation(summary = "Обновление данных модератора")
     @PutMapping("/{id}")
-    public ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator, @PathVariable("id") Long moderatorId) {
-        log.debug("Старт метода ResponseEntity<Moderator> updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
+    public ModeratorDtoResponse updateModerator(@RequestBody @NotNull Moderator moderator, @PathVariable("id") Long moderatorId) {
+        log.debug("Старт метода ModeratorDtoResponse updateModerator(@RequestBody @NotNull Moderator moderator) с параметром {}", moderator);
         if (!ParameterService.updateModeratorEnabled.getValue()) {
             log.debug("Метод updateModerator выключен параметром updateModeratorEnabled = false");
             throw new RuntimeException("Method updateModerator is disabled by parameter updateModeratorEnabled");
         }
-        ResponseEntity<Moderator> responseEntity;
+        ModeratorDto moderatorDto;
         if (moderatorService.moderatorIsExistsById(moderatorId) && moderator.getId().equals(moderatorId)) {
-            responseEntity = ResponseEntity.ok(moderatorService.updateModerator(moderator));
-            log.debug("Модератор обновлён {}", responseEntity);
+            moderatorDto = ModeratorMapper.INSTANCE.mapModeratorToDto(moderatorService.updateModerator(moderator));
+            log.debug("Модератор обновлён {}", moderatorDto);
 
             Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
@@ -220,10 +223,9 @@ public class ModeratorController {
                             monitoringParameters)
             );
         } else {
-            responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            log.debug("Неверно указан id");
+           throw new UserNotFoundIDException(moderatorId);
         }
-        return responseEntity;
+        return ModeratorDtoResponse.builder().moderatorDto(moderatorDto).build();
     }
 
     /**
@@ -268,7 +270,7 @@ public class ModeratorController {
      */
     @Operation(summary = "Получение мероприятий на проверке модератора по его id")
     @GetMapping("/{id}/events")
-    public ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id) {
+    public EventDtoListResponse getAssignedEventsOfModerator(@PathVariable Long id) {
         log.debug("Старт метода ResponseEntity<List<Event>> getAssignedEventsOfModerator(@PathVariable Long id)" +
                 " с параметром {}", id);
 
@@ -276,16 +278,14 @@ public class ModeratorController {
             log.debug("Метод getAssignedEventsOfModerator выключен параметром getAssignedEventsOfModeratorEnabled = false");
             throw new RuntimeException("Method getAssignedEventsOfModerator is disabled by parameter getAssignedEventsOfModeratorEnabled");
         }
-
-        List<Event> allEvents = assignedEventsService.getAllEventsByModeratorId(id);
-        ResponseEntity<List<Event>> responseEntity = ResponseEntity.ok(allEvents);
-        log.debug("Получили ответ {}", responseEntity);
+        List<EventDto> eventDtoList = EventMapper.INSTANCE.mapDtoEventToEvent(assignedEventsService.getAllEventsByModeratorId(id));
+        log.debug("Получили ответ {}", eventDtoList);
 
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
         ParametersDto allEventsOfModerator = ParametersDto.builder()
                 .description("Количество мероприятий ")
-                .value(allEvents.size())
+                .value(eventDtoList.size())
                 .build();
         monitoringParameters.put("Количество мероприятий", allEventsOfModerator);
 
@@ -295,6 +295,6 @@ public class ModeratorController {
                         this.getClass(),
                         monitoringParameters)
         );
-        return responseEntity;
+        return EventDtoListResponse.builder().eventDtoList(eventDtoList).build();
     }
 }
