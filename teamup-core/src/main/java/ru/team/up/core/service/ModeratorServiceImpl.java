@@ -60,7 +60,6 @@ public class ModeratorServiceImpl implements ModeratorService {
         Account moderator = Optional.of(accountRepository.findById(id)).get()
                 .orElseThrow(() -> new UserNotFoundIDException(id));
         log.debug("Получили модератора из БД {}", moderator);
-
         return moderator;
     }
 
@@ -93,8 +92,8 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Override
     public Moderator updateModerator(Moderator moderator) {
         log.debug("Старт метода Moderator updateModerator(Moderator moderator) с параметром {}", moderator);
-        // accountRepository достает из базы объект Moderator
         Account old = accountRepository.findById(moderator.getId()).get();
+        log.debug("accountRepository достает из базы объект Moderator");
         moderator.setAccountCreatedTime(old.getAccountCreatedTime());
         moderator.setLastAccountActivity(LocalDateTime.now());
         moderator.setRole(Role.ROLE_MODERATOR);
@@ -125,11 +124,11 @@ public class ModeratorServiceImpl implements ModeratorService {
     @Transactional
     public boolean moderatorIsExistsById(Long id) {
         log.debug("Старт метода boolean moderatorIsExistsById(Long id) с параметром {}", id);
-        boolean exists = accountRepository.existsById (id);
+        boolean exists = accountRepository.existsById(id);
         if (exists) {
-            log.debug ("Модератор с Id {} есть в БД", id);
+            log.debug("Модератор с Id {} есть в БД", id);
         } else {
-            log.debug ("Модератора с Id {} не существует", id);
+            log.debug("Модератора с Id {} не существует", id);
         }
         return exists;
     }

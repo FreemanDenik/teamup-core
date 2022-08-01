@@ -8,6 +8,11 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Oбработчик ответа получения токена
+ *
+ */
 public class CustomTokenResponseConverter implements Converter<Map<String, String>, OAuth2AccessTokenResponse> {
 
     @Override

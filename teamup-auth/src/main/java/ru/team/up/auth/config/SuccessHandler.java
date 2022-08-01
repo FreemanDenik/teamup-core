@@ -45,8 +45,9 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         this.jwtProvider = jwtProvider;
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
-
     }
+
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,

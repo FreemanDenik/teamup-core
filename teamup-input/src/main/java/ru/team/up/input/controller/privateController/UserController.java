@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,8 @@ import ru.team.up.core.mappers.UserMapper;
 import ru.team.up.core.monitoring.service.MonitorProducerService;
 import ru.team.up.core.service.UserService;
 import ru.team.up.dto.*;
+import ru.team.up.input.payload.request.UserRequest;
+import ru.team.up.input.response.UserDtoListResponse;
 import ru.team.up.input.response.UserDtoResponse;
 import ru.team.up.input.service.UserServiceRest;
 import ru.team.up.sup.service.ParameterService;
@@ -43,35 +46,24 @@ import java.util.Map;
 @Tag(name = "User Private Controller", description = "User API")
 @RequestMapping(value = "/private/account/user")
 public class UserController {
-    //TODO По правильному нужно перевести все на UserServiceRest! Это нужно сделать при подкручивании приватных контроллеров
     private UserService userService;
     private UserServiceRest userServiceRest;
     private MonitorProducerService monitoringProducerService;
 
     /**
-     * @return Результат работы метода userService.getAllUsers() в виде коллекции юзеров
-     * в теле ResponseEntity
+     * @return Результат работы метода userService.getAllUsers() в виде UserDtoListResponse
+     * метод сервиса сам генерирует ислючения HttpStatus.NO_CONTENT, если коллекция пуста
      */
-    @GetMapping
+    @GetMapping  //
     @Operation(summary = "Получение списка всех юзеров")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public UserDtoListResponse getAllUsers() {
         if (!ParameterService.getAllUsersEnabled.getValue()) {
             log.debug("Метод getAllUsers выключен параметром getAllUsersEnabled = false");
             throw new RuntimeException("Method getAllUsers is disabled by parameter getAllUsersEnabled");
         }
-        log.debug("Старт метода ResponseEntity<List<User>> getAllUsers()");
-        List<User> users = userService.getAllUsers();
-        ResponseEntity<List<UserDto>> responseEntity;
-        try {
-            responseEntity = ResponseEntity.ok(UserMapper.INSTANCE
-                    .mapUserListToUserDtoList(users));
-        } catch (PersistenceException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        log.debug("Сформирован ответ {}", responseEntity);
-
+        log.debug("Старт метода List<User> getAllUsers()");
+        List<UserDto> users = UserMapper.INSTANCE.mapUserListToUserDtoList(userServiceRest.getAllUsers());
         Map<String, ParametersDto> monitoringParameters = new HashMap<>();
-
         ParametersDto userSize = ParametersDto.builder()
                 .description("Количество всех пользователей ")
                 .value(users.size())
@@ -82,28 +74,25 @@ public class UserController {
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
-        return responseEntity;
+        return UserDtoListResponse.builder().userDtoList(users).build();
     }
 
     /**
      * @param id Значение ID юзера
-     * @return Результат работы метода userService.getOneUser(id) в виде объекта User
-     * в теле ResponseEntity
+     *           userServiceRest обрабатывает ошибки ответа
+     * @return Возвращаес конкретный класс UserDtoResponse
      */
-    @GetMapping("/{id}")
-    @Operation(summary = "Получение юзера по id")
-    public ResponseEntity<UserDtoResponse> getUserById(@PathVariable Long id) {
-        log.debug("Старт метода ResponseEntity<User> getOneUser(@PathVariable Long id) с параметром {}", id);
+    @Operation(summary = "Получение нашего юзера по id")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserDtoResponse getUserById(@PathVariable("id") Long id) {
+        log.debug("Запрос на получение usera по id ");
         if (!ParameterService.getUserByIdPrivateEnabled.getValue()) {
             log.debug("Метод getUserById выключен параметром getUserByIdPrivateEnabled = false");
             throw new RuntimeException("Method getUserById is disabled by parameter getUserByIdPrivateEnabled");
         }
-        User user = userServiceRest.getUserById(id);
-        ResponseEntity<UserDtoResponse> response = new ResponseEntity<>(
-                UserDtoResponse.builder().
-                        userDto(UserMapper.INSTANCE.mapUserToDto(user)).build(),
-                HttpStatus.OK);
-        Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
+        UserDto user = UserMapper.INSTANCE
+                .mapUserToDto(userServiceRest.getUserById(id));
+        Map<String, ParametersDto> monitoringParameters = new HashMap<>();
 
         ParametersDto userId = ParametersDto.builder()
                 .description("ID")
@@ -127,33 +116,23 @@ public class UserController {
                 monitoringProducerService.constructReportDto(
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
-        return response;
+        return UserDtoResponse.builder().userDto(user).build();
     }
 
     /**
      * @param userCreate Создаваемый объект класса User
-     * @return Результат работы метода userService.saveUser(user) в виде объекта User
-     * в теле ResponseEntity
+     * @return Результат работы метода userService.saveUser(user) в виде UserDtoResponse
      */
     @PostMapping
     @Operation(summary = "Создание юзера")
-    public ResponseEntity<Account> createUser(@RequestBody @NotNull User userCreate) {
+    public UserDtoResponse createUser(@RequestBody @NotNull User userCreate) {
         if (!ParameterService.createUserEnabled.getValue()) {
             log.debug("Метод createUser выключен параметром createUserEnabled = false");
             throw new RuntimeException("Method createUser is disabled by parameter createUserEnabled");
         }
-        log.debug("Старт метода ResponseEntity<User> createUser(@RequestBody @NotNull User user) с параметром {}", userCreate);
+        log.debug("Старт метода createUser(@RequestBody @NotNull User user) с параметром");
 
-        ResponseEntity<Account> responseEntity;
-        try {
-            responseEntity = new ResponseEntity<>(userService.saveUser(userCreate), HttpStatus.CREATED);
-        } catch (PersistenceException e) {
-            log.debug(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        log.debug("Сформирован ответ {}", responseEntity);
-
+        UserDto account = UserMapper.INSTANCE.mapUserToDto(userServiceRest.saveUser(userCreate));
         Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
         ParametersDto userId = ParametersDto.builder()
@@ -179,7 +158,7 @@ public class UserController {
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
 
-        return responseEntity;
+        return UserDtoResponse.builder().userDto(account).build();
     }
 
     /**
@@ -188,29 +167,24 @@ public class UserController {
      * @return Результат работы метода userService.saveUser(user) в виде объекта User
      * в теле ResponseEntity
      */
+    //TODO методы изменения и сохранения юзера не работают
     @PutMapping("/{id}")
     @Operation(summary = "Обновление юзера")
-    public ResponseEntity<Account> updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
-        log.debug("Старт метода ResponseEntity<User> updateUser(@RequestBody @NotNull User user) с параметром {}", user);
+    public UserDtoResponse updateUser(@PathVariable Long id, @RequestBody @NotNull User user) {
+        log.debug("Старт метода updateUser(@RequestBody @NotNull User user) с параметром {}", user);
         if (!ParameterService.updateUserEnabled.getValue()) {
             log.debug("Метод updateUser выключен параметром updateUserEnabled = false");
             throw new RuntimeException("Method updateUser is disabled by parameter updateUserEnabled");
         }
 
         Long userId = user.getId();
+        log.debug("нашли id нашего юзера");
         if (!haveRightsToUpdate(SecurityContextHolder.getContext().getAuthentication(), userId) || !id.equals(userId)) {
             log.debug("Попытка изменить пользователя с id = {}, не имея на это прав", userId);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new RuntimeException(String.valueOf(HttpStatus.BAD_REQUEST));
         }
 
-        ResponseEntity<Account> responseEntity;
-        try {
-            responseEntity = ResponseEntity.ok(userService.updateUser(user));
-        } catch (PersistenceException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        log.debug("Сформирован ответ {}", responseEntity);
+        UserDto account = UserMapper.INSTANCE.mapUserToDto(userServiceRest.updateUserError(user, id));
 
         Map<String, ParametersDto> monitoringParameters = new LinkedHashMap<>();
 
@@ -238,7 +212,7 @@ public class UserController {
                         SecurityContextHolder.getContext().getAuthentication().getPrincipal(), ControlDto.MANUAL,
                         this.getClass(), monitoringParameters));
 
-        return responseEntity;
+        return UserDtoResponse.builder().userDto(account).build();
     }
 
     /**

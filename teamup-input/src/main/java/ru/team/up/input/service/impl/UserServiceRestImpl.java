@@ -30,6 +30,7 @@ public class UserServiceRestImpl implements UserServiceRest {
 
     @Override
     public User getUserById(Long id) {
+
         return userService.getOneUser(id).orElseThrow(() -> new UserNotFoundIDException(id));
     }
 
@@ -56,6 +57,14 @@ public class UserServiceRestImpl implements UserServiceRest {
     @Override
     public List<Event> getEventsBySubscriberId(Long id) {
         return eventService.getAllEventsBySubscriberId(id);
+    }
+
+    @Override
+    public User updateUserError(User user, Long id) {
+        User oldUser = getUserById(id);
+        User newUser = user;
+        newUser.setId(oldUser.getId());
+        return userService.saveUser(newUser);
     }
 
     @Override
